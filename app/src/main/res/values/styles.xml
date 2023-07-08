@@ -1,0 +1,113 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="GVThemeDark" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/primary_material_dark_1</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TextAppearance.Body2" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textSize">14sp</item>
+        <!-- bug in AppCompat, can remove this when it's fixed -->
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.BodyTitle" parent="TextAppearance.Body2">
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="Body1Text">
+        <item name="android:textAppearance">@style/TextAppearance.Body1</item>
+        <item name="android:lineSpacingMultiplier">@dimen/body_1_spacing</item>
+    </style>
+
+    <style name="TextAppearance.Body1" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">14sp</item>
+        <!-- bug in AppCompat, can remove this when it's fixed -->
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="TextAppearance.Medium" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.Headline" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.Subheading" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+
+    <style name="SearchViewTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">@color/app_body_text_1</item>
+        <item name="colorControlNormal">@color/app_body_text_2</item>
+        <item name="colorControlActivated">@color/theme_accent_1</item>
+        <item name="android:textColorHint">?android:attr/textColorHintInverse</item>
+    </style>
+
+    <style name="SearchButtonTheme" parent="Theme.AppCompat.Light">
+        <item name="android:textColor">@color/app_body_text_1</item>
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="ObjectFabOverlay">
+        <item name="colorAccent">@color/favorite_fab_color</item>
+    </style>
+
+    <style name="button_main_menu">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginEnd">2dp</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:background">@color/button_dark</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="DetailSubtitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/TextAppearance.Subheading</item>
+        <item name="android:paddingTop">8dp</item>
+    </style>
+
+    <style name="DetailText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+</resources>

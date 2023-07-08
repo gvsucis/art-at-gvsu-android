@@ -1,0 +1,49 @@
+# frozen_string_literal: true
+
+opt_out_usage
+default_platform(:android)
+
+SERVICE_CREDENTIALS_FILE = 'android-firebase-secret-key.json'
+
+platform :android do
+  desc 'Validate key'
+  lane :validate_key do
+    validate_play_store_json_key(json_key: SERVICE_CREDENTIALS_FILE)
+  end
+
+  desc 'Verify the build'
+  lane :build_release do
+    build_release
+  end
+
+  desc 'Runs all the tests'
+  lane :test do
+    gradle(task: 'test')
+  end
+
+  desc 'Submit a new Beta Build to Firebase App Distribution'
+  lane :beta do
+    build_release
+    firebase_app_distribution(
+      app: ENV['FASTLANE_APP_ID'],
+      service_credentials_file: SERVICE_CREDENTIALS_FILE,
+      groups: 'android-qa'
+    )
+  end
+
+  desc 'Deploy a new version to the Google Play'
+  lane :production do
+    build_release
+    upload_to_play_store(json_key: SERVICE_CREDENTIALS_FILE)
+  end
+end
+
+def build_release
+  gradle(task: 'clean assembleRelease')
+end
+
+def bump_version
+  Dir.chdir("..") do
+    sh("bumpver", "update")
+  end
+end

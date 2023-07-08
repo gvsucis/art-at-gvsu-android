@@ -1,0 +1,37 @@
+name: Deploy Production
+
+on: workflow_dispatch
+
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ssh-key: ${{ secrets.RELEASE_SSH_KEY }}
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+      - name: Setup build dependencies
+        run: make deps
+      - name: Configure Git user
+        run: |
+          git config user.name "GV Bot"
+          git config user.email "137118308+gvcis-bot@users.noreply.github.com"
+      - name: Bump version
+        run: bumpver update
+      - name: Deploy App to Production
+        env:
+          ENCODED_GOOGLE_ANALYTICS_KEY: ${{ secrets.ENCODED_GOOGLE_ANALYTICS_KEY }}
+          ENCODED_GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.ENCODED_GOOGLE_APPLICATION_CREDENTIALS }}
+          ENCODED_GOOGLE_MAPS_KEY: ${{ secrets.ENCODED_GOOGLE_MAPS_KEY }}
+          ENCODED_GOOGLE_SERVICES: ${{ secrets.ENCODED_GOOGLE_SERVICES }}
+          ENCODED_PROJECT_PROPERTIES: ${{ secrets.ENCODED_PROJECT_PROPERTIES }}
+          ENCODED_RELEASE_KEYSTORE: ${{ secrets.ENCODED_RELEASE_KEYSTORE }}
+          ENCODED_SECRETS_PROPERTIES: ${{ secrets.ENCODED_SECRETS_PROPERTIES }}
+          FASTLANE_APP_ID: ${{ secrets.FASTLANE_APP_ID }}
+        run: make deploy-production
+      - name: Sync versioning to Main
+        run: git push --follow-tags

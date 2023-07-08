@@ -1,0 +1,26 @@
+name: Deploy Beta
+
+on:
+  push:
+    branches: main
+
+jobs:
+  beta:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+      - name: Setup Fastlane
+        run: bundle install
+      - name: Deploy Beta to Firebase App Distribution
+        env:
+          ENCODED_GOOGLE_ANALYTICS_KEY: ${{ secrets.ENCODED_GOOGLE_ANALYTICS_KEY }}
+          ENCODED_GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.ENCODED_GOOGLE_APPLICATION_CREDENTIALS }}
+          ENCODED_GOOGLE_MAPS_KEY: ${{ secrets.ENCODED_GOOGLE_MAPS_KEY }}
+          ENCODED_GOOGLE_SERVICES: ${{ secrets.ENCODED_GOOGLE_SERVICES }}
+          ENCODED_PROJECT_PROPERTIES: ${{ secrets.ENCODED_PROJECT_PROPERTIES }}
+          ENCODED_RELEASE_KEYSTORE: ${{ secrets.ENCODED_RELEASE_KEYSTORE }}
+          ENCODED_SECRETS_PROPERTIES: ${{ secrets.ENCODED_SECRETS_PROPERTIES }}
+          FASTLANE_APP_ID: ${{ secrets.FASTLANE_APP_ID }}
+        run: make deploy-beta

@@ -1,0 +1,80 @@
+CREATE TABLE  IF NOT EXISTS Artworks (
+  id TEXT NOT NULL,
+  is_public INTEGER,
+  media_representations TEXT,
+  name TEXT,
+  artist_id TEXT,
+  artist_name TEXT,
+  historical_context TEXT,
+  work_description TEXT,
+  work_date TEXT,
+  work_medium TEXT,
+  location TEXT,
+  identifier TEXT,
+  credit_line TEXT,
+  location_latitude REAL,
+  location_longitude REAL,
+  related_objects TEXT,
+  media_small_url TEXT,
+  media_medium_url TEXT,
+  media_large_url TEXT,
+  thumbnail_url TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE INDEX index_artworks_id ON Artworks(id);
+CREATE INDEX index_artworks_on_artist_id ON Artworks(artist_id);
+
+insert:
+INSERT OR REPLACE INTO Artworks(
+  id,
+  is_public,
+  media_representations,
+  name,
+  artist_id,
+  artist_name,
+  historical_context,
+  work_description,
+  work_date,
+  work_medium,
+  location,
+  identifier,
+  credit_line,
+  location_latitude,
+  location_longitude,
+  media_small_url,
+  media_medium_url,
+  media_large_url,
+  thumbnail_url,
+  related_objects
+)
+VALUES (
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?,
+  ?
+);
+
+findByID:
+SELECT *
+FROM Artworks
+WHERE id = ?
+LIMIT 1;
+
+

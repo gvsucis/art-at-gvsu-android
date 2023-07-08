@@ -1,0 +1,20 @@
+CREATE TABLE  IF NOT EXISTS FeaturedArtworks (
+  payload TEXT NOT NULL,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+insert:
+INSERT INTO FeaturedArtworks(
+ payload
+) VALUES (
+ ?
+);
+
+deleteAll:
+DELETE FROM FeaturedArtworks;
+
+findLatest:
+SELECT *
+FROM FeaturedArtworks
+ORDER BY created_at DESC
+LIMIT 1;
