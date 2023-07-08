@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/primary_material_dark_1</color>
+    <color name="colorPrimaryDark">@color/primary_dark_material_dark</color>
+    <color name="colorAccent">@color/accent_material_dark</color>
+    <color name="primary_material_dark_1">#212121</color>
+    <color name="primary_dark_material">#000000</color>
+    <color name="accent_dark">#80cbc4</color>
+    <color name="background_dark">#303030</color>
+    <color name="statusBarColor">#000000</color>
+    <color name="windowBackground">@color/background_material_dark</color>
+    <color name="primary_dark">#ffffff</color>
+    <color name="placeholder_background">#E0E0E0</color>
+    <color name="favorite_fab_color">#D32F2F</color>
+    <color name="favorite_fab_ripple">#C62828</color>
+    <!-- iosched -->
+    <color name="app_body_text_1">#de000000</color>
+    <color name="app_body_text_2">#8a000000</color>
+    <color name="theme_accent_1">#00b0ff</color>
+    <color name="card">#fff</color>
+    <color name="divider">#1f000000</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="murky_white">#99FFFFFF</color>
+    <color name="dark_gray">#92a3a3a3</color>
+    <color name="button_dark">#ff5a595b</color>
+
+    <color name="primaryColor">#f8f9fa</color>
+    <color name="primaryLightColor">#ffffff</color>
+    <color name="primaryDarkColor">#c5c6c7</color>
+    <color name="blue">#0065A4</color>
+    <color name="lightBlue">#5192d6</color>
+    <color name="darkBlue">#003b75</color>
+    <color name="primaryTextColor">#202429</color>
+    <color name="secondaryTextColor">#FFFFFF</color>
+
+    <color name="nightPrimaryColor">#202429</color>
+    <color name="nightPrimaryLightColor">#474c51</color>
+    <color name="nightPrimaryDarkColor">#000000</color>
+    <color name="nightSecondaryColor">#0065a4</color>
+    <color name="nightSecondaryLightColor">#5192d6</color>
+    <color name="nightSecondaryDarkColor">#003b75</color>
+    <color name="nightPrimaryTextColor">#ffffff</color>
+    <color name="nightSecondaryTextColor">#ffffff</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

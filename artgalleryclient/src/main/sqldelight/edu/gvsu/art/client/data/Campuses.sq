@@ -1,0 +1,20 @@
+CREATE TABLE  IF NOT EXISTS Campuses (
+  payload TEXT NOT NULL,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+insert:
+INSERT INTO Campuses(
+ payload
+) VALUES (
+ ?
+);
+
+deleteAll:
+DELETE FROM Campuses;
+
+findLatest:
+SELECT *
+FROM Campuses
+ORDER BY created_at DESC
+LIMIT 1;

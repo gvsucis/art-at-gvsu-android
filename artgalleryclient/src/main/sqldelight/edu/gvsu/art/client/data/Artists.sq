@@ -1,0 +1,38 @@
+CREATE TABLE IF NOT EXISTS Artists (
+  id TEXT NOT NULL,
+  is_public INTEGER,
+  identifier TEXT,
+  name TEXT,
+  nationality TEXT,
+  life_dates TEXT,
+  biography TEXT,
+  related_works TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+insert:
+INSERT OR REPLACE INTO Artists(
+  id,
+  is_public,
+  identifier,
+  name,
+  nationality,
+  life_dates,
+  biography,
+  related_works
+) VALUES (
+  ?,
+  ?,
+?,
+?,
+?,
+?,
+?,
+?
+);
+
+findByID:
+SELECT *
+FROM Artists
+WHERE id = ?
+LIMIT 1;

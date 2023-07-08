@@ -1,0 +1,25 @@
+DROP TABLE IF EXISTS Artworks;
+
+CREATE TABLE  Artworks (
+  id TEXT NOT NULL,
+  is_public INTEGER,
+  media_representations TEXT,
+  name TEXT,
+  artist_id TEXT,
+  artist_name TEXT,
+  historical_context TEXT,
+  work_description TEXT,
+  work_date TEXT,
+  work_medium TEXT,
+  location TEXT,
+  identifier TEXT,
+  credit_line TEXT,
+  location_latitude REAL,
+  location_longitude REAL,
+  related_objects TEXT,
+  media_small_url TEXT,
+  media_medium_url TEXT,
+  media_large_url TEXT,
+  thumbnail_url TEXT,
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
+);

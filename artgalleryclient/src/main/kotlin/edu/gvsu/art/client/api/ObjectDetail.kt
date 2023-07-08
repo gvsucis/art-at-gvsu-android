@@ -1,0 +1,42 @@
+package edu.gvsu.art.client.api
+
+import com.squareup.moshi.Json
+
+data class ObjectDetail(
+    val ok: Boolean? = false,
+    val access: String = "0",
+    val object_id: Int? = 0,
+    val idno: String? = "",
+    val mimetypes: String? = "",
+    val media_large_url: String? = "",
+    val media_medium_url: String? = "",
+    val media_small_url: String? = "",
+    val media_icon_url: String? = "",
+    val media_reps: String? = "",
+    val object_name: String? = "",
+    val entity_id: String? = "",
+    val entity_name: String? = "",
+    val historical_context: String? = "",
+    val work_description: String? = "",
+    val work_date: String? = "",
+    val work_medium: String? = "",
+    val location_id: String? = "",
+    val location: String? = "",
+    val location_notes: String? = "",
+    val location_georeference: String? = "",
+    val credit_line: String? = "",
+    val lcsh: String? = "",
+    val aat: String? = "",
+    val tgn: String? = "",
+    val tgn_coords: String? = "",
+    val related_objects: String? = "",
+    val dimensions: String? = "",
+    val dimensions_width: String? = "",
+    val dimensions_height: String? = "",
+    val dimensions_depth: String? = "",
+    val rg_thumbnail: String? = "",
+    val rg_small: String? = "",
+    val rg_medium: String? = "",
+    val rg_large: String? = "",
+    @Json(name = "rg_x-large") val rg_xlarge: String? = ""
+)
