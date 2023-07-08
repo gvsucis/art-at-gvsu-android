@@ -32,13 +32,13 @@ deploy-production: ci-secrets release-secrets
 
 .SILENT:
 release-secrets:
-	echo ${ENCODED_GOOGLE_ANALYTICS_KEY} | base64 --decode > ./app/src/release/res/values/google_analytics_api.xml
 	echo ${ENCODED_GOOGLE_APPLICATION_CREDENTIALS} | base64 --decode > ./android-firebase-secret-key.json
-	echo ${ENCODED_GOOGLE_MAPS_KEY} | base64 --decode > ./app/src/release/res/values/google_analytics_api.xml
 	echo ${ENCODED_RELEASE_KEYSTORE} | base64 --decode > ./release.keystore
 
 .SILENT:
 ci-secrets:
+	echo ${ENCODED_GOOGLE_ANALYTICS_KEY} | base64 --decode > ./app/src/release/res/values/google_analytics_api.xml
+	echo ${ENCODED_GOOGLE_MAPS_KEY} | base64 --decode > ./app/src/release/res/values/google_analytics_api.xml
 	echo ${ENCODED_GOOGLE_SERVICES} | base64 --decode > ./app/google-services.json
 	echo ${ENCODED_PROJECT_PROPERTIES} | base64 --decode > ./project.properties
 	echo ${ENCODED_SECRETS_PROPERTIES} | base64 --decode > ./secrets.properties
