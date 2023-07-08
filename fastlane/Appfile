@@ -1,0 +1,2 @@
+json_key_file('fastlane_google_service_account.json')
+package_name('edu.gvsu.art.gallery')
