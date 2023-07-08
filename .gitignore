@@ -60,6 +60,7 @@ fastlane/report.xml
 
 # Secrets
 android-firebase-secret-key.json
+google-play-service-account.json
 app/google-services.json
 secrets.properties
 project.properties

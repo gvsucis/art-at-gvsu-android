@@ -3,7 +3,7 @@ SHELL:=/usr/bin/env bash
 FASTLANE ?= bundle exec fastlane
 SECRETS_DIR = ../art-at-gvsu-secrets/android
 
-.PHONY: ci-test ci-secrets release-secrets deploy-beta deploy-production deps secrets
+.PHONY: ci-test ci-secrets release-secrets production-secrets deploy-beta deploy-production deps secrets
 
 deps:
 	bundle install
@@ -27,8 +27,12 @@ ci-test: ci-secrets
 deploy-beta: ci-secrets release-secrets
 	$(FASTLANE) beta
 
-deploy-production: ci-secrets release-secrets
+deploy-production: ci-secrets release-secrets production-secrets
 	$(FASTLANE) production
+
+.SILENT:
+production-secrets:
+	echo ${ENCODED_GOOGLE_PLAY_CREDENTIALS} | base64 --decode > ./google-play-service-account.json
 
 .SILENT:
 release-secrets:
