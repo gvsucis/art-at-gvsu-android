@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.firebase.crashlytics'
+
 
 Properties properties = new Properties()
 if (rootProject.file("project.properties").exists()) {
@@ -14,7 +16,7 @@ if (rootProject.file("secrets.properties").exists()) {
 }
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
     defaultConfig {
         applicationId "edu.gvsu.art.gallery"
         minSdkVersion 26
@@ -30,7 +32,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "$composeVersion"
+        kotlinCompilerExtensionVersion "$compose_compiler_version"
     }
     signingConfigs {
         release {
@@ -88,13 +90,13 @@ dependencies {
     implementation 'androidx.camera:camera-lifecycle:1.1.0-alpha03'
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:1.1.5"
     implementation "androidx.datastore:datastore-preferences:$datastore_version"
-    implementation "androidx.compose.animation:animation:$composeVersion"
-    implementation "androidx.compose.compiler:compiler:$composeVersion"
-    implementation "androidx.compose.material:material-icons-extended:$composeVersion"
-    implementation "androidx.compose.material:material:$composeVersion"
-    implementation "androidx.compose.runtime:runtime-livedata:$composeVersion"
-    implementation "androidx.compose.ui:ui-tooling:$composeVersion"
-    implementation "androidx.compose.ui:ui-util:$composeVersion"
+    implementation "androidx.compose.animation:animation:$compose_version"
+    implementation "androidx.compose.compiler:compiler:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation "androidx.compose.ui:ui-util:$compose_version"
     implementation "androidx.datastore:datastore-preferences:$datastore_version"
     implementation "androidx.navigation:navigation-compose:2.4.0-rc01"
     implementation 'com.google.mlkit:barcode-scanning:17.0.2'
@@ -117,8 +119,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation platform('com.google.firebase:firebase-bom:32.1.0')
-    implementation 'com.google.firebase:firebase-analytics'
+    implementation platform('com.google.firebase:firebase-bom:32.2.2')
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.maps.android:android-maps-utils:2.0.3'
     implementation 'com.google.maps.android:maps-ktx:3.2.1'
     implementation 'com.google.maps.android:maps-utils-ktx:3.2.1'
