@@ -100,7 +100,7 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:$datastore_version"
     implementation "androidx.navigation:navigation-compose:2.4.0-rc01"
     implementation 'com.google.mlkit:barcode-scanning:17.0.2'
-    implementation "com.github.Tlaster:Swiper:0.6.0"
+    implementation "com.github.Tlaster:Swiper:0.7.1"
     implementation "com.google.accompanist:accompanist-navigation-animation:$accompanist_version"
     implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_version"
     implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
