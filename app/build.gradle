@@ -21,8 +21,8 @@ android {
         applicationId "edu.gvsu.art.gallery"
         minSdkVersion 26
         targetSdkVersion 33
-        versionCode 1007
-        versionName "2023.07.1007"
+        versionCode 1008
+        versionName "2023.08.1008"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "ART_GALLERY_BASE_URL", properties['art_gallery_base_url'])
