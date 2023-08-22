@@ -1,0 +1,1 @@
+Adds Crashlytics to anonymously help improve the app through automated bug reports.
