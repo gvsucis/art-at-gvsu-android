@@ -36,6 +36,7 @@ jobs:
           ENCODED_PROJECT_PROPERTIES: ${{ secrets.ENCODED_PROJECT_PROPERTIES }}
           ENCODED_RELEASE_KEYSTORE: ${{ secrets.ENCODED_RELEASE_KEYSTORE }}
           ENCODED_SECRETS_PROPERTIES: ${{ secrets.ENCODED_SECRETS_PROPERTIES }}
+          SLACK_URL: ${{ secrets.SLACK_URL }}
         run: make deploy-production
       - name: Sync versioning to Main
         run: git push --follow-tags

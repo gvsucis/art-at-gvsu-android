@@ -28,4 +28,5 @@ jobs:
           ENCODED_RELEASE_KEYSTORE: ${{ secrets.ENCODED_RELEASE_KEYSTORE }}
           ENCODED_SECRETS_PROPERTIES: ${{ secrets.ENCODED_SECRETS_PROPERTIES }}
           FASTLANE_APP_ID: ${{ secrets.FASTLANE_APP_ID }}
+          SLACK_URL: ${{ secrets.SLACK_URL }}
         run: make deploy-beta

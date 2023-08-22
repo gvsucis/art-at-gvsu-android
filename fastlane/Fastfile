@@ -27,12 +27,14 @@ platform :android do
       service_credentials_file: 'android-firebase-secret-key.json',
       groups: 'android-qa'
     )
+    slack(message: "Android beta app successfully deployed to Firebase!")
   end
 
   desc 'Deploy a new version to the Google Play'
   lane :production do
     build_release
     upload_to_play_store
+    slack(message: "Android app successfully released to Play Store!")
   end
 end
 
