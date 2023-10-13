@@ -8,6 +8,8 @@ apply plugin: 'com.google.firebase.crashlytics'
 Properties properties = new Properties()
 if (rootProject.file("project.properties").exists()) {
     properties.load(rootProject.file("project.properties").newDataInputStream())
+} else {
+    properties.load(rootProject.file("project-sample.properties").newDataInputStream())
 }
 
 Properties secrets = new Properties()
@@ -142,3 +144,21 @@ repositories {
     mavenCentral()
     google()
 }
+
+tasks.register('useGoogleServicesDebugFile') {
+    description 'Copies the debug google-services.json file if file is missing.'
+    doLast {
+        def googleServicesFile = "google-services.json"
+        if (!file("${project.projectDir}/$googleServicesFile").exists()) {
+            def debugOnlyFile = "google-services-debug-only.json"
+            println "$googleServicesFile file is missing. Copying $debugOnlyFile"
+            copy {
+                from "${project.projectDir}/$debugOnlyFile"
+                into project.projectDir
+                rename { googleServicesFile }
+            }
+        }
+    }
+}
+
+preBuild.dependsOn(useGoogleServicesDebugFile)
