@@ -16,17 +16,17 @@
 ```
 .
 ├── app
-│   └── src
-│       ├── main
-│       └── edu.gvsu.art.gallery
-│           ├── di # Dependency Injection
-│           ├── extensions # Kotlin extensions for Android and Jetpack Compose
-│           |── lib # Helpers for networking and media
-│           └── ui # Jetpack Compose UI components
+│   └── src
+│       ├── main
+│       └── edu.gvsu.art.gallery
+│           ├── di # Dependency Injection
+│           ├── extensions # Kotlin extensions for Android and Jetpack Compose
+│           |── lib # Helpers for networking and media
+│           └── ui # Jetpack Compose UI components
 ├── artgalleryclient
-│   └── src
-│       └── edu.gvsu.art.client
-│           ├── api # Collective Access HTTP Client and JSON data access objects
-│           ├── common # Helpers and extensions
-│           └── repository # Adapters for network and database objects
+│   └── src
+│       └── edu.gvsu.art.client
+│           ├── api # Collective Access HTTP Client and JSON data access objects
+│           ├── common # Helpers and extensions
+│           └── repository # Adapters for network and database objects
 ```
