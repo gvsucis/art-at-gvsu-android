@@ -10,3 +10,23 @@
 
 [img_version]: https://img.shields.io/static/v1.svg?label=CalVer&message=2023.08.1008&color=blue
 [url_version]: https://github.com/gvsucis/art-at-gvsu-android
+
+## Directory Structure
+
+```
+.
+├── app
+│   └── src
+│       ├── main
+│       └── edu.gvsu.art.gallery
+│           ├── di # Dependency Injection
+│           ├── extensions # Kotlin extensions for Android and Jetpack Compose
+│           |── lib # Helpers for networking and media
+│           └── ui # Jetpack Compose UI components
+├── artgalleryclient
+│   └── src
+│       └── edu.gvsu.art.client
+│           ├── api # Collective Access HTTP Client and JSON data access objects
+│           ├── common # Helpers and extensions
+│           └── repository # Adapters for network and database objects
+```
