@@ -3,11 +3,16 @@ SHELL:=/usr/bin/env bash
 FASTLANE ?= bundle exec fastlane
 SECRETS_DIR = ../art-at-gvsu-secrets/android
 
-.PHONY: ci-test ci-secrets release-secrets production-secrets deploy-beta deploy-production deps secrets
+.PHONY: ci-test ci-secrets release-secrets production-secrets deploy-beta deploy-production secrets
 
+.PHONY: deps
 deps:
 	bundle install
-	pip install bumpver==2023.1124
+	pip install bumpver==2023.1129
+
+.PHONY: changelog
+changelog:
+	./scripts/changelog
 
 test:
 	$(FASTLANE) test
