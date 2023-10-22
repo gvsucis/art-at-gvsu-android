@@ -47,7 +47,7 @@ To create a new release, first add a changelog for the next version by running t
 make changelog
 ```
 
-Which will produce the following out
+Which will produce the following output
 
 ```
 $ make changelog
