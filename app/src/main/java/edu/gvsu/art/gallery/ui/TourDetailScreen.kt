@@ -135,7 +135,7 @@ private fun MapView(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    val darkTheme = isAppInDarkTheme()
+    val isDarkTheme = isAppInDarkTheme()
     val boundingPadding = with(LocalDensity.current) { 32.dp.roundToPx() }
     val map = rememberMapViewWithLifecycle()
     val (googleMap, setGoogleMap) = remember { mutableStateOf<GoogleMap?>(null) }
@@ -149,13 +149,15 @@ private fun MapView(
         coroutineScope.launch {
             if (googleMap == null) {
                 val awaitedMap = mapView.awaitMap()
-                if (darkTheme) {
+                if (isDarkTheme) {
                     awaitedMap.setMapStyle(
                         MapStyleOptions.loadRawResourceStyle(
                             context,
                             R.raw.google_maps_dark
                         )
                     )
+                } else {
+                    awaitedMap.setMapStyle(null)
                 }
                 val boundsBuilder = LatLngBounds.builder()
 
