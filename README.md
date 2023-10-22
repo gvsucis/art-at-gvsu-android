@@ -33,17 +33,24 @@
 
 ## Release
 
-## Beta
+### Beta
 
 The beta version of the app will automatically build on new commits to the main branch. Beta builds are available via Firebase App Distribution.
 
-## Play Store
+### Play Store
 
 Play Store releases are handled by the GitHub Action called "Deploy Production."
 
-To create a new release, first add a changelog for the next version by running `make changelog`:
+To create a new release, first add a changelog for the next version by running the following command
+
+```shell
+make changelog
+```
+
+Which will produce the following out
 
 ```
+$ make changelog
 Added changelog for next build (1009)
 ./fastlane/metadata/android/en-US/changelogs/1009.txt
 ```
