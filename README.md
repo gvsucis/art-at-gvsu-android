@@ -30,3 +30,23 @@
 │           ├── common # Helpers and extensions
 │           └── repository # Adapters for network and database objects
 ```
+
+## Release
+
+## Beta
+
+The beta version of the app will automatically build on new commits to the main branch. Beta builds are available via Firebase App Distribution.
+
+## Play Store
+
+Play Store releases are handled by the GitHub Action called "Deploy Production."
+
+To create a new release, first add a changelog for the next version by running `make changelog`:
+
+```
+Added changelog for next build (1009)
+./fastlane/metadata/android/en-US/changelogs/1009.txt
+```
+
+Edit file with a description of the important changes made since the last release and commit.  On commit, add the `[skip ci]` GitHub tag to the commit message to avoid
+rebuilding a beta version of the app that has not changed.
