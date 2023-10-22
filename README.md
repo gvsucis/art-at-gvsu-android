@@ -55,5 +55,5 @@ Added changelog for next build (1009)
 ./fastlane/metadata/android/en-US/changelogs/1009.txt
 ```
 
-Edit file with a description of the important changes made since the last release and commit.  On commit, add the `[skip ci]` GitHub tag to the commit message to avoid
+Edit the file with a description of the important changes made since the last release. On commit, add the `[skip ci]` GitHub tag to the commit message to avoid
 rebuilding a beta version of the app that has not changed.
