@@ -20,6 +20,6 @@ fun useArtist(id: String): Async<Artist> {
             )
         }
     }
-    Log.d("artist", "returned state")
+
     return state.value
 }

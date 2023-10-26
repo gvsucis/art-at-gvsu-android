@@ -34,6 +34,7 @@ import edu.gvsu.art.client.TourStop
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
+import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.foundation.rememberRemoteImage
 import edu.gvsu.art.gallery.ui.theme.LightBlue
 import edu.gvsu.art.gallery.ui.theme.Shapes

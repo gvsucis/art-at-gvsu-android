@@ -1,4 +1,4 @@
-package edu.gvsu.art.gallery.ui
+package edu.gvsu.art.gallery.ui.foundation
 
 import androidx.compose.runtime.compositionLocalOf
 import edu.gvsu.art.gallery.TabScreen

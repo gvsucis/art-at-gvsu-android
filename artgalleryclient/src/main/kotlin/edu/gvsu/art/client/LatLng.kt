@@ -1,6 +1,10 @@
 package edu.gvsu.art.client
 
-data class LatLng(val latitude: Double, val longitude: Double) {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class LatLng(val latitude: Double, val longitude: Double): Parcelable {
     companion object {
         fun fromCoordinates(latitude: Double?, longitude: Double?): LatLng? {
             if (latitude == null || longitude == null) {

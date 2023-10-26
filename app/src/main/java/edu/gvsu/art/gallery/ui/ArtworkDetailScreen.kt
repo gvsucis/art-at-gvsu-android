@@ -29,10 +29,10 @@ import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.DetailDivider
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.extensions.openGoogleMaps
-import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.lib.MediaTypes
 import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
+import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.foundation.rememberRemoteImage
 import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 import java.net.URL
@@ -45,13 +45,7 @@ import java.net.URL
 fun ArtworkDetailScreen(navController: NavController, artworkID: String?) {
     artworkID ?: return Column {}
     val (isFavorite, toggleFavorite) = useFavorite(artworkID = artworkID)
-    val (data) = useArtwork(id = artworkID)
-
-    val (artwork, loading) = when (data) {
-        is Async.Success -> Pair(data(), false)
-        is Async.Loading -> Pair(Artwork(), true)
-        else -> Pair(Artwork(), false)
-    }
+    val (artwork, loading) = useArtwork(id = artworkID)
 
     ArtworkView(
         navController = navController,
