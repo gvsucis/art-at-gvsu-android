@@ -3,10 +3,15 @@ package edu.gvsu.art.gallery
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -21,12 +26,21 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import edu.gvsu.art.gallery.ui.*
+import edu.gvsu.art.gallery.ui.ArtistDetailScreen
+import edu.gvsu.art.gallery.ui.ArtworkDetailScreen
+import edu.gvsu.art.gallery.ui.BrowseScreen
+import edu.gvsu.art.gallery.ui.FavoriteIndexScreen
+import edu.gvsu.art.gallery.ui.FeaturedArtIndexScreen
+import edu.gvsu.art.gallery.ui.LocationDetailScreen
+import edu.gvsu.art.gallery.ui.LocationIndexScreen
+import edu.gvsu.art.gallery.ui.SearchIndexScreen
+import edu.gvsu.art.gallery.ui.SettingsScreen
+import edu.gvsu.art.gallery.ui.TourDetailScreen
+import edu.gvsu.art.gallery.ui.ToursIndexScreen
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 
 @ExperimentalPagerApi
-@ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @ExperimentalPermissionsApi
 class MainActivity : ComponentActivity() {
@@ -40,7 +54,6 @@ class MainActivity : ComponentActivity() {
 
 @ExperimentalPermissionsApi
 @ExperimentalComposeUiApi
-@ExperimentalAnimationApi
 @ExperimentalPagerApi
 @Composable
 fun App() {
@@ -51,7 +64,6 @@ fun App() {
 
 @ExperimentalPermissionsApi
 @ExperimentalComposeUiApi
-@ExperimentalAnimationApi
 @ExperimentalPagerApi
 @Composable
 fun BottomNavigationView() {
@@ -118,7 +130,6 @@ fun BottomNavigationView() {
 }
 
 @ExperimentalPermissionsApi
-@ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @ExperimentalPagerApi
 fun NavGraphBuilder.routing(navController: NavController) {
@@ -129,7 +140,6 @@ fun NavGraphBuilder.routing(navController: NavController) {
 }
 
 @ExperimentalPagerApi
-@ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 fun NavGraphBuilder.featuredGraph(navController: NavController) {
     composable(TabScreen.Browse.route) {
@@ -156,7 +166,6 @@ fun NavGraphBuilder.featuredGraph(navController: NavController) {
 }
 
 @ExperimentalComposeUiApi
-@ExperimentalAnimationApi
 @ExperimentalPagerApi
 fun NavGraphBuilder.toursGraph(navController: NavController) {
     composable(TabScreen.Tours.route) {
@@ -174,7 +183,6 @@ fun NavGraphBuilder.toursGraph(navController: NavController) {
 }
 
 @ExperimentalPermissionsApi
-@ExperimentalAnimationApi
 @ExperimentalPagerApi
 @ExperimentalComposeUiApi
 fun NavGraphBuilder.searchGraph(navController: NavController) {
@@ -186,7 +194,6 @@ fun NavGraphBuilder.searchGraph(navController: NavController) {
 }
 
 @ExperimentalComposeUiApi
-@ExperimentalAnimationApi
 @ExperimentalPagerApi
 fun NavGraphBuilder.favoritesGraph(navController: NavController) {
     composable(TabScreen.Favorites.route) {
@@ -197,7 +204,6 @@ fun NavGraphBuilder.favoritesGraph(navController: NavController) {
 }
 
 @ExperimentalPagerApi
-@ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 fun NavGraphBuilder.artworkDetailScreen(route: String, navController: NavController) {
     composable(route) { backStackEntry ->
@@ -214,12 +220,5 @@ fun NavGraphBuilder.artistDetailScreen(route: String, navController: NavControll
             navController,
             backStackEntry.arguments?.getString("artist_id")
         )
-    }
-}
-
-@Composable
-fun FakeOutScreen(title: String) {
-    Column {
-        Text("Placeholder for ${title}")
     }
 }

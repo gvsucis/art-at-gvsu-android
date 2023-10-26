@@ -61,6 +61,7 @@ class PlayerView constructor(
                                 while (true) {
                                     delay(1000)
                                     playerProgressCallBack?.onTimeChanged(contentPosition())
+                                    VideoPool.set(url, contentPosition())
                                 }
                             }
                         }
@@ -81,8 +82,7 @@ class PlayerView constructor(
             }
     }
 
-    fun play(seekPosition: Long? = null) {
-        seekPosition?.let { seekTo(it) }
+    fun play() {
         androidPlayer.player?.playWhenReady = true
         androidPlayer.onResume()
     }

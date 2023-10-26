@@ -1,5 +1,6 @@
 package edu.gvsu.art.gallery.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
@@ -12,8 +13,8 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import edu.gvsu.art.client.Artwork
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @ExperimentalComposeUiApi
-@ExperimentalAnimationApi
 @ExperimentalPagerApi
 @Composable
 fun ArtworkMediaDialog(

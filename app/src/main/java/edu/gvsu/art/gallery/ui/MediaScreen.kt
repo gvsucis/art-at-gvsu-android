@@ -13,9 +13,6 @@ import com.google.accompanist.pager.PagerState
 import moe.tlaster.swiper.rememberSwiperState
 import java.net.URL
 
-
-@ExperimentalAnimationApi
-@SuppressLint("UnrememberedMutableState")
 @ExperimentalPagerApi
 @Composable
 fun MediaScreen(
