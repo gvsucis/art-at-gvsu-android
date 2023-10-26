@@ -22,8 +22,10 @@ fun ArtworkMediaDialog(
     selectedPage: Int,
     onDismiss: () -> Unit = {},
 ) {
-    Dialog(onDismissRequest = { onDismiss() },
-        properties = DialogProperties(usePlatformDefaultWidth = false)) {
+    Dialog(
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
         Scaffold(backgroundColor = Color.Transparent) {
             MediaScreen(
                 urls = artwork.mediaRepresentations,

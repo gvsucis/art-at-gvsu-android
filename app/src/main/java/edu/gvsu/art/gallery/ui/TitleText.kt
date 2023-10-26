@@ -1,4 +1,4 @@
-package edu.gvsu.art.gallery
+package edu.gvsu.art.gallery.ui
 
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text

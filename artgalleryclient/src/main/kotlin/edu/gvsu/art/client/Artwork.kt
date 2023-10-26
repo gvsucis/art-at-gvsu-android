@@ -1,7 +1,10 @@
 package edu.gvsu.art.client
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.net.URL
 
+@Parcelize
 data class Artwork(
     val id: String = "",
     val isPublic: Boolean = true,
@@ -22,7 +25,7 @@ data class Artwork(
     val mediaMedium: URL? = null,
     val mediaLarge: URL? = null,
     val thumbnail: URL? = null
-) {
+) : Parcelable {
     val formattedArtistName: String
         get() {
             return if (artistName.isNotBlank()) {

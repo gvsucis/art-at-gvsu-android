@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import edu.gvsu.art.client.Artwork
-import edu.gvsu.art.gallery.TitleText
 import edu.gvsu.art.gallery.extensions.shareArtwork
 import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 import edu.gvsu.art.gallery.ui.theme.Red

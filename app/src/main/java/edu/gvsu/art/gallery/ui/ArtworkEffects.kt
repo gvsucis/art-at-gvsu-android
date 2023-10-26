@@ -1,6 +1,7 @@
 package edu.gvsu.art.gallery.ui
 
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.client.repository.ArtworkRepository
 import edu.gvsu.art.client.repository.ArtworkSearchRepository
@@ -9,10 +10,6 @@ import edu.gvsu.art.gallery.lib.Async
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-@Composable
-fun useArtwork(id: String) = useKeyedRepositoryResource(fetch = {
-    get<ArtworkRepository>().find(id)
-})
 
 @Composable
 fun useFavorite(artworkID: String): Pair<Boolean, () -> Unit> {
@@ -26,6 +23,33 @@ fun useFavorite(artworkID: String): Pair<Boolean, () -> Unit> {
     }
 
     return Pair(isFavorite, { setFavorite(repository.toggle(artworkID)) })
+}
+
+@Composable
+fun useArtwork(id: String) = useKeyedRepositoryResource(fetch = {
+    get<ArtworkRepository>().find(id)
+})
+
+@Composable
+fun useArtworkAgain(id: String): Pair<Artwork, Boolean> {
+    val artwork = rememberSaveable(id) { mutableStateOf<Artwork?>(null) }
+
+    artwork.value?.let {
+        return Pair(it, false)
+    }
+
+    val (result) = useKeyedRepositoryResource(fetch = {
+        get<ArtworkRepository>().find(id)
+    })
+
+    LaunchedEffect(result) {
+        when (result) {
+            is Async.Success -> artwork.value = result()
+            else -> {}
+        }
+    }
+
+    return Pair(Artwork(), true)
 }
 
 @Composable

@@ -1,7 +1,13 @@
 plugins {
-    id("java-library")
-    id("kotlin")
+    id("com.android.library")
+    id("kotlin-android")
     id("com.squareup.sqldelight")
+    id("org.jetbrains.kotlin.plugin.parcelize")
+}
+
+android {
+    namespace = "edu.gvsu.art.client"
+    compileSdkVersion = "android-34"
 }
 
 sqldelight {

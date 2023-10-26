@@ -45,13 +45,7 @@ import java.net.URL
 fun ArtworkDetailScreen(navController: NavController, artworkID: String?) {
     artworkID ?: return Column {}
     val (isFavorite, toggleFavorite) = useFavorite(artworkID = artworkID)
-    val (data) = useArtwork(id = artworkID)
-
-    val (artwork, loading) = when (data) {
-        is Async.Success -> Pair(data(), false)
-        is Async.Loading -> Pair(Artwork(), true)
-        else -> Pair(Artwork(), false)
-    }
+    val (artwork, loading) = useArtworkAgain(id = artworkID)
 
     ArtworkView(
         navController = navController,
