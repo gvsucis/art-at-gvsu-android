@@ -35,6 +35,7 @@ fun VideoPlayer(
     onClick: (() -> Unit)? = null,
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val videoPool = LocalVideoPool.current
 
     Box {
         if (playEnable) {
@@ -44,6 +45,7 @@ fun VideoPlayer(
                     zOrderMediaOverlay = zOrderMediaOverlay,
                     keepScreenOn = keepScreenOn,
                     backgroundColor = backgroundColor,
+                    videoPool = videoPool,
                     onClick = onClick
                 ).apply {
                     videoState.bind(this)
