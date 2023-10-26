@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import edu.gvsu.art.client.Artist
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
+import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 
 @Composable

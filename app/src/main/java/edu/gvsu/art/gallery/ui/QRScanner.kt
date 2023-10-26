@@ -25,7 +25,6 @@ class QRScanner(val callback: QRCodeFoundCallback) : ImageAnalysis.Analyzer {
             barcodeScanner.process(inputImage)
                 .addOnSuccessListener { barcodes ->
                     barcodes.firstOrNull()?.let { qrCode ->
-                        Log.d("URL scanned", qrCode.url?.url.toString())
                         qrCode.url?.url?.let { callback(it) }
                     }
                 }.addOnCompleteListener {

@@ -7,6 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -20,6 +24,7 @@ import com.google.accompanist.pager.PagerState
 import com.mxalbert.zoomable.Zoomable
 import edu.gvsu.art.gallery.lib.MediaTypes
 import edu.gvsu.art.gallery.ui.foundation.VideoPlayer
+import edu.gvsu.art.gallery.ui.foundation.VideoPlayerState
 import edu.gvsu.art.gallery.ui.foundation.rememberRemoteImage
 import edu.gvsu.art.gallery.ui.foundation.rememberVideoPlayerState
 import moe.tlaster.swiper.Swiper
@@ -37,12 +42,27 @@ fun MediaView(
     videoControlVisibility: Boolean,
     onClick: () -> Unit,
 ) {
+    val (videoUrl, setVideoUrl) = remember { mutableStateOf<URL?>(null)}
+    val videoState = rememberVideoPlayerState(
+        url = videoUrl?.toString()
+    )
+
+    LaunchedEffect(pagerState.currentPage) {
+        val url = urls[pagerState.currentPage]
+
+        if (MediaTypes.isVideo(url)) {
+            setVideoUrl(url)
+        } else {
+            setVideoUrl(null)
+        }
+    }
+
     Swiper(state = swiperState) {
         HorizontalPager(
             itemSpacing = 8.dp,
             count = urls.size,
             state = pagerState,
-            key = { urls[it] }
+            key = { urls[it] },
         ) { page ->
             val url = urls[page]
             if (MediaTypes.isVideo(url)) {
@@ -51,25 +71,22 @@ fun MediaView(
                         onTap = { onClick() }
                     )
                 }) {
-                    val videoState = rememberVideoPlayerState(
-                        url = url.toString(),
-                        volume = volume,
-                        isMute = false
-                    )
-                    VideoPlayer(
-                        playEnable = currentPage == page,
-                        videoState = videoState,
-                        zOrderMediaOverlay = true,
-                        keepScreenOn = true,
-                        backgroundColor = Color.Blue,
-                    )
-                    AnimatedVisibility(
-                        visible = videoControlVisibility,
-                        enter = fadeIn() + expandVertically(),
-                        exit = shrinkVertically() + fadeOut(),
-                        modifier = Modifier.align(Alignment.BottomStart)
-                    ) {
-                        VideoControl(state = videoState)
+                    videoState?.let {
+                        VideoPlayer(
+                            playEnable = true,
+                            videoState = it,
+                            zOrderMediaOverlay = true,
+                            keepScreenOn = true,
+                            backgroundColor = Color.Blue,
+                        )
+                        AnimatedVisibility(
+                            visible = videoControlVisibility,
+                            enter = fadeIn() + expandVertically(),
+                            exit = shrinkVertically() + fadeOut(),
+                            modifier = Modifier.align(Alignment.BottomStart)
+                        ) {
+                            VideoControl(state = it)
+                        }
                     }
                 }
             } else {
@@ -80,6 +97,7 @@ fun MediaView(
         }
     }
 }
+
 @Composable
 private fun RemoteImage(url: URL) {
     val modifier = Modifier.fillMaxSize()

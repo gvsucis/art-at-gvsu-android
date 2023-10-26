@@ -81,7 +81,8 @@ class PlayerView constructor(
             }
     }
 
-    fun play() {
+    fun play(seekPosition: Long? = null) {
+        seekPosition?.let { seekTo(it) }
         androidPlayer.player?.playWhenReady = true
         androidPlayer.onResume()
     }

@@ -26,12 +26,7 @@ fun useFavorite(artworkID: String): Pair<Boolean, () -> Unit> {
 }
 
 @Composable
-fun useArtwork(id: String) = useKeyedRepositoryResource(fetch = {
-    get<ArtworkRepository>().find(id)
-})
-
-@Composable
-fun useArtworkAgain(id: String): Pair<Artwork, Boolean> {
+fun useArtwork(id: String): Pair<Artwork, Boolean> {
     val artwork = rememberSaveable(id) { mutableStateOf<Artwork?>(null) }
 
     artwork.value?.let {

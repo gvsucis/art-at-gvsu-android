@@ -39,6 +39,7 @@ import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.lib.Links
 import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
+import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 
 @ExperimentalPermissionsApi
 @ExperimentalComposeUiApi
