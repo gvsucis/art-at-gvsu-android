@@ -1,0 +1,3 @@
+Fixes a bug where rotating the device while watching an artwork's video would crash.
+
+
