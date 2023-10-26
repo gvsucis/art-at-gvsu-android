@@ -159,7 +159,7 @@ class VideoPlayerState(
     internal fun onResume() {
         player.registerProgressCallback(progressCallBack)
         player.registerPlayerCallback(playerCallBack)
-        if (isPlaying) player.play(seekPosition = currentPosition)
+        if (isPlaying) player.play()
     }
 
     internal fun onPause() {
