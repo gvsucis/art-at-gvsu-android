@@ -1,7 +1,6 @@
 package edu.gvsu.art.gallery.ui
 
 import androidx.annotation.StringRes
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,7 +38,6 @@ import java.net.URL
 
 
 @ExperimentalComposeUiApi
-@ExperimentalAnimationApi
 @ExperimentalPagerApi
 @Composable
 fun ArtworkDetailScreen(navController: NavController, artworkID: String?) {
@@ -56,7 +54,6 @@ fun ArtworkDetailScreen(navController: NavController, artworkID: String?) {
     )
 }
 
-@ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @ExperimentalPagerApi
 @Composable
@@ -119,7 +116,6 @@ fun ArtworkView(
     }
 }
 
-@ExperimentalAnimationApi
 @ExperimentalComposeUiApi
 @ExperimentalPagerApi
 @Composable
