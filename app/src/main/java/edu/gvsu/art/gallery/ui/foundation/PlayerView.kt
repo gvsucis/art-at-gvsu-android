@@ -20,6 +20,7 @@ class PlayerView constructor(
     url: String,
     zOrderMediaOverlay: Boolean,
     keepScreenOn: Boolean,
+    videoPool: VideoPool,
     backgroundColor: Color?,
     onClick: (() -> Unit)?
 ) {
@@ -61,7 +62,7 @@ class PlayerView constructor(
                                 while (true) {
                                     delay(1000)
                                     playerProgressCallBack?.onTimeChanged(contentPosition())
-                                    VideoPool.set(url, contentPosition())
+                                    videoPool.set(url, contentPosition())
                                 }
                             }
                         }
@@ -78,7 +79,7 @@ class PlayerView constructor(
                 }
                 playerCallBack?.onPrepareStart()
                 prepare()
-                seekTo(VideoPool.get(url))
+                seekTo(videoPool.get(url))
             }
     }
 

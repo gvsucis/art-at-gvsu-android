@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -29,9 +30,11 @@ import edu.gvsu.art.gallery.DetailDivider
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.extensions.openGoogleMaps
 import edu.gvsu.art.gallery.lib.MediaTypes
+import edu.gvsu.art.gallery.lib.VideoPool
 import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
+import edu.gvsu.art.gallery.ui.foundation.LocalVideoPool
 import edu.gvsu.art.gallery.ui.foundation.rememberRemoteImage
 import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 import java.net.URL
@@ -41,17 +44,22 @@ import java.net.URL
 @ExperimentalPagerApi
 @Composable
 fun ArtworkDetailScreen(navController: NavController, artworkID: String?) {
+    val videoPool = rememberSaveable { VideoPool() }
     artworkID ?: return Column {}
     val (isFavorite, toggleFavorite) = useFavorite(artworkID = artworkID)
     val (artwork, loading) = useArtwork(id = artworkID)
 
-    ArtworkView(
-        navController = navController,
-        artwork = artwork,
-        loading = loading,
-        isFavorite = isFavorite,
-        toggleFavorite = toggleFavorite,
-    )
+    CompositionLocalProvider(
+        LocalVideoPool provides videoPool
+    ) {
+        ArtworkView(
+            navController = navController,
+            artwork = artwork,
+            loading = loading,
+            isFavorite = isFavorite,
+            toggleFavorite = toggleFavorite,
+        )
+    }
 }
 
 @ExperimentalComposeUiApi
@@ -68,14 +76,16 @@ fun ArtworkView(
     val thumbnailState = rememberPagerState()
     val dialogState = rememberPagerState()
 
-    Column(Modifier
-        .verticalScroll(rememberScrollState())
-        .fillMaxSize()) {
+    Column(
+        Modifier
+            .verticalScroll(rememberScrollState())
+            .fillMaxSize()) {
 
         Box(Modifier.aspectRatio(4 / 3f)) {
-            Box(Modifier
-                .background(MaterialTheme.colors.surface)
-                .fillMaxSize())
+            Box(
+                Modifier
+                    .background(MaterialTheme.colors.surface)
+                    .fillMaxSize())
 
             if (!loading) {
                 ArtworkMediaPager(
@@ -240,10 +250,12 @@ fun PagerImage(url: URL) {
                 .fillMaxWidth()
                 .fillMaxHeight(fraction = 0.5f)
                 .clip(RectangleShape)
-                .background(Brush.verticalGradient(
-                    0f to Color.Transparent,
-                    1.0f to Color.Black.copy(alpha = 0.4f)
-                ))
+                .background(
+                    Brush.verticalGradient(
+                        0f to Color.Transparent,
+                        1.0f to Color.Black.copy(alpha = 0.4f)
+                    )
+                )
         )
     }
 }
