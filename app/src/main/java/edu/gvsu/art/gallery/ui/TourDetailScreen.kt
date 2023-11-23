@@ -51,7 +51,7 @@ fun TourDetailScreen(navController: NavController, tourID: String?, tourName: St
 
     fun navigateToArtwork(artworkID: String) {
         coroutineScope.launch {
-            navController.navigateToArtworkDetail(tabScreen, artworkID)
+            navController.navigateToArtworkDetail(artworkID)
         }
     }
 

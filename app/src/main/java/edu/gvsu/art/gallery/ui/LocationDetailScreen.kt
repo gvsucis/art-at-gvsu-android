@@ -67,7 +67,7 @@ private fun LocationList(navController: NavController, location: Location) {
             navController.navigateToLocation(selected.id, selected.name)
         }
         artworks(artworks = location.artworks) { selected ->
-            navController.navigateToArtworkDetail(tabScreen, selected.id)
+            navController.navigateToArtworkDetail(selected.id)
         }
     }
 }

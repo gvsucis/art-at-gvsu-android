@@ -67,7 +67,7 @@ fun SearchIndexScreen(navController: NavController) {
                 navController.navigateToArtistDetail(tabScreen, artist.id)
             },
             onArtworkSelect = { artwork ->
-                navController.navigateToArtworkDetail(tabScreen, artwork.id)
+                navController.navigateToArtworkDetail(artwork.id)
             }
         )
     }
@@ -121,7 +121,7 @@ fun QRScannerDialog(
         Links.fromDetailLink(
             url = parsedURL,
             onArtwork = { id ->
-                navController.navigateToArtworkDetail(tabScreen, id)
+                navController.navigateToArtworkDetail(id)
             }
         )
     }

@@ -32,7 +32,7 @@ fun FeaturedArtIndexScreen(navController: NavController) {
     }
 
     fun navigateToArtwork(id: String) {
-        navController.navigateToArtworkDetail(currentTab, id)
+        navController.navigateToArtworkDetail(id)
     }
 
     Column {

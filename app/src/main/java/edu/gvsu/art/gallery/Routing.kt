@@ -10,23 +10,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 
+const val ART_GALLERY_WEB_URL = "https://artgallery.gvsu.edu"
+
 object Route {
     const val BrowseArtworkIndex = "browse/artworks"
     const val BrowseIndex = "browse"
     const val BrowseLocationDetail = "browse/locations/{location_id}?display_name={display_name}"
     const val BrowseLocationsIndex = "browse/locations"
     const val FavoritesArtistDetail = "favorites/artists/{artist_id}"
-    const val FavoritesArtworkDetail = "favorites/artworks/{artwork_id}"
+    const val ArtworkDetail = "artworks/{artwork_id}"
     const val FavoritesIndex = "favorites"
     const val FeaturedArtistDetail = "browse/artists/{artist_id}"
-    const val FeaturedArtworkDetail = "browse/artworks/{artwork_id}"
     const val TourIndex = "tours"
     const val TourDetail = "tours/{tour_id}?display_name={display_name}"
     const val TourArtistDetail = "tours/artists/{artist_id}"
-    const val TourArtworkDetail = "tours/artworks/{artwork_id}"
     const val SearchIndex = "search"
     const val SearchArtistDetail = "search/artists/{artist_id}"
-    const val SearchArtworkDetail = "search/artworks/{artwork_id}"
     const val Settings = "browse/settings"
 }
 
@@ -35,25 +34,25 @@ sealed class TabScreen(
     @StringRes val title: Int,
     val icon: ImageVector,
 ) {
-    object Browse : TabScreen(
+    data object Browse : TabScreen(
         route = Route.BrowseIndex,
         title = R.string.navigation_Browse,
         icon = Icons.Default.AutoStories
     )
 
-    object Tours : TabScreen(
+    data object Tours : TabScreen(
         route = Route.TourIndex,
         title = R.string.navigation_Tours,
         icon = Icons.Default.Map,
     )
 
-    object Search : TabScreen(
+    data object Search : TabScreen(
         route = "search",
         title = R.string.navigation_Search,
         icon = Icons.Default.Search
     )
 
-    object Favorites : TabScreen(
+    data object Favorites : TabScreen(
         route = Route.FavoritesIndex,
         title = R.string.navigation_Favorites,
         icon = Icons.Default.Favorite
@@ -89,8 +88,8 @@ sealed class TabScreen(
 fun NavController.navigateToArtistDetail(tabScreen: TabScreen, artistID: String) =
     navigate("${tabScreen.route}/artists/$artistID")
 
-fun NavController.navigateToArtworkDetail(tabScreen: TabScreen, artworkID: String) =
-    navigate("${tabScreen.route}/artworks/${artworkID}")
+fun NavController.navigateToArtworkDetail(artworkID: String) =
+    navigate("artworks/${artworkID}")
 
 fun NavController.navigateToLocation(locationID: String, displayName: String) =
     navigate("browse/locations/$locationID?display_name=${displayName}")

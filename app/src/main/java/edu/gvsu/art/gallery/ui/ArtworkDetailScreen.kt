@@ -177,7 +177,7 @@ fun ArtworkDetailBody(
     val context = LocalContext.current
     val descriptionRows = artwork.asDescriptionRows
     fun navigateToArtwork(artworkID: String) {
-        navController.navigateToArtworkDetail(currentTab, artworkID)
+        navController.navigateToArtworkDetail(artworkID)
     }
 
     Box(modifier = Modifier

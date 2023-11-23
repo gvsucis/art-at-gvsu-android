@@ -112,7 +112,7 @@ fun HomeFeaturedImageView(
         if (currentArtwork.id.isBlank()) {
             return
         }
-        navController.navigateToArtworkDetail(currentTab, currentArtwork.id)
+        navController.navigateToArtworkDetail(currentArtwork.id)
     }
     Surface(
         modifier = Modifier

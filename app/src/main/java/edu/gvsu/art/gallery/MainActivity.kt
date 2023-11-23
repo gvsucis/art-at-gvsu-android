@@ -24,6 +24,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import edu.gvsu.art.gallery.ui.ArtistDetailScreen
@@ -158,7 +159,7 @@ fun NavGraphBuilder.featuredGraph(navController: NavController) {
     composable(Route.BrowseArtworkIndex) {
         FeaturedArtIndexScreen(navController)
     }
-    artworkDetailScreen(Route.FeaturedArtworkDetail, navController)
+    artworkDetailScreen(navController)
     artistDetailScreen(Route.FeaturedArtistDetail, navController)
     composable(Route.Settings) {
         SettingsScreen(navController)
@@ -178,7 +179,6 @@ fun NavGraphBuilder.toursGraph(navController: NavController) {
             tourName = backStackEntry.arguments?.getString("display_name") ?: ""
         )
     }
-    artworkDetailScreen(Route.TourArtworkDetail, navController)
     artistDetailScreen(Route.TourArtistDetail, navController)
 }
 
@@ -189,7 +189,6 @@ fun NavGraphBuilder.searchGraph(navController: NavController) {
     composable(Route.SearchIndex) {
         SearchIndexScreen(navController)
     }
-    artworkDetailScreen(Route.SearchArtworkDetail, navController)
     artistDetailScreen(Route.SearchArtistDetail, navController)
 }
 
@@ -199,14 +198,16 @@ fun NavGraphBuilder.favoritesGraph(navController: NavController) {
     composable(TabScreen.Favorites.route) {
         FavoriteIndexScreen(navController)
     }
-    artworkDetailScreen(Route.FavoritesArtworkDetail, navController)
     artistDetailScreen(Route.FavoritesArtistDetail, navController)
 }
 
 @ExperimentalPagerApi
 @ExperimentalComposeUiApi
-fun NavGraphBuilder.artworkDetailScreen(route: String, navController: NavController) {
-    composable(route) { backStackEntry ->
+fun NavGraphBuilder.artworkDetailScreen(navController: NavController) {
+    composable(
+        Route.ArtworkDetail,
+        deepLinks = listOf(navDeepLink { uriPattern = "$ART_GALLERY_WEB_URL/Detail/objects/{artwork_id}" })
+    ) { backStackEntry ->
         ArtworkDetailScreen(
             navController,
             backStackEntry.arguments?.getString("artwork_id")

@@ -1,12 +1,13 @@
 package edu.gvsu.art.gallery.lib
 
 import android.net.Uri
+import edu.gvsu.art.gallery.ART_GALLERY_WEB_URL
 import java.net.URL
 
 
 object Links {
     fun artworkDetail(id: String) =
-        URL("https://artgallery.gvsu.edu/Detail/objects/${id}").toString()
+        URL("${ART_GALLERY_WEB_URL}/Detail/objects/${id}").toString()
 
     fun fromDetailLink(
         url: Uri,

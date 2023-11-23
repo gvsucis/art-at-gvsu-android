@@ -19,7 +19,6 @@ import androidx.navigation.NavController
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.Route
-import edu.gvsu.art.gallery.TabScreen
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 
@@ -29,7 +28,7 @@ fun FavoriteIndexScreen(navController: NavController) {
     val data = useFavorites()
 
     fun navigateToArtwork(artworkID: String) {
-        navController.navigateToArtworkDetail(TabScreen.Favorites, artworkID = artworkID)
+        navController.navigateToArtworkDetail(artworkID = artworkID)
     }
 
     fun navigateToBrowse() {

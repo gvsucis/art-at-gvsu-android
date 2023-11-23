@@ -25,7 +25,7 @@ fun ArtistDetailScreen(navController: NavController, artistID: String?) {
 
     val currentTab = LocalTabScreen.current
     fun navigateToArtwork(artworkID: String) {
-        navController.navigateToArtworkDetail(currentTab, artworkID)
+        navController.navigateToArtworkDetail(artworkID)
     }
 
     val artist = when (val data = useArtist(artistID)) {
