@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "edu.gvsu.art.gallery",
+      "sha256_cert_fingerprints": [
+        "45:D8:35:67:3A:FC:7C:31:F5:CD:B3:34:96:19:7E:99:9A:A5:93:87:30:5A:CA:EC:62:52:9A:52:49:16:5D:88"
+      ]
+    }
+  }
+]
