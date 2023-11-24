@@ -13,19 +13,16 @@ import androidx.navigation.NavDestination
 const val ART_GALLERY_WEB_URL = "https://artgallery.gvsu.edu"
 
 object Route {
+    const val ArtistDetail = "artists/{artist_id}"
+    const val ArtworkDetail = "artworks/{artwork_id}"
     const val BrowseArtworkIndex = "browse/artworks"
     const val BrowseIndex = "browse"
     const val BrowseLocationDetail = "browse/locations/{location_id}?display_name={display_name}"
     const val BrowseLocationsIndex = "browse/locations"
-    const val FavoritesArtistDetail = "favorites/artists/{artist_id}"
-    const val ArtworkDetail = "artworks/{artwork_id}"
     const val FavoritesIndex = "favorites"
-    const val FeaturedArtistDetail = "browse/artists/{artist_id}"
     const val TourIndex = "tours"
     const val TourDetail = "tours/{tour_id}?display_name={display_name}"
-    const val TourArtistDetail = "tours/artists/{artist_id}"
     const val SearchIndex = "search"
-    const val SearchArtistDetail = "search/artists/{artist_id}"
     const val Settings = "browse/settings"
 }
 
@@ -85,8 +82,8 @@ sealed class TabScreen(
     }
 }
 
-fun NavController.navigateToArtistDetail(tabScreen: TabScreen, artistID: String) =
-    navigate("${tabScreen.route}/artists/$artistID")
+fun NavController.navigateToArtistDetail(artistID: String) =
+    navigate("artists/$artistID")
 
 fun NavController.navigateToArtworkDetail(artworkID: String) =
     navigate("artworks/${artworkID}")

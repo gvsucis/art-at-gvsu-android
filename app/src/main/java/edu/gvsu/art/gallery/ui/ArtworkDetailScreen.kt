@@ -193,7 +193,7 @@ fun ArtworkDetailBody(
     }
     DetailDivider()
     ArtistNameRow(artwork = artwork) {
-        navController.navigateToArtistDetail(currentTab, artwork.artistID)
+        navController.navigateToArtistDetail(artwork.artistID)
     }
     DetailDivider()
     descriptionRows.forEachIndexed { index, row ->

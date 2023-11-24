@@ -64,7 +64,7 @@ fun SearchIndexScreen(navController: NavController) {
             selectedModel = selectedModel,
             query = query,
             onArtistSelect = { artist ->
-                navController.navigateToArtistDetail(tabScreen, artist.id)
+                navController.navigateToArtistDetail(artist.id)
             },
             onArtworkSelect = { artwork ->
                 navController.navigateToArtworkDetail(artwork.id)

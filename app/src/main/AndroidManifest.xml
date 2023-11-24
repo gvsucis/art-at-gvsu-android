@@ -42,7 +42,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="https" android:host="artgallery.gvsu.edu" />
+                <data android:scheme="https"/>
+                <data android:host="artgallery.gvsu.edu" />
+                <data android:pathPattern="/detail/entities/.*"/>
+                <data android:pathPattern="/detail/objects/.*"/>
+                <data android:pathPattern="/Detail/entities/.*"/>
+                <data android:pathPattern="/Detail/objects/.*"/>
             </intent-filter>
         </activity>
         <!--

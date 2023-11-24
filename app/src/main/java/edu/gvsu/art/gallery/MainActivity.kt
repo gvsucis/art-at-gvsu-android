@@ -160,7 +160,7 @@ fun NavGraphBuilder.featuredGraph(navController: NavController) {
         FeaturedArtIndexScreen(navController)
     }
     artworkDetailScreen(navController)
-    artistDetailScreen(Route.FeaturedArtistDetail, navController)
+    artistDetailScreen(navController)
     composable(Route.Settings) {
         SettingsScreen(navController)
     }
@@ -179,7 +179,6 @@ fun NavGraphBuilder.toursGraph(navController: NavController) {
             tourName = backStackEntry.arguments?.getString("display_name") ?: ""
         )
     }
-    artistDetailScreen(Route.TourArtistDetail, navController)
 }
 
 @ExperimentalPermissionsApi
@@ -189,7 +188,6 @@ fun NavGraphBuilder.searchGraph(navController: NavController) {
     composable(Route.SearchIndex) {
         SearchIndexScreen(navController)
     }
-    artistDetailScreen(Route.SearchArtistDetail, navController)
 }
 
 @ExperimentalComposeUiApi
@@ -198,7 +196,6 @@ fun NavGraphBuilder.favoritesGraph(navController: NavController) {
     composable(TabScreen.Favorites.route) {
         FavoriteIndexScreen(navController)
     }
-    artistDetailScreen(Route.FavoritesArtistDetail, navController)
 }
 
 @ExperimentalPagerApi
@@ -206,7 +203,7 @@ fun NavGraphBuilder.favoritesGraph(navController: NavController) {
 fun NavGraphBuilder.artworkDetailScreen(navController: NavController) {
     composable(
         Route.ArtworkDetail,
-        deepLinks = listOf(navDeepLink { uriPattern = "$ART_GALLERY_WEB_URL/Detail/objects/{artwork_id}" })
+        deepLinks = listOf(navDeepLink { uriPattern = "$ART_GALLERY_WEB_URL/detail/objects/{artwork_id}" })
     ) { backStackEntry ->
         ArtworkDetailScreen(
             navController,
@@ -215,8 +212,11 @@ fun NavGraphBuilder.artworkDetailScreen(navController: NavController) {
     }
 }
 
-fun NavGraphBuilder.artistDetailScreen(route: String, navController: NavController) {
-    composable(route) { backStackEntry ->
+fun NavGraphBuilder.artistDetailScreen(navController: NavController) {
+    composable(
+        Route.ArtistDetail,
+        deepLinks = listOf(navDeepLink { uriPattern = "$ART_GALLERY_WEB_URL/detail/entities/{artist_id}" })
+    ) { backStackEntry ->
         ArtistDetailScreen(
             navController,
             backStackEntry.arguments?.getString("artist_id")
