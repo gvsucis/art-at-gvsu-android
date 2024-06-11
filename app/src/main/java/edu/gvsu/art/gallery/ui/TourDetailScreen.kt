@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.LatLngBounds
@@ -35,7 +36,6 @@ import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
-import edu.gvsu.art.gallery.ui.foundation.rememberRemoteImage
 import edu.gvsu.art.gallery.ui.theme.LightBlue
 import edu.gvsu.art.gallery.ui.theme.Shapes
 import edu.gvsu.art.gallery.ui.theme.isAppInDarkTheme
@@ -70,11 +70,13 @@ fun TourDetailScreen(navController: NavController, tourID: String?, tourName: St
                     data(),
                     navigateToArtwork = { navigateToArtwork(it) }
                 )
+
             is Async.Failure ->
                 ErrorView(
                     error = data.error,
                     onRetryClick = { refresh() }
                 )
+
             else -> LoadingView()
         }
     }
@@ -235,8 +237,8 @@ fun TourStopCell(
                 .background(MaterialTheme.colors.onSurface)
                 .aspectRatio(1f)
         )
-        Image(
-            painter = rememberRemoteImage(url = tourStop.media),
+        AsyncImage(
+            model = tourStop.media.toString(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
