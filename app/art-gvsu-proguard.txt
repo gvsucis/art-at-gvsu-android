@@ -35,7 +35,6 @@
 # Retrofit 2.x
 -dontwarn retrofit2.**
 
-# Picasso
 -dontwarn com.squareup.okhttp.**
 -dontwarn okio.**
 -dontwarn okhttp3.**
