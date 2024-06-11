@@ -21,13 +21,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.mxalbert.zoomable.Zoomable
 import edu.gvsu.art.gallery.lib.MediaTypes
 import edu.gvsu.art.gallery.ui.foundation.VideoPlayer
-import edu.gvsu.art.gallery.ui.foundation.rememberRemoteImage
 import edu.gvsu.art.gallery.ui.foundation.rememberVideoPlayerState
 import moe.tlaster.swiper.Swiper
 import moe.tlaster.swiper.SwiperState
@@ -43,7 +43,7 @@ fun MediaView(
     videoControlVisibility: Boolean,
     onClick: () -> Unit,
 ) {
-    val (videoUrl, setVideoUrl) = remember { mutableStateOf<URL?>(null)}
+    val (videoUrl, setVideoUrl) = remember { mutableStateOf<URL?>(null) }
     val videoState = rememberVideoPlayerState(
         url = videoUrl?.toString()
     )
@@ -102,7 +102,7 @@ fun MediaView(
 @Composable
 private fun RemoteImage(url: URL) {
     val modifier = Modifier.fillMaxSize()
-    val painter = rememberRemoteImage(url = url)
+    val painter = rememberAsyncImagePainter(model = url.toString())
     Box {
         val size = painter.intrinsicSize
         Image(

@@ -26,13 +26,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.Route
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
-import edu.gvsu.art.gallery.ui.foundation.rememberRemoteImage
 import edu.gvsu.art.gallery.ui.theme.OffWhite
 import edu.gvsu.art.gallery.ui.theme.OffWhiteSecondary
 import java.net.URL
@@ -125,10 +126,11 @@ fun HomeFeaturedImageView(
                 .background(OffWhiteSecondary, RoundedCornerShape(size = 10.dp))
                 .clickable { navigateToArtwork() }
         ) {
-            Image(
-                painter = rememberRemoteImage(currentArtwork.mediaLarge) {
-                    crossfade(true)
-                },
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(currentArtwork.mediaLarge.toString())
+                    .crossfade(true)
+                    .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -151,11 +153,13 @@ private fun FeaturedTitle(artwork: Artwork, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .clip(RectangleShape)
-            .background(Brush.verticalGradient(
-                0f to Color.Transparent,
-                0.5f to Color.Transparent,
-                1.0f to Color.Black.copy(alpha = 0.6f)
-            ))
+            .background(
+                Brush.verticalGradient(
+                    0f to Color.Transparent,
+                    0.5f to Color.Transparent,
+                    1.0f to Color.Black.copy(alpha = 0.6f)
+                )
+            )
     ) {
         Column(
             modifier = Modifier
@@ -169,7 +173,8 @@ private fun FeaturedTitle(artwork: Artwork, modifier: Modifier = Modifier) {
                 fontWeight = FontWeight.Bold,
             )
             if (artwork.formattedArtistName.isNotBlank()) {
-                Text(artwork.formattedArtistName,
+                Text(
+                    artwork.formattedArtistName,
                     color = OffWhite.copy(alpha = 0.8f),
                     style = MaterialTheme.typography.subtitle1
                 )

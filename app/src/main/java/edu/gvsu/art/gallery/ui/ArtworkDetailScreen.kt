@@ -1,9 +1,20 @@
 package edu.gvsu.art.gallery.ui
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,12 +30,18 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.accompanist.pager.*
+import coil.compose.AsyncImage
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.HorizontalPagerIndicator
+import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.rememberPagerState
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.DetailDivider
 import edu.gvsu.art.gallery.R
@@ -35,7 +52,6 @@ import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.foundation.LocalVideoPool
-import edu.gvsu.art.gallery.ui.foundation.rememberRemoteImage
 import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 import java.net.URL
 
@@ -238,8 +254,8 @@ fun ArtworkDetailBody(
 @Composable
 fun PagerImage(url: URL) {
     Box {
-        Image(
-            painter = rememberRemoteImage(url = url),
+        AsyncImage(
+            model = url.toString(),
             contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier = Modifier.fillMaxSize()

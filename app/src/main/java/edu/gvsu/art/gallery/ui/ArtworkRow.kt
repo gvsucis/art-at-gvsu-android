@@ -14,8 +14,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import edu.gvsu.art.client.Artwork
-import edu.gvsu.art.gallery.ui.foundation.rememberRemoteImage
 
 @Composable
 fun ArtworkRow(artwork: Artwork, modifier: Modifier = Modifier) {
@@ -23,8 +23,8 @@ fun ArtworkRow(artwork: Artwork, modifier: Modifier = Modifier) {
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = rememberRemoteImage(artwork.thumbnail),
+        AsyncImage(
+            model = artwork.thumbnail.toString(),
             contentScale = ContentScale.Crop,
             contentDescription = null,
             modifier = Modifier

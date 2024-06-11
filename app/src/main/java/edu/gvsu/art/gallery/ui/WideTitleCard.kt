@@ -15,10 +15,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import edu.gvsu.art.gallery.ui.foundation.rememberRemoteImage
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 import edu.gvsu.art.gallery.ui.theme.OffWhite
 import java.net.URL
@@ -42,10 +44,11 @@ fun WideTitleCard(
                 .aspectRatio(3 / 2f)
                 .clickable { onClick() }
         ) {
-            Image(
-                painter = rememberRemoteImage(url = imageURL) {
-                    crossfade(true)
-                },
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(imageURL.toString())
+                    .crossfade(true)
+                    .build(),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -98,4 +101,3 @@ fun PreviewWideTitleRow() {
         )
     }
 }
-
