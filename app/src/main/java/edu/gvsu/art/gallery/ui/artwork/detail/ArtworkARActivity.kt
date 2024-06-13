@@ -1,4 +1,4 @@
-package edu.gvsu.art.gallery.ui
+package edu.gvsu.art.gallery.ui.artwork.detail
 
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
@@ -6,7 +6,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager

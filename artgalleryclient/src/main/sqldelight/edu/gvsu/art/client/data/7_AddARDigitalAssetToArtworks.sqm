@@ -1,0 +1,1 @@
+ALTER TABLE Artworks ADD COLUMN ar_digital_asset_url TEXT;

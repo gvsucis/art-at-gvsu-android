@@ -27,7 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import edu.gvsu.art.gallery.ui.ArtistDetailScreen
-import edu.gvsu.art.gallery.ui.ArtworkDetailScreen
+import edu.gvsu.art.gallery.ui.artwork.detail.ArtworkDetailScreen
 import edu.gvsu.art.gallery.ui.BrowseScreen
 import edu.gvsu.art.gallery.ui.FavoriteIndexScreen
 import edu.gvsu.art.gallery.ui.FeaturedArtIndexScreen

@@ -24,8 +24,12 @@ data class Artwork(
     val mediaSmall: URL? = null,
     val mediaMedium: URL? = null,
     val mediaLarge: URL? = null,
-    val thumbnail: URL? = null
+    val thumbnail: URL? = null,
+    val arDigitalAssetURL: URL? = null,
 ) : Parcelable {
+    val hasAR: Boolean
+        get() = arDigitalAssetURL != null
+
     val formattedArtistName: String
         get() {
             return if (artistName.isNotBlank()) {

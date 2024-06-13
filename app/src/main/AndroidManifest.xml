@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ArtworkARActivity"
+            android:name=".ui.artwork.detail.ArtworkARActivity"
             android:exported="true"
             android:theme="@style/Theme.ArtGallery">
         </activity>

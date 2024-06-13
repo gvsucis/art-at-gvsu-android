@@ -1,4 +1,4 @@
-package edu.gvsu.art.gallery.ui
+package edu.gvsu.art.gallery.ui.artwork.detail
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -30,7 +30,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,9 +49,18 @@ import edu.gvsu.art.gallery.lib.MediaTypes
 import edu.gvsu.art.gallery.lib.VideoPool
 import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
+import edu.gvsu.art.gallery.ui.ArtworkMediaDialog
+import edu.gvsu.art.gallery.ui.ArtworkVideoPlaceholder
+import edu.gvsu.art.gallery.ui.CloseIconButton
+import edu.gvsu.art.gallery.ui.CloseIconStyle
+import edu.gvsu.art.gallery.ui.LoadingView
+import edu.gvsu.art.gallery.ui.MapSnapshot
+import edu.gvsu.art.gallery.ui.RelatedArtworks
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.foundation.LocalVideoPool
 import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.useArtwork
+import edu.gvsu.art.gallery.ui.useFavorite
 import java.net.URL
 
 
