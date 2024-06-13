@@ -206,11 +206,8 @@ fun NavGraphBuilder.favoritesGraph(navController: NavController) {
 @ExperimentalPagerApi
 @ExperimentalComposeUiApi
 fun NavGraphBuilder.artworkDetailScreen(route: String, navController: NavController) {
-    composable(route) { backStackEntry ->
-        ArtworkDetailScreen(
-            navController,
-            backStackEntry.arguments?.getString("artwork_id")
-        )
+    composable(route) {
+        ArtworkDetailScreen(navController)
     }
 }
 

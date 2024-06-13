@@ -56,7 +56,7 @@ fun ArtistSearchView(query: String, onClick: (Artist) -> Unit) {
                 )
             }
         }
-        is Async.Loading -> LoadingView(showProgressDelay = 1000L)
+        is Async.Loading -> LoadingView(progressIndicatorDelay = 1000L)
         else -> Unit
     }
 }

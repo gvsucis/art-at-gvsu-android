@@ -59,30 +59,34 @@ import edu.gvsu.art.gallery.ui.RelatedArtworks
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.foundation.LocalVideoPool
 import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
-import edu.gvsu.art.gallery.ui.useArtwork
-import edu.gvsu.art.gallery.ui.useFavorite
+import org.koin.androidx.compose.koinViewModel
 import java.net.URL
 
 
 @ExperimentalComposeUiApi
 @ExperimentalPagerApi
 @Composable
-fun ArtworkDetailScreen(navController: NavController, artworkID: String?) {
-    val videoPool = rememberSaveable { VideoPool() }
-    artworkID ?: return Column {}
-    val (isFavorite, toggleFavorite) = useFavorite(artworkID = artworkID)
-    val (artwork, loading) = useArtwork(id = artworkID)
+fun ArtworkDetailScreen(
+    navController: NavController,
+    viewModel: ArtworkDetailViewModel = koinViewModel()
+) {
+    val artwork = viewModel.artwork
 
-    CompositionLocalProvider(
-        LocalVideoPool provides videoPool
-    ) {
-        ArtworkView(
-            navController = navController,
-            artwork = artwork,
-            loading = loading,
-            isFavorite = isFavorite,
-            toggleFavorite = toggleFavorite,
-        )
+    if (artwork == null) {
+        LoadingView(progressIndicatorDelay = 500)
+    } else {
+        val videoPool = rememberSaveable { VideoPool() }
+
+        CompositionLocalProvider(
+            LocalVideoPool provides videoPool
+        ) {
+            ArtworkView(
+                navController = navController,
+                artwork = artwork,
+                isFavorite = viewModel.isFavorite,
+                toggleFavorite = viewModel::toggleFavorite,
+            )
+        }
     }
 }
 
@@ -92,7 +96,6 @@ fun ArtworkDetailScreen(navController: NavController, artworkID: String?) {
 fun ArtworkView(
     navController: NavController,
     artwork: Artwork,
-    loading: Boolean,
     isFavorite: Boolean,
     toggleFavorite: () -> Unit,
 ) {
@@ -103,37 +106,33 @@ fun ArtworkView(
     Column(
         Modifier
             .verticalScroll(rememberScrollState())
-            .fillMaxSize()) {
+            .fillMaxSize()
+    ) {
 
         Box(Modifier.aspectRatio(4 / 3f)) {
             Box(
                 Modifier
                     .background(MaterialTheme.colors.surface)
-                    .fillMaxSize())
+                    .fillMaxSize()
+            )
 
-            if (!loading) {
-                ArtworkMediaPager(
-                    artwork = artwork,
-                    pagerState = thumbnailState,
-                    navigateToMedia = { isDialogVisible.value = true }
-                )
-            }
+            ArtworkMediaPager(
+                artwork = artwork,
+                pagerState = thumbnailState,
+                navigateToMedia = { isDialogVisible.value = true }
+            )
 
             CloseIconButton(style = CloseIconStyle.Back) {
                 navController.popBackStack()
             }
         }
 
-        if (!loading) {
-            ArtworkDetailBody(
-                navController = navController,
-                artwork = artwork,
-                isFavorite = isFavorite,
-                toggleFavorite = toggleFavorite,
-            )
-        } else {
-            ArtworkLoading()
-        }
+        ArtworkDetailBody(
+            navController = navController,
+            artwork = artwork,
+            isFavorite = isFavorite,
+            toggleFavorite = toggleFavorite,
+        )
     }
 
     if (isDialogVisible.value) {
@@ -204,10 +203,11 @@ fun ArtworkDetailBody(
         navController.navigateToArtworkDetail(currentTab, artworkID)
     }
 
-    Box(modifier = Modifier
-        .padding(top = 16.dp)
-        .padding(horizontal = 16.dp)
-        .padding(bottom = 8.dp)
+    Box(
+        modifier = Modifier
+            .padding(top = 16.dp)
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 8.dp)
     ) {
         ArtworkDetailTitleRow(
             artwork = artwork,
@@ -332,10 +332,14 @@ private fun ArtworkLoading() {
 private val Artwork.asDescriptionRows: List<ArtworkRow>
     get() {
         return listOf(
-            ArtworkRow(title = R.string.artwork_detail_work_description,
-                description = workDescription),
-            ArtworkRow(title = R.string.artwork_detail_historical_context,
-                description = historicalContext),
+            ArtworkRow(
+                title = R.string.artwork_detail_work_description,
+                description = workDescription
+            ),
+            ArtworkRow(
+                title = R.string.artwork_detail_historical_context,
+                description = historicalContext
+            ),
             ArtworkRow(title = R.string.artwork_detail_work_medium, description = workMedium),
             ArtworkRow(title = R.string.artwork_detail_work_date, description = workDate),
             ArtworkRow(title = R.string.artwork_detail_location, description = location),
