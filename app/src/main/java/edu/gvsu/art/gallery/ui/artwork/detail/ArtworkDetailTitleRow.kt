@@ -1,5 +1,8 @@
 package edu.gvsu.art.gallery.ui.artwork.detail
 
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -7,6 +10,9 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
@@ -33,10 +39,21 @@ import java.net.URL
 @Composable
 fun ArtworkDetailTitleRow(
     artwork: Artwork,
-    toggleFavorite: () -> Unit = {},
     isFavorite: Boolean = false,
+    toggleFavorite: () -> Unit = {},
 ) {
     val context = LocalContext.current
+
+    val (arAsset, requestARAsset) = rememberARAsset(artwork) { uri ->
+        Log.d("ArtworkDetailTitleRow", "URI: $uri")
+
+        Intent(context, ArtworkARActivity::class.java).apply {
+            putExtra("EXTRA_AR_ASSET_PATH", uri.toString())
+
+            context.startActivity(this)
+        }
+    }
+
     FlowRow(
         verticalArrangement = Arrangement.Center,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -50,17 +67,9 @@ fun ArtworkDetailTitleRow(
         }
         Row {
             if (artwork.hasAR) {
-                IconButton(onClick = {}) {
-                    Icon(
-                        imageVector = Icons.Default.ViewInAr,
-                        contentDescription = stringResource(R.string.artwork_detail_view_in_ar)
-                    )
-                }
-            }
-            IconButton(onClick = { context.shareArtwork(artwork) }) {
-                Icon(
-                    imageVector = Icons.Default.Share,
-                    contentDescription = stringResource(R.string.artwork_detail_share)
+                ArtworkARButton(
+                    arAsset = arAsset,
+                    onRequestARAsset = requestARAsset,
                 )
             }
             IconButton(
@@ -70,6 +79,12 @@ fun ArtworkDetailTitleRow(
                     imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     tint = Red,
                     contentDescription = null
+                )
+            }
+            IconButton(onClick = { context.shareArtwork(artwork) }) {
+                Icon(
+                    imageVector = Icons.Default.Share,
+                    contentDescription = stringResource(R.string.artwork_detail_share)
                 )
             }
         }

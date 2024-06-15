@@ -324,11 +324,6 @@ private fun DetailTitle(@StringRes title: Int) {
     )
 }
 
-@Composable
-private fun ArtworkLoading() {
-    LoadingView(progressAlignment = Alignment.TopCenter)
-}
-
 private val Artwork.asDescriptionRows: List<ArtworkRow>
     get() {
         return listOf(

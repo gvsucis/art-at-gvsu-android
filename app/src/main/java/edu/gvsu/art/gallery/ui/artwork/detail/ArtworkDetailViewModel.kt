@@ -1,6 +1,10 @@
 package edu.gvsu.art.gallery.ui.artwork.detail
 
+import android.app.Application
+import android.content.Context
+import android.net.Uri
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +13,10 @@ import edu.gvsu.art.client.repository.ArtworkRepository
 import edu.gvsu.art.client.repository.FavoritesRepository
 import edu.gvsu.art.gallery.ArtworkDetailArgs
 import edu.gvsu.art.gallery.lib.Async
+import edu.gvsu.art.gallery.lib.FileDownloader
+import edu.gvsu.art.gallery.lib.arAssetsDirectory
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
