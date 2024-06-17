@@ -43,7 +43,7 @@ fun Context.shareFavoritesHTML(favorites: List<Artwork>) {
 
 fun Context.writeBookmark(str: String): Uri? {
     val filename = "art_at_gvsu_favorites.html"
-    val bookmarks = File(filesDir, filename)
+    val bookmarks = File(File(cacheDir, "bookmarks"), filename)
 
     try {
         bookmarks.createNewFile()

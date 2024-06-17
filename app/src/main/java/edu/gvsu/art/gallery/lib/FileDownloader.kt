@@ -20,11 +20,10 @@ import kotlin.coroutines.coroutineContext
 
 object FileDownloader {
     suspend fun download(
-        context: Context,
         url: String,
         directory: File,
-        onProgressUpdate: (progress: Float) -> Unit
-    ): Result<Uri> {
+        onProgressUpdate: (progress: Float) -> Unit = {}
+    ): Result<File> {
         val fileName = MD5.from(url)
         val outputFile = File(directory, fileName)
 
@@ -33,7 +32,7 @@ object FileDownloader {
         }
 
         if (outputFile.exists()) {
-            return Result.success(context.fileURI(outputFile))
+            return Result.success(outputFile)
         }
 
         val request: Request = Request.Builder()
@@ -65,7 +64,7 @@ object FileDownloader {
                 fileSink.close()
             }
 
-            Result.success(context.fileURI(outputFile))
+            Result.success(outputFile)
         } catch (e: Exception) {
             Result.failure(e)
         }

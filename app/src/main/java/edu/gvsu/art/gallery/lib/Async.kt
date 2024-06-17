@@ -3,9 +3,12 @@ package edu.gvsu.art.gallery.lib
 sealed class Async<out T>(private val value: T?) {
     open operator fun invoke(): T? = value
 
-    object Uninitialized : Async<Nothing>(value = null)
+    val isLoading: Boolean
+        get() = this is Loading
 
-    object Loading : Async<Nothing>(value = null)
+    data object Uninitialized : Async<Nothing>(value = null)
+
+    data object Loading : Async<Nothing>(value = null)
 
     data class Success<out T>(private val value: T) : Async<T>(value = value) {
         override operator fun invoke(): T = value

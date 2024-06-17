@@ -19,13 +19,14 @@ import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 
 @Composable
 fun ArtworkARButton(
-    arAsset: ARAsset,
+    arAsset: Async<ArtworkARAssets>,
+    progress: Float,
     onRequestARAsset: () -> Unit = {},
 ) {
     IconButton(onClick = { onRequestARAsset() }) {
-        if (arAsset.isLoading && arAsset.progress > 0) {
+        if (arAsset.isLoading && progress > 0) {
             CircularProgressIndicator(
-                progress = arAsset.progress,
+                progress = progress,
                 strokeWidth = 3.dp,
                 modifier = Modifier.size(20.dp),
                 color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
@@ -42,9 +43,11 @@ fun ArtworkARButton(
 @Preview
 @Composable
 private fun ArtworkARButtonWithProgress() {
-    val asset = ARAsset(value = Async.Loading, progress = 0.67f)
 
     ArtAtGVSUTheme {
-        ArtworkARButton(arAsset = asset)
+        ArtworkARButton(
+            arAsset = Async.Loading,
+            progress = 0.67f
+        )
     }
 }

@@ -44,14 +44,10 @@ fun ArtworkDetailTitleRow(
 ) {
     val context = LocalContext.current
 
-    val (arAsset, requestARAsset) = rememberARAsset(artwork) { uri ->
-        Log.d("ArtworkDetailTitleRow", "URI: $uri")
+    val arState = rememberARAsset(artwork) { assets ->
+        Log.d("ArtworkDetailTitleRow", "URIs: $assets")
 
-        Intent(context, ArtworkARActivity::class.java).apply {
-            putExtra("EXTRA_AR_ASSET_PATH", uri.toString())
-
-            context.startActivity(this)
-        }
+        ArtworkARActivity.start(context, assets)
     }
 
     FlowRow(
@@ -68,8 +64,11 @@ fun ArtworkDetailTitleRow(
         Row {
             if (artwork.hasAR) {
                 ArtworkARButton(
-                    arAsset = arAsset,
-                    onRequestARAsset = requestARAsset,
+                    arAsset = arState.value,
+                    progress = arState.progress,
+                    onRequestARAsset = {
+                        arState.requestARAsset()
+                    },
                 )
             }
             IconButton(

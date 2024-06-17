@@ -1,5 +1,7 @@
 package edu.gvsu.art.gallery.ui.artwork.detail
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.net.Uri
@@ -53,11 +55,16 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     private var plainVideoModel: Renderable? = null
     private var plainVideoMaterial: Material? = null
     private var mediaPlayer: MediaPlayer? = null
+    private lateinit var videoPath: Uri
+    private lateinit var imagePath: Uri
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+
+        videoPath = Uri.parse(intent.getStringExtra(EXTRA_AR_VIDEO_PATH))
+        imagePath = Uri.parse(intent.getStringExtra(EXTRA_AR_IMAGE_PATH))
 
         supportFragmentManager.addFragmentOnAttachListener(this)
 
@@ -93,12 +100,10 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         // You can also prebuild database in you computer and load it directly (see: https://developers.google.com/ar/develop/java/augmented-images/guide#database)
         database = AugmentedImageDatabase(session)
 
-        val matrixImage = BitmapFactory.decodeResource(resources, R.drawable.woodcutter)
+        val matrixImage = BitmapFactory.decodeStream(contentResolver.openInputStream(imagePath))
 
-        // Every image has to have its own unique String identifier
-        database!!.addImage("woodcutter", matrixImage)
+        database!!.addImage(IMAGE_KEY, matrixImage)
 
-        //        database.addImage("rabbit", rabbitImage);
         config.setAugmentedImageDatabase(database)
 
         // Check for image detection
@@ -199,9 +204,9 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
                 AnchorNode(augmentedImage.createAnchor(augmentedImage.getCenterPose()))
 
             // If matrix video haven't been placed yet and detected image has String identifier of "matrix"
-            if (!artworkDetected && augmentedImage.getName().equals("woodcutter")) {
+            if (!artworkDetected && augmentedImage.getName().equals(IMAGE_KEY)) {
                 artworkDetected = true
-                Toast.makeText(this, "Woodcutter tag detected", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Image tag detected", Toast.LENGTH_LONG).show()
 
                 // AnchorNode placed to the detected tag and set it to the real size of the tag
                 // This will cause deformation if your AR tag has different aspect ratio than your video
@@ -235,17 +240,33 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
                 renderableInstance.setMaterial(plainVideoMaterial)
 
                 // Setting MediaPLayer
-                renderableInstance.getMaterial().setExternalTexture("videoTexture", externalTexture)
-                mediaPlayer = MediaPlayer.create(this, R.raw.woodcutter)
+                renderableInstance.material.setExternalTexture("videoTexture", externalTexture)
+                mediaPlayer = MediaPlayer.create(this, videoPath)
                 mediaPlayer!!.isLooping = true
                 mediaPlayer!!.setSurface(externalTexture.getSurface())
                 mediaPlayer!!.start()
             }
         }
         if (artworkDetected && rabbitDetected) {
-            arFragment!!.getInstructionsController().setEnabled(
+            arFragment!!.instructionsController.setEnabled(
                 InstructionsController.TYPE_AUGMENTED_IMAGE_SCAN, false
             )
+        }
+    }
+
+    companion object {
+        const val IMAGE_KEY = "ar_image"
+
+        const val EXTRA_AR_VIDEO_PATH = "EXTRA_AR_VIDEO_PATH"
+        const val EXTRA_AR_IMAGE_PATH = "EXTRA_AR_IMAGE_PATH"
+
+        fun start(context: Context, arAssets: ArtworkARAssets) {
+            Intent(context, ArtworkARActivity::class.java).apply {
+                putExtra(EXTRA_AR_VIDEO_PATH, arAssets.video.toString())
+                putExtra(EXTRA_AR_IMAGE_PATH, arAssets.image.toString())
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                context.startActivity(this)
+            }
         }
     }
 }
