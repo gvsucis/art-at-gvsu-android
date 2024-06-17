@@ -41,15 +41,12 @@ proguard/
 .idea/caches/build_file_checksums.ser
 .idea/codeStyles/Project.xml
 .idea/caches
-
-*.iml
 .idea/tasks.xml
-.idea/gradle.xml
 .idea/assetWizardSettings.xml
+.idea/deploymentTargetSelector.xml
+.idea/inspectionProfiles/Project_Default.xml
 .idea/dictionaries
 .idea/libraries
-
-.idea/caches/build_file_checksums.ser
 
 
 .DS_Store

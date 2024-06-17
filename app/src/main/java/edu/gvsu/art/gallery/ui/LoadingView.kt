@@ -14,7 +14,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun LoadingView(
     progressAlignment: Alignment = Alignment.Center,
-    showProgressDelay: Long = 3000L,
+    progressIndicatorDelay: Long = 3000L,
 ) {
     val (showLoading, setLoading) = remember { mutableStateOf(false)}
     Box(
@@ -27,7 +27,7 @@ fun LoadingView(
     }
 
     LaunchedEffect(Unit) {
-        delay(showProgressDelay)
+        delay(progressIndicatorDelay)
         setLoading(true)
     }
 }

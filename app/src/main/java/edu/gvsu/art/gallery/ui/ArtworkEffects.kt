@@ -12,42 +12,6 @@ import kotlinx.coroutines.withContext
 
 
 @Composable
-fun useFavorite(artworkID: String): Pair<Boolean, () -> Unit> {
-    val repository = get<FavoritesRepository>()
-    val (isFavorite, setFavorite) = remember { mutableStateOf(false) }
-
-    LaunchedEffect(artworkID) {
-        withContext(Dispatchers.IO) {
-            setFavorite(repository.exists(artworkID))
-        }
-    }
-
-    return Pair(isFavorite, { setFavorite(repository.toggle(artworkID)) })
-}
-
-@Composable
-fun useArtwork(id: String): Pair<Artwork, Boolean> {
-    val artwork = rememberSaveable(id) { mutableStateOf<Artwork?>(null) }
-
-    artwork.value?.let {
-        return Pair(it, false)
-    }
-
-    val (result) = useKeyedRepositoryResource(fetch = {
-        get<ArtworkRepository>().find(id)
-    })
-
-    LaunchedEffect(result) {
-        when (result) {
-            is Async.Success -> artwork.value = result()
-            else -> {}
-        }
-    }
-
-    return Pair(Artwork(), true)
-}
-
-@Composable
 fun useFeaturedArtworks(): Async<List<Artwork>> {
     val state = produceState<Async<List<Artwork>>>(initialValue = Async.Uninitialized) {
         withContext(Dispatchers.IO) {
@@ -83,5 +47,3 @@ fun useFavorites(): Async<List<Artwork>> {
     }
     return state.value
 }
-
-

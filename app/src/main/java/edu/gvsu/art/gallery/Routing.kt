@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 
@@ -98,3 +99,8 @@ fun NavController.navigateToLocation(locationID: String, displayName: String) =
 
 fun NavController.navigateToTour(tourID: String, displayName: String) =
     navigate("tours/$tourID?display_name=${displayName}")
+
+internal class ArtworkDetailArgs(val artworkID: String) {
+    constructor(savedStateHandle: SavedStateHandle) :
+            this(checkNotNull(savedStateHandle["artwork_id"]) as String)
+}

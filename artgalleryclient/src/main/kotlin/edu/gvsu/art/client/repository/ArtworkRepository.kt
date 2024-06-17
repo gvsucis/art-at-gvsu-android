@@ -65,7 +65,8 @@ class DefaultArtworkRepository(
             thumbnail_url = objectDetail.media_icon_url,
             location_latitude = latLng?.latitude,
             location_longitude = latLng?.longitude,
-            related_objects = objectDetail.related_objects
+            related_objects = objectDetail.related_objects,
+            ar_digital_asset_url = objectDetail.ar_digital_asset
         )
     }
 

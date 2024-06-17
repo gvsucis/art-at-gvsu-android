@@ -80,6 +80,7 @@
     <!-- Object Detail Strings -->
     <string name="artwork_detail_title">Title</string>
     <string name="artwork_detail_artist">Artist</string>
+    <string name="artwork_detail_view_in_ar">View in AR</string>
     <string name="artwork_detail_historical_context">Historical Context</string>
     <string name="artwork_detail_work_description">Physical Description</string>
     <string name="artwork_detail_work_medium">Medium</string>
@@ -136,4 +137,5 @@
     <string name="activity_tour_map" translatable="false">TOUR_MAP_ACTIVITY</string>
     <string name="activity_tour_search" translatable="false">TOUR_SEARCH_ACTIVITY</string>
     <string name="activity_featured_work" translatable="false">FEATURED_WORK_ACTIVITY</string>
+    <string name="artwork_detail_share">Share Artwork</string>
 </resources>

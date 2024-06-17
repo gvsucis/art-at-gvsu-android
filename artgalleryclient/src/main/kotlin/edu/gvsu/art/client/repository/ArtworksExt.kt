@@ -26,5 +26,6 @@ internal val Artworks.toDomainModel: Artwork
         mediaSmall = optionalURL(media_small_url),
         mediaMedium = optionalURL(media_medium_url),
         mediaLarge = optionalURL(media_large_url),
-        thumbnail = optionalURL(thumbnail_url)
+        thumbnail = optionalURL(thumbnail_url),
+        arDigitalAssetURL = optionalURL(ar_digital_asset_url)
     )
