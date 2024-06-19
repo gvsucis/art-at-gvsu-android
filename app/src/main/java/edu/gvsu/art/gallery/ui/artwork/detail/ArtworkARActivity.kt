@@ -6,15 +6,12 @@ import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentOnAttachListener
-import com.google.android.filament.Engine
 import com.google.android.filament.filamat.MaterialBuilder
-import com.google.android.filament.filamat.MaterialPackage
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.AugmentedImageDatabase
 import com.google.ar.core.Config
@@ -22,29 +19,21 @@ import com.google.ar.core.Session
 import com.google.ar.core.TrackingState
 import com.google.ar.sceneform.AnchorNode
 import com.google.ar.sceneform.Sceneform
-import com.google.ar.sceneform.math.Quaternion
 import com.google.ar.sceneform.math.Vector3
 import com.google.ar.sceneform.rendering.EngineInstance
 import com.google.ar.sceneform.rendering.ExternalTexture
 import com.google.ar.sceneform.rendering.Material
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
-import com.google.ar.sceneform.rendering.RenderableInstance
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.BaseArFragment
-import com.google.ar.sceneform.ux.InstructionsController
 import com.google.ar.sceneform.ux.TransformableNode
 import edu.gvsu.art.gallery.R
 import java.nio.ByteBuffer
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
 
-/**
- * Steps
- * 1. Download via okhttp, show progress
- * 2. Once downloaded, open activity
- * 3. Await result from okhttp
- */
+
 class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     BaseArFragment.OnSessionConfigurationListener {
     private val futures: MutableList<CompletableFuture<Void>> = ArrayList()
@@ -77,8 +66,6 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         }
 
         if (Sceneform.isSupported(this)) {
-            // .glb models can be loaded at runtime when needed or when app starts
-            // This method loads ModelRenderable when app starts
             loadMatrixModel()
             loadMatrixMaterial()
         }
@@ -92,12 +79,14 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     }
 
     override fun onSessionConfiguration(session: Session?, config: Config) {
-        // Disable plane detection
-        config.setPlaneFindingMode(Config.PlaneFindingMode.DISABLED)
+        config.setFocusMode(Config.FocusMode.AUTO)
+        config.planeFindingMode = Config.PlaneFindingMode.DISABLED
+        session?.apply {
+            pause()
+            resume()
+            pause()
+        }
 
-        // Images to be detected by our AR need to be added in AugmentedImageDatabase
-        // This is how database is created at runtime
-        // You can also prebuild database in you computer and load it directly (see: https://developers.google.com/ar/develop/java/augmented-images/guide#database)
         database = AugmentedImageDatabase(session)
 
         val matrixImage = BitmapFactory.decodeStream(contentResolver.openInputStream(imagePath))
@@ -106,7 +95,6 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
 
         config.setAugmentedImageDatabase(database)
 
-        // Check for image detection
         arFragment!!.setOnAugmentedImageUpdateListener { augmentedImage: AugmentedImage ->
             this.onAugmentedImageTrackingUpdate(
                 augmentedImage
@@ -118,7 +106,7 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         super.onDestroy()
 
         futures.forEach(Consumer { future: CompletableFuture<Void> ->
-            if (!future.isDone()) future.cancel(true)
+            if (!future.isDone) future.cancel(true)
         })
 
         if (mediaPlayer != null) {
@@ -133,47 +121,46 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
             .setIsFilamentGltf(true)
             .build()
             .thenAccept { model ->
-                //removing shadows for this Renderable
                 model.setShadowCaster(false)
                 model.setShadowReceiver(true)
                 plainVideoModel = model
             }
-            .exceptionally { throwable ->
-                Toast.makeText(this, "Unable to load renderable", Toast.LENGTH_LONG)
-                    .show()
+            .exceptionally {
                 null
             })
     }
 
     private fun loadMatrixMaterial() {
-        val filamentEngine: Engine = EngineInstance.getEngine().getFilamentEngine()
+        val filamentEngine = EngineInstance.getEngine().filamentEngine
 
         MaterialBuilder.init()
-        val materialBuilder: MaterialBuilder = MaterialBuilder()
+        val materialBuilder = MaterialBuilder()
+            .flipUV(false)
             .platform(MaterialBuilder.Platform.MOBILE)
             .name("External Video Material")
             .require(MaterialBuilder.VertexAttribute.UV0)
             .shading(MaterialBuilder.Shading.UNLIT)
-            .doubleSided(true)
             .samplerParameter(
                 MaterialBuilder.SamplerType.SAMPLER_EXTERNAL,
                 MaterialBuilder.SamplerFormat.FLOAT,
                 MaterialBuilder.ParameterPrecision.DEFAULT,
                 "videoTexture"
             )
-            .optimization(MaterialBuilder.Optimization.NONE)
 
-        val plainVideoMaterialPackage: MaterialPackage = materialBuilder
+        val plainVideoMaterialPackage = materialBuilder
             .blending(MaterialBuilder.BlendingMode.OPAQUE)
             .material(
-                "void material(inout MaterialInputs material) {\n" +
-                        "    prepareMaterial(material);\n" +
-                        "    material.baseColor = texture(materialParams_videoTexture, getUV0()).rgba;\n" +
-                        "}\n"
+                """
+                void material(inout MaterialInputs material) {
+                  prepareMaterial(material);
+                  material.baseColor = texture(materialParams_videoTexture, getUV0()).rgba;
+                  material.baseColor.rgb = inverseTonemapSRGB(material.baseColor.rgb);
+                }
+                """.trimIndent()
             )
             .build(filamentEngine)
-        if (plainVideoMaterialPackage.isValid()) {
-            val buffer: ByteBuffer = plainVideoMaterialPackage.getBuffer()
+        if (plainVideoMaterialPackage.isValid) {
+            val buffer: ByteBuffer = plainVideoMaterialPackage.buffer
             futures.add(Material.builder()
                 .setSource(buffer)
                 .build()
@@ -189,27 +176,16 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         MaterialBuilder.shutdown()
     }
 
-    fun onAugmentedImageTrackingUpdate(augmentedImage: AugmentedImage) {
-        // If there are both images already detected, for better CPU usage we do not need scan for them
+    private fun onAugmentedImageTrackingUpdate(augmentedImage: AugmentedImage) {
         if (artworkDetected) {
             return
         }
 
-        if ((augmentedImage.getTrackingState() === TrackingState.TRACKING
-                    && augmentedImage.getTrackingMethod() === AugmentedImage.TrackingMethod.FULL_TRACKING)
-        ) {
-            // Setting anchor to the center of Augmented Image
+        if ((augmentedImage.trackingState === TrackingState.TRACKING && augmentedImage.getTrackingMethod() === AugmentedImage.TrackingMethod.FULL_TRACKING)) {
+            val anchorNode = AnchorNode(augmentedImage.createAnchor(augmentedImage.getCenterPose()))
 
-            val anchorNode: AnchorNode =
-                AnchorNode(augmentedImage.createAnchor(augmentedImage.getCenterPose()))
-
-            // If matrix video haven't been placed yet and detected image has String identifier of "matrix"
             if (!artworkDetected && augmentedImage.getName().equals(IMAGE_KEY)) {
                 artworkDetected = true
-                Toast.makeText(this, "Image tag detected", Toast.LENGTH_LONG).show()
-
-                // AnchorNode placed to the detected tag and set it to the real size of the tag
-                // This will cause deformation if your AR tag has different aspect ratio than your video
                 anchorNode.setWorldScale(
                     Vector3(
                         augmentedImage.getExtentX(),
@@ -217,40 +193,22 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
                         augmentedImage.getExtentZ()
                     )
                 )
-                arFragment!!.getArSceneView().getScene().addChild(anchorNode)
+                arFragment!!.arSceneView.scene.addChild(anchorNode)
 
-                val videoNode: TransformableNode =
-                    TransformableNode(arFragment!!.getTransformationSystem())
-                // For some reason it is shown upside down so this will rotate it correctly
-                Log.d(
-                    "MainActivity",
-                    "onAugmentedImageTrackingUpdate: " + videoNode.getLocalRotation()
-                )
-                videoNode.setLocalRotation(Quaternion.axisAngle(Vector3(1f, 0f, 0f), 180f))
-                Log.d(
-                    "MainActivity",
-                    ("onAugmentedImageTrackingUpdate: " + videoNode.getLocalRotation()).toString() + "updated"
-                )
+                val videoNode = TransformableNode(arFragment!!.transformationSystem)
                 anchorNode.addChild(videoNode)
 
-                // Setting texture
-                val externalTexture: ExternalTexture = ExternalTexture()
-                val renderableInstance: RenderableInstance =
-                    videoNode.setRenderable(plainVideoModel)
-                renderableInstance.setMaterial(plainVideoMaterial)
+                val externalTexture = ExternalTexture()
+                val renderableInstance = videoNode.setRenderable(plainVideoModel)
+                renderableInstance.material = plainVideoMaterial
 
-                // Setting MediaPLayer
                 renderableInstance.material.setExternalTexture("videoTexture", externalTexture)
-                mediaPlayer = MediaPlayer.create(this, videoPath)
-                mediaPlayer!!.isLooping = true
-                mediaPlayer!!.setSurface(externalTexture.getSurface())
-                mediaPlayer!!.start()
+                mediaPlayer = MediaPlayer.create(this, videoPath).apply {
+                    isLooping = true
+                    setSurface(externalTexture.surface)
+                    start()
+                }
             }
-        }
-        if (artworkDetected && rabbitDetected) {
-            arFragment!!.instructionsController.setEnabled(
-                InstructionsController.TYPE_AUGMENTED_IMAGE_SCAN, false
-            )
         }
     }
 

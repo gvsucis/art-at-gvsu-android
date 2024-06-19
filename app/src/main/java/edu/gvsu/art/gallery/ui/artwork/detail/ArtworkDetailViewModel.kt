@@ -52,14 +52,14 @@ class ArtworkDetailViewModel(
 
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                artworks.find(args.artworkID).fold(
-                    onSuccess = {
-                        _artwork.value = Async.Success(it)
-                    },
-                    onFailure = {
-                        _artwork.value = Async.Failure(it)
-                    }
-                )
+                val value = artworks.find(args.artworkID)
+
+                withContext(Dispatchers.Main) {
+                    _artwork.value = value.fold(
+                        onSuccess = { Async.Success(it) },
+                        onFailure = { Async.Failure(it) }
+                    )
+                }
             }
         }
     }
