@@ -7,6 +7,9 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -29,6 +32,8 @@ import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.BaseArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import edu.gvsu.art.gallery.R
+import edu.gvsu.art.gallery.ui.CloseIconButton
+import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 import java.nio.ByteBuffer
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -39,7 +44,6 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     private val futures: MutableList<CompletableFuture<Void>> = ArrayList()
     private var arFragment: ArFragment? = null
     private var artworkDetected = false
-    private var rabbitDetected = false
     private var database: AugmentedImageDatabase? = null
     private var plainVideoModel: Renderable? = null
     private var plainVideoMaterial: Material? = null
@@ -50,7 +54,9 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_artwork_ar)
+
+        addCloseButton()
 
         videoPath = Uri.parse(intent.getStringExtra(EXTRA_AR_VIDEO_PATH))
         imagePath = Uri.parse(intent.getStringExtra(EXTRA_AR_IMAGE_PATH))
@@ -207,6 +213,19 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
                     isLooping = true
                     setSurface(externalTexture.surface)
                     start()
+                }
+            }
+        }
+    }
+
+    private fun addCloseButton() {
+        findViewById<ComposeView>(R.id.close_button).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                ArtAtGVSUTheme {
+                    CloseIconButton {
+                        finish()
+                    }
                 }
             }
         }
