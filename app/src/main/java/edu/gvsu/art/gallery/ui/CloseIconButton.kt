@@ -16,10 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 
 @Composable
-fun CloseIconButton(style: CloseIconStyle = CloseIconStyle.Close, onClick: () -> Unit = {}) {
+fun CloseIconButton(
+    style: CloseIconStyle = CloseIconStyle.Close,
+    onClick: () -> Unit = {}
+) {
     val icon = when (style) {
         CloseIconStyle.Close -> Icons.Default.Close
         CloseIconStyle.Back -> Icons.Default.ArrowBack
@@ -53,4 +58,12 @@ fun CloseIconButton(style: CloseIconStyle = CloseIconStyle.Close, onClick: () ->
 enum class CloseIconStyle {
     Close,
     Back,
+}
+
+@Preview
+@Composable
+private fun CloseIconButtonPreview() {
+    ArtAtGVSUTheme {
+        CloseIconButton()
+    }
 }
