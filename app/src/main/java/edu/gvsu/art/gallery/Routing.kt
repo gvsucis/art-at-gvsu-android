@@ -10,9 +10,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
+import edu.gvsu.art.client.ArtworkCollection
 
 object Route {
-    const val BrowseArtworkIndex = "browse/artworks"
+    const val BrowseCollection = "browse/collections/{collection_slug}"
     const val BrowseIndex = "browse"
     const val BrowseLocationDetail = "browse/locations/{location_id}?display_name={display_name}"
     const val BrowseLocationsIndex = "browse/locations"
@@ -99,6 +100,14 @@ fun NavController.navigateToLocation(locationID: String, displayName: String) =
 
 fun NavController.navigateToTour(tourID: String, displayName: String) =
     navigate("tours/$tourID?display_name=${displayName}")
+
+fun NavController.navigateToCollection(collection: ArtworkCollection) =
+    navigate("browse/collections/${collection.slug}")
+
+internal class ArtworkCollectionArgs(val collection: ArtworkCollection) {
+    constructor(savedStateHandle: SavedStateHandle) :
+            this(ArtworkCollection.find(checkNotNull(savedStateHandle["collection_slug"]) as String)!!)
+}
 
 internal class ArtworkDetailArgs(val artworkID: String) {
     constructor(savedStateHandle: SavedStateHandle) :

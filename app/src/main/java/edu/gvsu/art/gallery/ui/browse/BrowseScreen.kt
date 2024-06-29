@@ -1,11 +1,12 @@
-package edu.gvsu.art.gallery.ui
+package edu.gvsu.art.gallery.ui.browse
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
@@ -29,57 +30,75 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import edu.gvsu.art.client.Artwork
+import edu.gvsu.art.client.ArtworkCollection
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.Route
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
+import edu.gvsu.art.gallery.navigateToCollection
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.theme.OffWhite
 import edu.gvsu.art.gallery.ui.theme.OffWhiteSecondary
+import org.koin.androidx.compose.koinViewModel
 import java.net.URL
 
 @Composable
-fun BrowseScreen(navController: NavController) {
-    val context = LocalContext.current
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        TopAppBar(
-            title = {},
-            backgroundColor = MaterialTheme.colors.background,
-            elevation = 0.dp,
-            actions = {
-                IconButton(onClick = {
-                    navController.navigate(Route.Settings)
-                }) {
-                    Icon(
-                        Icons.Default.Settings,
-                        contentDescription = null,
-                    )
+fun BrowseScreen(
+    viewModel: BrowseIndexViewModel = koinViewModel(),
+    navController: NavController
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                backgroundColor = MaterialTheme.colors.background,
+                elevation = 0.dp,
+                actions = {
+                    IconButton(onClick = {
+                        navController.navigate(Route.Settings)
+                    }) {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = null,
+                        )
+                    }
                 }
-            }
-        )
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-        ) {
-            Text(
-                text = "Featured",
-                style = MaterialTheme.typography.h1
             )
         }
-        HomeFeaturedImageView(
-            useCurrentFeaturedArtwork(),
-            navController = navController,
-        )
-        Spacer(Modifier.height(8.dp))
+    ) { padding ->
+        Column(
+            Modifier
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 8.dp)
+            ) {
+                Text(
+                    text = "Featured",
+                    style = MaterialTheme.typography.h1
+                )
+            }
+            HomeFeaturedImageView(
+                viewModel.artwork,
+                navController = navController,
+            )
 
-        BrowseAction(text = R.string.home_featured_index) {
-            navController.navigate(Route.BrowseArtworkIndex)
-        }
-        BrowseAction(text = R.string.home_browse_campuses) {
-            navController.navigate(Route.BrowseLocationsIndex)
+            Spacer(Modifier.height(8.dp))
+
+            BrowseAction(text = R.string.home_featured_collection) {
+                navController.navigateToCollection(ArtworkCollection.FeaturedArt)
+            }
+
+            BrowseAction(text = R.string.home_ar_collection) {
+                navController.navigateToCollection(ArtworkCollection.AR)
+            }
+
+            BrowseAction(text = R.string.home_browse_campuses) {
+                navController.navigate(Route.BrowseLocationsIndex)
+            }
         }
     }
 }
@@ -180,14 +199,6 @@ private fun FeaturedTitle(artwork: Artwork, modifier: Modifier = Modifier) {
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun useCurrentFeaturedArtwork(): Artwork {
-    return when (val data = useRandomFeaturedArtwork()) {
-        is Async.Success -> data()
-        else -> Artwork()
     }
 }
 

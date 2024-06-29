@@ -1,41 +1,14 @@
 package edu.gvsu.art.gallery.ui
 
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.produceState
 import edu.gvsu.art.client.Artwork
-import edu.gvsu.art.client.repository.ArtworkRepository
+import edu.gvsu.art.client.ArtworkCollection
 import edu.gvsu.art.client.repository.ArtworkSearchRepository
 import edu.gvsu.art.client.repository.FavoritesRepository
 import edu.gvsu.art.gallery.lib.Async
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-
-
-@Composable
-fun useFeaturedArtworks(): Async<List<Artwork>> {
-    val state = produceState<Async<List<Artwork>>>(initialValue = Async.Uninitialized) {
-        withContext(Dispatchers.IO) {
-            value = get<ArtworkSearchRepository>().featured().fold(
-                onSuccess = { Async.Success(it) },
-                onFailure = { Async.Failure(it) }
-            )
-        }
-    }
-    return state.value
-}
-
-@Composable
-fun useRandomFeaturedArtwork(): Async<Artwork> {
-    val state = produceState<Async<Artwork>>(initialValue = Async.Uninitialized) {
-        withContext(Dispatchers.IO) {
-            value =  get<ArtworkSearchRepository>().featured().fold(
-                onSuccess = { Async.Success(it.random()) },
-                onFailure = { Async.Failure(it) }
-            )
-        }
-    }
-    return state.value
-}
 
 @Composable
 fun useFavorites(): Async<List<Artwork>> {

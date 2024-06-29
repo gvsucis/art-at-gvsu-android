@@ -27,16 +27,16 @@ import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import edu.gvsu.art.gallery.ui.ArtistDetailScreen
-import edu.gvsu.art.gallery.ui.artwork.detail.ArtworkDetailScreen
-import edu.gvsu.art.gallery.ui.BrowseScreen
 import edu.gvsu.art.gallery.ui.FavoriteIndexScreen
-import edu.gvsu.art.gallery.ui.FeaturedArtIndexScreen
 import edu.gvsu.art.gallery.ui.LocationDetailScreen
 import edu.gvsu.art.gallery.ui.LocationIndexScreen
 import edu.gvsu.art.gallery.ui.SearchIndexScreen
 import edu.gvsu.art.gallery.ui.SettingsScreen
 import edu.gvsu.art.gallery.ui.TourDetailScreen
 import edu.gvsu.art.gallery.ui.ToursIndexScreen
+import edu.gvsu.art.gallery.ui.artwork.detail.ArtworkDetailScreen
+import edu.gvsu.art.gallery.ui.browse.ArtworkCollectionScreen
+import edu.gvsu.art.gallery.ui.browse.BrowseScreen
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 
@@ -143,7 +143,7 @@ fun NavGraphBuilder.routing(navController: NavController) {
 @ExperimentalComposeUiApi
 fun NavGraphBuilder.featuredGraph(navController: NavController) {
     composable(TabScreen.Browse.route) {
-        BrowseScreen(navController)
+        BrowseScreen(navController = navController)
     }
     composable(Route.BrowseLocationsIndex) {
         LocationIndexScreen(navController)
@@ -155,8 +155,17 @@ fun NavGraphBuilder.featuredGraph(navController: NavController) {
             locationName = backStackEntry.arguments?.getString("display_name") ?: ""
         )
     }
-    composable(Route.BrowseArtworkIndex) {
-        FeaturedArtIndexScreen(navController)
+    composable(Route.BrowseCollection) {
+        val tab = LocalTabScreen.current
+
+        ArtworkCollectionScreen(
+            onNavigateBack = {
+                navController.navigateUp()
+            },
+            onNavigateToArtwork = { artworkID ->
+                navController.navigateToArtworkDetail(tab, artworkID)
+            }
+        )
     }
     artworkDetailScreen(Route.FeaturedArtworkDetail, navController)
     artistDetailScreen(Route.FeaturedArtistDetail, navController)
