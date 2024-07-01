@@ -1,14 +1,11 @@
 package edu.gvsu.art.client.api
 
 import edu.gvsu.art.client.api.GalleryConverter.moshi
-import okhttp3.Cache
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import retrofit2.http.GET
 import retrofit2.http.Query
-import java.io.File
 
 interface ArtGalleryClient {
     @GET("objectDetail")
@@ -39,20 +36,10 @@ interface ArtGalleryClient {
     suspend fun fetchTourStop(@Query("id") id: String): TourStopDetail
 
     companion object {
-        fun create(baseURL: String, cacheDirectory: File): ArtGalleryClient {
-            val httpClient = OkHttpClient.Builder()
-                .cache(
-                    Cache(
-                        File(cacheDirectory, "http_cache"),
-                        50L * 1024L * 1024L // 50 MiB
-                    )
-                )
-                .build()
-
+        fun create(baseURL: String): ArtGalleryClient {
             return Retrofit.Builder()
                 .baseUrl(baseURL)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
-                .client(httpClient)
                 .build()
                 .create()
         }
