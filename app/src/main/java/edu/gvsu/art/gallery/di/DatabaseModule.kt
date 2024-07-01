@@ -5,7 +5,7 @@ import edu.gvsu.art.db.ArtGalleryDatabase
 import org.koin.dsl.module
 
 internal val databaseModule = module {
-    single {
+    single<ArtGalleryDatabase> {
         ArtGalleryDatabase(
             driver = AndroidSqliteDriver(
                 schema = ArtGalleryDatabase.Schema,

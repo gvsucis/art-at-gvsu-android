@@ -7,7 +7,11 @@ plugins {
 
 android {
     namespace = "edu.gvsu.art.client"
-    compileSdkVersion = "android-34"
+    compileSdk = 34
+
+    defaultConfig {
+        minSdk = 26
+    }
 }
 
 sqldelight {
