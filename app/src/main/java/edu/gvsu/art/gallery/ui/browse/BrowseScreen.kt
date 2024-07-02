@@ -33,7 +33,6 @@ import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.client.ArtworkCollection
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.Route
-import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.navigateToCollection
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
@@ -93,7 +92,7 @@ fun BrowseScreen(
             }
 
             BrowseAction(text = R.string.home_ar_collection) {
-                navController.navigateToCollection(ArtworkCollection.AR)
+                navController.navigateToCollection(ArtworkCollection.FeaturedAR)
             }
 
             BrowseAction(text = R.string.home_browse_campuses) {

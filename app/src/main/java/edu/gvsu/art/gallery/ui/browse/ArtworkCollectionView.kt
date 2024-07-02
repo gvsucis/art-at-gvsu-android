@@ -65,6 +65,6 @@ fun ArtworkCollectionView(
 fun title(collection: ArtworkCollection): String {
     return when(collection) {
         ArtworkCollection.FeaturedArt -> stringResource(R.string.navigation_collection_featured)
-        ArtworkCollection.AR -> stringResource(R.string.navigation_collection_augmented_reality)
+        ArtworkCollection.FeaturedAR -> stringResource(R.string.navigation_collection_augmented_reality)
     }
 }

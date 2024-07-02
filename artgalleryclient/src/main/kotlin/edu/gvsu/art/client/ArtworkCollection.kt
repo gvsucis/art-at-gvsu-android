@@ -2,7 +2,7 @@ package edu.gvsu.art.client
 
 enum class ArtworkCollection(val slug: String) {
     FeaturedArt("featured_art"),
-    AR("AR_Alten_2022");
+    FeaturedAR("featured_ar");
 
     companion object {
         fun find(slug: String): ArtworkCollection? {
