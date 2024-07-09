@@ -12,7 +12,7 @@
     <!-- browse -->
     <string name="home_browse_campuses">Browse Campuses</string>
     <string name="home_featured_collection">View All Featured</string>
-    <string name="home_ar_collection">Explore Artworks in 3D</string>
+    <string name="home_ar_collection">Explore Artworks in AR</string>
 
     <!-- campuses -->
     <string name="location_detail_empty_message">Location is empty</string>
