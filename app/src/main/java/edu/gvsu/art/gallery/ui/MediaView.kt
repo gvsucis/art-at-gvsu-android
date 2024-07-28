@@ -17,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -74,11 +73,10 @@ fun MediaView(
                 }) {
                     videoState?.let {
                         VideoPlayer(
-                            playEnable = true,
                             videoState = it,
+                            playEnable = true,
                             zOrderMediaOverlay = true,
                             keepScreenOn = true,
-                            backgroundColor = Color.Blue,
                         )
                         AnimatedVisibility(
                             visible = videoControlVisibility,

@@ -6,23 +6,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
-import com.google.android.exoplayer2.ui.StyledPlayerView
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL
+import androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
+import androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+import androidx.media3.ui.PlayerView
 import edu.gvsu.art.gallery.lib.CacheDataSourceFactory
 import edu.gvsu.art.gallery.lib.VideoPool
 import edu.gvsu.art.gallery.ui.get
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
-class PlayerView constructor(
+@UnstableApi
+class MediaPlayerView(
     url: String,
     zOrderMediaOverlay: Boolean,
     keepScreenOn: Boolean,
     videoPool: VideoPool,
-    backgroundColor: Color?,
-    onClick: (() -> Unit)?
 ) {
     private var job: Job? = null
 
@@ -33,8 +40,9 @@ class PlayerView constructor(
     private var playerProgressCallBack: PlayerProgressCallBack? = null
     private var playerCallBack: PlayerCallBack? = null
 
-    private var androidPlayer = StyledPlayerView(context).also { playerView ->
+    private var androidPlayer = PlayerView(context).also { playerView ->
         (playerView.videoSurfaceView as? SurfaceView)?.setZOrderMediaOverlay(zOrderMediaOverlay)
+        playerView.resizeMode = RESIZE_MODE_FILL
         playerView.useController = false
         playerView.keepScreenOn = keepScreenOn
     }.apply {
@@ -47,9 +55,11 @@ class PlayerView constructor(
                             Player.STATE_BUFFERING -> {
                                 playerCallBack?.onBuffering()
                             }
+
                             Player.STATE_READY -> {
                                 playerCallBack?.onReady()
                             }
+
                             else -> {}
                         }
                     }
@@ -116,7 +126,7 @@ class PlayerView constructor(
     }
 
     @Composable
-    fun Content(modifier: Modifier, update: () -> Unit) {
+    fun Content(update: () -> Unit = {}, modifier: Modifier) {
         AndroidView(
             factory = {
                 androidPlayer
