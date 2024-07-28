@@ -11,6 +11,9 @@ import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
+import androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FILL
+import androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
+import androidx.media3.ui.AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
 import androidx.media3.ui.PlayerView
 import edu.gvsu.art.gallery.lib.CacheDataSourceFactory
 import edu.gvsu.art.gallery.lib.VideoPool
@@ -27,8 +30,6 @@ class MediaPlayerView(
     zOrderMediaOverlay: Boolean,
     keepScreenOn: Boolean,
     videoPool: VideoPool,
-    backgroundColor: Color?,
-    onClick: (() -> Unit)?
 ) {
     private var job: Job? = null
 
@@ -41,6 +42,7 @@ class MediaPlayerView(
 
     private var androidPlayer = PlayerView(context).also { playerView ->
         (playerView.videoSurfaceView as? SurfaceView)?.setZOrderMediaOverlay(zOrderMediaOverlay)
+        playerView.resizeMode = RESIZE_MODE_FILL
         playerView.useController = false
         playerView.keepScreenOn = keepScreenOn
     }.apply {
@@ -53,9 +55,11 @@ class MediaPlayerView(
                             Player.STATE_BUFFERING -> {
                                 playerCallBack?.onBuffering()
                             }
+
                             Player.STATE_READY -> {
                                 playerCallBack?.onReady()
                             }
+
                             else -> {}
                         }
                     }
@@ -122,7 +126,7 @@ class MediaPlayerView(
     }
 
     @Composable
-    fun Content(modifier: Modifier, update: () -> Unit) {
+    fun Content(update: () -> Unit = {}, modifier: Modifier) {
         AndroidView(
             factory = {
                 androidPlayer

@@ -1,8 +1,10 @@
 package edu.gvsu.art.gallery.ui.foundation
 
 
+import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -22,17 +24,16 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.media3.common.util.UnstableApi
 
+@OptIn(UnstableApi::class)
 @Composable
 fun VideoPlayer(
-    modifier: Modifier = Modifier.fillMaxSize(), // must set video player size
     videoState: VideoPlayerState,
     playEnable: Boolean = true,
     zOrderMediaOverlay: Boolean = false,
     keepScreenOn: Boolean = false,
     thumb: @Composable() (() -> Unit)? = null,
-    backgroundColor: Color? = null,
-    onClick: (() -> Unit)? = null,
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val videoPool = LocalVideoPool.current
@@ -44,9 +45,7 @@ fun VideoPlayer(
                     url = videoState.url,
                     zOrderMediaOverlay = zOrderMediaOverlay,
                     keepScreenOn = keepScreenOn,
-                    backgroundColor = backgroundColor,
                     videoPool = videoPool,
-                    onClick = onClick
                 ).apply {
                     videoState.bind(this)
                 }
@@ -71,8 +70,15 @@ fun VideoPlayer(
                 }
             }
 
-            Box {
-                mediaPlayerView.Content(modifier = modifier) {}
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                mediaPlayerView.Content(
+                    modifier = Modifier
+                        .aspectRatio(16 / 9f)
+                        .fillMaxSize()
+                )
             }
         }
         if ((videoState.showThumbnail || !playEnable) && thumb != null) {
