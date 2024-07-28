@@ -39,8 +39,8 @@ fun VideoPlayer(
 
     Box {
         if (playEnable) {
-            val playerView = remember(videoState.url) {
-                PlayerView(
+            val mediaPlayerView = remember(videoState.url) {
+                MediaPlayerView(
                     url = videoState.url,
                     zOrderMediaOverlay = zOrderMediaOverlay,
                     keepScreenOn = keepScreenOn,
@@ -66,13 +66,13 @@ fun VideoPlayer(
                 lifecycle.addObserver(observer)
                 onDispose {
                     videoState.onPause()
-                    playerView.release()
+                    mediaPlayerView.release()
                     lifecycle.removeObserver(observer)
                 }
             }
 
             Box {
-                playerView.Content(modifier = modifier) {}
+                mediaPlayerView.Content(modifier = modifier) {}
             }
         }
         if ((videoState.showThumbnail || !playEnable) && thumb != null) {

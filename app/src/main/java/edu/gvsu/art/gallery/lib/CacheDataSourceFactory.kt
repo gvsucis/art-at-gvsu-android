@@ -1,20 +1,23 @@
 package edu.gvsu.art.gallery.lib
 
 import android.content.Context
-import com.google.android.exoplayer2.upstream.*
-import com.google.android.exoplayer2.upstream.cache.CacheDataSink
-import com.google.android.exoplayer2.upstream.cache.CacheDataSource
-import com.google.android.exoplayer2.upstream.cache.SimpleCache
-import com.google.android.exoplayer2.util.Util
+import androidx.media3.common.util.Util
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.FileDataSource
+import androidx.media3.datasource.cache.CacheDataSink
+import androidx.media3.datasource.cache.CacheDataSource
+import androidx.media3.datasource.cache.SimpleCache
+import androidx.media3.exoplayer.upstream.DefaultBandwidthMeter
 import edu.gvsu.art.gallery.BuildConfig
 
+@androidx.media3.common.util.UnstableApi
 class CacheDataSourceFactory(
     private val context: Context,
     private val maxFileSize: Long,
 ) : DataSource.Factory {
-    private val simpleCache: SimpleCache by lazy {
-        VideoCache.getInstance(context)
-    }
+    private val simpleCache: SimpleCache = VideoCache.getInstance(context)
 
     private val defaultDatasourceFactory: DefaultDataSource.Factory
     override fun createDataSource(): DataSource {

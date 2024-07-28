@@ -44,7 +44,7 @@ class VideoPlayerState(
     volume: Float,
     isMute: Boolean,
 ) {
-    private lateinit var player: PlayerView
+    private lateinit var player: MediaPlayerView
 
     private var _isReady = mutableStateOf(isReady)
     var isReady
@@ -151,7 +151,7 @@ class VideoPlayerState(
         if (isReady) player.play()
     }
 
-    fun bind(player: PlayerView) {
+    fun bind(player: MediaPlayerView) {
         this.player = player
         initPlay()
     }
