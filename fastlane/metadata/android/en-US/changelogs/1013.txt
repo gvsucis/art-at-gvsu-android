@@ -1,0 +1,1 @@
+Fixes a display bug with artwork videos on Android 14
