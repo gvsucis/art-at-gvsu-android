@@ -5,10 +5,13 @@ SECRETS_DIR = ../art-at-gvsu-secrets/android
 
 .PHONY: ci-test ci-secrets release-secrets production-secrets deploy-beta deploy-production secrets
 
-.PHONY: deps
-deps:
-	bundle install
+.PHONY: py-deps
+py-deps:
 	pip install bumpver==2023.1129
+
+.PHONY: deps
+deps: py-deps
+	bundle install
 
 .PHONY: changelog
 changelog:
