@@ -35,7 +35,7 @@ allprojects {
         camerax_version = "1.1.0-beta01"
         retrofit_version = '2.4.0'
         support_version = '28.0.0'
-        datastore_version = "1.0.0"
+        datastore_version = "1.1.1"
         accompanist_version = "0.22.0-rc"
     }
 }
