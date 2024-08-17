@@ -75,55 +75,53 @@ fun BottomNavigationView() {
     CompositionLocalProvider(
         LocalTabScreen provides selectedTab
     ) {
-        Surface {
-            Scaffold(
-                bottomBar = {
-                    BottomNavigation(
-                        backgroundColor = MaterialTheme.colors.surface
-                    ) {
-                        TabScreen.all.forEach { entry ->
-                            val selected = entry == selectedTab
-                            val itemColor = if (selected) {
-                                MaterialTheme.colors.primary
-                            } else {
-                                LocalContentColor.current.copy(alpha = 0.6f)
-                            }
-
-                            BottomNavigationItem(
-                                icon = {
-                                    Icon(
-                                        entry.icon,
-                                        tint = itemColor,
-                                        contentDescription = null
-                                    )
-                                },
-                                label = {
-                                    Text(
-                                        stringResource(entry.title),
-                                        color = itemColor
-                                    )
-                                },
-                                selected = selected,
-                                onClick = {
-                                    navController.navigate(entry.route) {
-                                        popUpTo(entry.route) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            )
+        Scaffold(
+            bottomBar = {
+                BottomNavigation(
+                    backgroundColor = MaterialTheme.colors.surface
+                ) {
+                    TabScreen.all.forEach { entry ->
+                        val selected = entry == selectedTab
+                        val itemColor = if (selected) {
+                            MaterialTheme.colors.primary
+                        } else {
+                            LocalContentColor.current.copy(alpha = 0.6f)
                         }
+
+                        BottomNavigationItem(
+                            icon = {
+                                Icon(
+                                    entry.icon,
+                                    tint = itemColor,
+                                    contentDescription = null
+                                )
+                            },
+                            label = {
+                                Text(
+                                    stringResource(entry.title),
+                                    color = itemColor
+                                )
+                            },
+                            selected = selected,
+                            onClick = {
+                                navController.navigate(entry.route) {
+                                    popUpTo(entry.route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            }
+                        )
                     }
                 }
-            ) { innerPadding ->
-                NavHost(
-                    navController = navController,
-                    startDestination = Route.BrowseIndex,
-                    modifier = Modifier.padding(innerPadding),
-                ) {
-                    routing(navController)
-                }
+            }
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = Route.BrowseIndex,
+                modifier = Modifier.padding(innerPadding),
+            ) {
+                routing(navController)
             }
         }
     }
