@@ -1,16 +1,22 @@
 package edu.gvsu.art.gallery
 
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.setThreadPolicy
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -45,7 +51,10 @@ import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 @ExperimentalPermissionsApi
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableStrictModeOnDebug()
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
         setContent {
             App()
         }
@@ -76,6 +85,9 @@ fun BottomNavigationView() {
         LocalTabScreen provides selectedTab
     ) {
         Scaffold(
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.systemBars),
             bottomBar = {
                 BottomNavigation(
                     backgroundColor = MaterialTheme.colors.surface
@@ -223,6 +235,18 @@ fun NavGraphBuilder.artistDetailScreen(route: String, navController: NavControll
         ArtistDetailScreen(
             navController,
             backStackEntry.arguments?.getString("artist_id")
+        )
+    }
+}
+
+
+private fun enableStrictModeOnDebug() {
+    if (BuildConfig.DEBUG) {
+        setThreadPolicy(
+            StrictMode.ThreadPolicy.Builder()
+                .detectNetwork()
+                .penaltyDeath()
+                .build()
         )
     }
 }
