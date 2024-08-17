@@ -111,7 +111,7 @@ dependencies {
     implementation "androidx.media3:media3-exoplayer:1.1.1"
     implementation "androidx.media3:media3-datasource-okhttp:1.1.1"
     implementation "com.squareup.sqldelight:android-driver:1.5.3"
-    implementation "io.coil-kt:coil-compose:2.6.0"
+    implementation "io.coil-kt:coil-compose:2.7.0"
     implementation "io.insert-koin:koin-android:$koin_version"
     implementation "io.insert-koin:koin-androidx-compose:$koin_version"
     implementation "io.insert-koin:koin-core:$koin_version"
@@ -137,7 +137,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:3.6.0'
     androidTestImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'org.mockito:mockito-core:3.6.0'
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.5.4'
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.6.8'
 }
 
 repositories {
