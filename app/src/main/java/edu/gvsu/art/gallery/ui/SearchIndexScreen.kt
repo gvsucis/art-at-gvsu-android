@@ -50,26 +50,35 @@ fun SearchIndexScreen(navController: NavController) {
     val (selectedModel, setModel) = rememberSaveable { mutableStateOf(SearchModel.ARTIST) }
     val (isQRDialogOpen, openQRDialog) = remember { mutableStateOf(false) }
 
-    Column {
-        SearchIndexSearchBar(
-            query = query,
-            selectedModel = selectedModel,
-            setQuery = setQuery,
-            setModel = setModel,
-            selectQRScanner = {
-                openQRDialog(true)
-            }
-        )
-        SearchIndexModelList(
-            selectedModel = selectedModel,
-            query = query,
-            onArtistSelect = { artist ->
-                navController.navigateToArtistDetail(tabScreen, artist.id)
-            },
-            onArtworkSelect = { artwork ->
-                navController.navigateToArtworkDetail(tabScreen, artwork.id)
-            }
-        )
+    Scaffold(
+        topBar = {
+            SearchIndexSearchBar(
+                query = query,
+                selectedModel = selectedModel,
+                setQuery = setQuery,
+                setModel = setModel,
+                selectQRScanner = {
+                    openQRDialog(true)
+                }
+            )
+        }
+    ) { padding ->
+        Box(
+            Modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
+            SearchIndexModelList(
+                selectedModel = selectedModel,
+                query = query,
+                onArtistSelect = { artist ->
+                    navController.navigateToArtistDetail(tabScreen, artist.id)
+                },
+                onArtworkSelect = { artwork ->
+                    navController.navigateToArtworkDetail(tabScreen, artwork.id)
+                }
+            )
+        }
     }
 
     if (isQRDialogOpen) {

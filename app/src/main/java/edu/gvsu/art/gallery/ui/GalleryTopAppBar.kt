@@ -15,12 +15,8 @@ fun GalleryTopAppBar(
     actions: @Composable RowScope.() -> Unit = {},
     elevation: Dp = AppBarDefaults.TopAppBarElevation
 ) {
-    val titleText = @Composable {
-        Text(title)
-    }
-
     TopAppBar(
-        title = titleText,
+        title = { Text(title) },
         backgroundColor = MaterialTheme.colors.surface,
         navigationIcon = navigationIcon,
         actions = actions,

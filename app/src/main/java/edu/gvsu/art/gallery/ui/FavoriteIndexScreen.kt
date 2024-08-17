@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
@@ -42,25 +43,33 @@ fun FavoriteIndexScreen(navController: NavController) {
         }
     }
 
-    Column {
-        GalleryTopAppBar(
-            title = stringResource(id = R.string.navigation_Favorites),
-            actions = {
-                IconButton(onClick = { shareFavorites() }) {
-                    Icon(
-                        Icons.Default.Share,
-                        contentDescription = null,
-                    )
+    Scaffold(
+        topBar = {
+            GalleryTopAppBar(
+                title = stringResource(id = R.string.navigation_Favorites),
+                actions = {
+                    IconButton(onClick = { shareFavorites() }) {
+                        Icon(
+                            Icons.Default.Share,
+                            contentDescription = null,
+                        )
+                    }
                 }
-            }
-        )
-        when (data) {
-            is Async.Success -> FavoritesLoadedView(
-                favorites = data(),
-                onArtworkClick = { navigateToArtwork(it) },
-                navigateToBrowse = { navigateToBrowse() }
             )
-            else -> Unit
+        }
+    ) { padding ->
+        Box(
+            Modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
+            if (data is Async.Success) {
+                FavoritesLoadedView(
+                    favorites = data(),
+                    onArtworkClick = { navigateToArtwork(it) },
+                    navigateToBrowse = { navigateToBrowse() }
+                )
+            }
         }
     }
 }
