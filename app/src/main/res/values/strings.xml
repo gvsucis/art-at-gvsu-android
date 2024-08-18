@@ -141,4 +141,5 @@
     <string name="activity_featured_work" translatable="false">FEATURED_WORK_ACTIVITY</string>
     <string name="artwork_detail_share">Share Artwork</string>
     <string name="browse_featured_title">Featured</string>
+    <string name="settings_section_title_build_info">Build Information</string>
 </resources>
