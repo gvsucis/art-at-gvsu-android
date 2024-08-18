@@ -18,6 +18,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,6 +36,7 @@ import edu.gvsu.art.gallery.navigateToLocation
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationDetailScreen(navController: NavController, locationID: String?, locationName: String) {
     locationID ?: return

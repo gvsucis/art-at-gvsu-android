@@ -4,9 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +35,6 @@ fun WideTitleCard(
 
     Surface(
         shape = cornerShape,
-        elevation = 3.dp,
     ) {
         Box(
             modifier = Modifier
@@ -74,13 +73,13 @@ fun WideTitleCard(
                 Text(
                     title,
                     color = OffWhite,
-                    style = MaterialTheme.typography.h5,
+                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                 )
                 if (subtitle.isNotBlank()) {
                     Text(subtitle,
                         color = OffWhite.copy(alpha = 0.8f),
-                        style = MaterialTheme.typography.subtitle1
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
             }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,6 +20,7 @@ import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistDetailScreen(navController: NavController, artistID: String?) {
     artistID ?: return

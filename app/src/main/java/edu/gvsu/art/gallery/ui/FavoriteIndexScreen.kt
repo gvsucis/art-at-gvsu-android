@@ -10,6 +10,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +25,7 @@ import edu.gvsu.art.gallery.TabScreen
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteIndexScreen(navController: NavController) {
     val context = LocalContext.current
