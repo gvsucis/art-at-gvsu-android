@@ -17,6 +17,7 @@ fun LoadingView(
     progressIndicatorDelay: Long = 3000L,
 ) {
     val (showLoading, setLoading) = remember { mutableStateOf(false)}
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = progressAlignment

@@ -27,19 +27,29 @@ import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
 @Composable
 fun SettingsScreen(navController: NavController) {
     val scrollState = rememberScrollState()
-    Column(
-        Modifier.verticalScroll(state = scrollState)
-    ) {
-        GalleryTopAppBar(
-            title = stringResource(R.string.navigation_Settings),
-            navigationIcon = {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = null)
+
+    Scaffold(
+        topBar = {
+            GalleryTopAppBar(
+                title = stringResource(R.string.navigation_Settings),
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = null)
+                    }
                 }
-            }
-        )
-        SettingsContent()
+            )
+        }
+    ) { padding ->
+        Column(
+            Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .verticalScroll(state = scrollState)
+        ) {
+            SettingsContent()
+        }
     }
+
 }
 
 @Composable
