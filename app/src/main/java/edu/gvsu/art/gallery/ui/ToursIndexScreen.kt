@@ -1,7 +1,6 @@
 package edu.gvsu.art.gallery.ui
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,8 +30,8 @@ fun ToursIndexScreen(navController: NavController) {
     ) { padding ->
         Box(
             Modifier
-                .padding(padding)
                 .fillMaxSize()
+                .padding(padding)
         ) {
             when (data) {
                 is Async.Success ->
@@ -55,7 +54,9 @@ fun ToursIndexScreen(navController: NavController) {
 
 @Composable
 private fun TourIndexView(navController: NavController, tours: List<Tour>) {
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
         items(tours, key = { it.id }) { tour ->
             Box(
                 modifier = Modifier

@@ -16,6 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -72,20 +73,27 @@ fun ArtworkDetailScreen(
 ) {
     val artwork = viewModel.artwork
 
-    if (artwork == null) {
-        LoadingView(progressIndicatorDelay = 500)
-    } else {
-        val videoPool = rememberSaveable { VideoPool() }
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+    ) { padding ->
+        Box(Modifier.padding(padding)) {
+            if (artwork == null) {
+                LoadingView(progressIndicatorDelay = 500)
+            } else {
+                val videoPool = rememberSaveable { VideoPool() }
 
-        CompositionLocalProvider(
-            LocalVideoPool provides videoPool
-        ) {
-            ArtworkView(
-                navController = navController,
-                artwork = artwork,
-                isFavorite = viewModel.isFavorite,
-                toggleFavorite = viewModel::toggleFavorite,
-            )
+                CompositionLocalProvider(
+                    LocalVideoPool provides videoPool
+                ) {
+                    ArtworkView(
+                        navController = navController,
+                        artwork = artwork,
+                        isFavorite = viewModel.isFavorite,
+                        toggleFavorite = viewModel::toggleFavorite,
+                    )
+                }
+            }
         }
     }
 }
@@ -108,7 +116,6 @@ fun ArtworkView(
             .verticalScroll(rememberScrollState())
             .fillMaxSize()
     ) {
-
         Box(Modifier.aspectRatio(4 / 3f)) {
             Box(
                 Modifier

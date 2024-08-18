@@ -68,6 +68,7 @@ fun BrowseScreen(
         Column(
             Modifier
                 .padding(padding)
+                .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
             Row(
