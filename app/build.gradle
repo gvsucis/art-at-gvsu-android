@@ -98,7 +98,6 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended"
     implementation "androidx.compose.material:material"
     implementation 'com.google.android.material:material:1.12.0'
-    implementation "androidx.compose.runtime:runtime-livedata"
     implementation "androidx.compose.ui:ui-tooling"
     implementation "androidx.compose.ui:ui-util"
     implementation "androidx.datastore:datastore-preferences:$datastore_version"
