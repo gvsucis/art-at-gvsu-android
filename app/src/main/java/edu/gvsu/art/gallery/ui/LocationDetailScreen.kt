@@ -33,7 +33,7 @@ import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.navigateToLocation
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 @Composable
 fun LocationDetailScreen(navController: NavController, locationID: String?, locationName: String) {
@@ -170,7 +170,7 @@ private fun LocationEmptyView() {
 @Composable
 @Preview
 fun PreviewEmptyView() {
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         LocationEmptyView()
     }
 }

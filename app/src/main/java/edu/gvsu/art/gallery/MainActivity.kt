@@ -6,18 +6,14 @@ import android.os.StrictMode.setThreadPolicy
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -44,7 +40,7 @@ import edu.gvsu.art.gallery.ui.artwork.detail.ArtworkDetailScreen
 import edu.gvsu.art.gallery.ui.browse.ArtworkCollectionScreen
 import edu.gvsu.art.gallery.ui.browse.BrowseScreen
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 @ExperimentalPagerApi
 @ExperimentalComposeUiApi
@@ -66,7 +62,7 @@ class MainActivity : ComponentActivity() {
 @ExperimentalPagerApi
 @Composable
 fun App() {
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         BottomNavigationView()
     }
 }
@@ -84,56 +80,47 @@ fun BottomNavigationView() {
     CompositionLocalProvider(
         LocalTabScreen provides selectedTab
     ) {
-        Scaffold(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.systemBars),
-            bottomBar = {
-                BottomNavigation(
-                    backgroundColor = MaterialTheme.colors.surface
-                ) {
-                    TabScreen.all.forEach { entry ->
-                        val selected = entry == selectedTab
-                        val itemColor = if (selected) {
-                            MaterialTheme.colors.primary
-                        } else {
-                            LocalContentColor.current.copy(alpha = 0.6f)
-                        }
-
-                        BottomNavigationItem(
-                            icon = {
-                                Icon(
-                                    entry.icon,
-                                    tint = itemColor,
-                                    contentDescription = null
-                                )
-                            },
-                            label = {
-                                Text(
-                                    stringResource(entry.title),
-                                    color = itemColor
-                                )
-                            },
-                            selected = selected,
-                            onClick = {
-                                navController.navigate(entry.route) {
-                                    popUpTo(entry.route) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                }
-                            }
-                        )
-                    }
-                }
-            }
-        ) { innerPadding ->
+        ) {
             NavHost(
                 navController = navController,
                 startDestination = Route.BrowseIndex,
-                modifier = Modifier.padding(innerPadding),
+                modifier = Modifier.weight(0.1f),
             ) {
                 routing(navController)
+            }
+            NavigationBar(
+                containerColor = colorScheme.surface
+            ) {
+                TabScreen.all.forEach { entry ->
+                    val selected = entry == selectedTab
+
+                    NavigationBarItem(
+                        icon = {
+                            Icon(
+                                entry.icon,
+                                contentDescription = null
+                            )
+                        },
+                        label = {
+                            Text(
+                                stringResource(entry.title),
+                            )
+                        },
+                        selected = selected,
+                        onClick = {
+                            navController.navigate(entry.route) {
+                                popUpTo(entry.route) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                            }
+                        }
+                    )
+                }
+
             }
         }
     }

@@ -1,6 +1,5 @@
 package edu.gvsu.art.gallery.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 import edu.gvsu.art.gallery.ui.theme.OffWhite
 import java.net.URL
 
@@ -93,7 +92,7 @@ fun WideTitleCard(
 @Composable
 @Preview
 fun PreviewWideTitleRow() {
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         WideTitleCard(
             imageURL = null,
             title = "My Card Title",

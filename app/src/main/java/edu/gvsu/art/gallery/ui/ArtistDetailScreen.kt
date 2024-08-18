@@ -17,7 +17,7 @@ import edu.gvsu.art.client.Artist
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 @Composable
 fun ArtistDetailScreen(navController: NavController, artistID: String?) {
@@ -101,7 +101,7 @@ fun PreviewArtistDetailBiography() {
                 " Reeds Lake and Alten's own backyard..."
     )
 
-    ArtAtGVSUTheme(darkTheme = false) {
+    ArtGalleryTheme(darkTheme = false) {
         Surface {
             ArtistDetailBiography(artist = artist)
         }
@@ -122,7 +122,7 @@ fun PreviewArtistDetailBiographyDark() {
                 " Reeds Lake and Alten's own backyard..."
     )
 
-    ArtAtGVSUTheme(darkTheme = true) {
+    ArtGalleryTheme(darkTheme = true) {
         Surface {
             ArtistDetailBiography(artist = artist)
         }

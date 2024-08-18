@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.lib.Async
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 @Composable
 fun ArtworkARButton(
@@ -44,7 +44,7 @@ fun ArtworkARButton(
 @Composable
 private fun ArtworkARButtonWithProgress() {
 
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         ArtworkARButton(
             arAsset = Async.Loading,
             progress = 0.67f

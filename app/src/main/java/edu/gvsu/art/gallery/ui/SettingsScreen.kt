@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import edu.gvsu.art.gallery.BuildConfig
 import edu.gvsu.art.gallery.R
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 
 @Composable
@@ -182,7 +182,7 @@ private fun SettingsColumn(
 @Preview
 @Composable
 fun PreviewSettingsContent() {
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         Column {
             SettingsContent()
         }

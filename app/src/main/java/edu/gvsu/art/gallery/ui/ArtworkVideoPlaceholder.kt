@@ -19,7 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 import java.net.URL
 
 @Composable
@@ -51,7 +51,7 @@ fun ArtworkVideoPlaceholder(url: URL?) {
 private fun ArtworkVideoPlaceholderPreview() {
     val url =
         URL("https:/artgallery.gvsu.edu/admin/media/collectiveaccess/images/1/4/4/5337_ca_object_representations_media_14448_large.jpg")
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         ArtworkVideoPlaceholder(
             url = url
         )

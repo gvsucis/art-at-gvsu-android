@@ -59,7 +59,7 @@ import edu.gvsu.art.gallery.ui.MapSnapshot
 import edu.gvsu.art.gallery.ui.RelatedArtworks
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.foundation.LocalVideoPool
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 import org.koin.androidx.compose.koinViewModel
 import java.net.URL
 
@@ -358,7 +358,7 @@ fun PreviewDetailTextRow() {
     val longText =
         "Judith Brown employed scrap metal in much of her work, ranging from small religious ceremonial objects such as a Hanukkah lamp in the collection of The Jewish Museum, to monumental sculptures and public art projects like the installation commissioned for the Federal Courthouse building in Trenton, New Jersey."
 
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         DetailTextRow(ArtworkRow(R.string.artwork_detail_work_medium, longText))
     }
 }

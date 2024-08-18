@@ -21,7 +21,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import edu.gvsu.art.gallery.R
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 @ExperimentalComposeUiApi
 @Composable
@@ -122,7 +122,7 @@ fun SearchIndexSearchBar(
 @Composable
 @Preview
 fun PreviewSearchBar() {
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         SearchIndexSearchBar(
             query = "",
             selectedModel = SearchModel.ARTIST,

@@ -3,14 +3,33 @@ package edu.gvsu.art.gallery.ui.browse
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +60,7 @@ import edu.gvsu.art.gallery.ui.theme.OffWhiteSecondary
 import org.koin.androidx.compose.koinViewModel
 import java.net.URL
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BrowseScreen(
     viewModel: BrowseIndexViewModel = koinViewModel(),
@@ -49,13 +69,16 @@ fun BrowseScreen(
     Scaffold(
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = colorScheme.background
+                ),
                 title = {},
-                backgroundColor = MaterialTheme.colors.background,
-                elevation = 0.dp,
                 actions = {
-                    IconButton(onClick = {
-                        navController.navigate(Route.Settings)
-                    }) {
+                    IconButton(
+                        onClick = {
+                            navController.navigate(Route.Settings)
+                        }
+                    ) {
                         Icon(
                             Icons.Default.Settings,
                             contentDescription = null,
@@ -77,8 +100,8 @@ fun BrowseScreen(
                     .padding(bottom = 8.dp)
             ) {
                 Text(
-                    text = "Featured",
-                    style = MaterialTheme.typography.h1
+                    text = stringResource(R.string.browse_featured_title),
+                    style = typography.displayLarge
                 )
             }
             HomeFeaturedImageView(
@@ -114,12 +137,12 @@ fun BrowseAction(@StringRes text: Int, onClick: () -> Unit) {
         ) {
             Text(stringResource(text))
             Icon(
-                imageVector = Icons.Default.ArrowForward,
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = null
             )
         }
     }
-    Divider(Modifier.padding(horizontal = 16.dp))
+    HorizontalDivider(Modifier.padding(horizontal = 16.dp))
 }
 
 @Composable
@@ -188,14 +211,14 @@ private fun FeaturedTitle(artwork: Artwork, modifier: Modifier = Modifier) {
             Text(
                 artwork.name,
                 color = OffWhite,
-                style = MaterialTheme.typography.h5,
+                style = typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
             )
             if (artwork.formattedArtistName.isNotBlank()) {
                 Text(
                     artwork.formattedArtistName,
                     color = OffWhite.copy(alpha = 0.8f),
-                    style = MaterialTheme.typography.subtitle1
+                    style = typography.titleMedium
                 )
             }
         }

@@ -18,7 +18,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 @Composable
 fun CloseIconButton(
@@ -63,7 +63,7 @@ enum class CloseIconStyle {
 @Preview
 @Composable
 private fun CloseIconButtonPreview() {
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         CloseIconButton()
     }
 }
