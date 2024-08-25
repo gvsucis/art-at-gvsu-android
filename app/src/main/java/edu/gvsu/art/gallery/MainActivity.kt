@@ -13,6 +13,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -80,47 +81,51 @@ fun BottomNavigationView() {
     CompositionLocalProvider(
         LocalTabScreen provides selectedTab
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = colorScheme.background
         ) {
-            NavHost(
-                navController = navController,
-                startDestination = Route.BrowseIndex,
-                modifier = Modifier.weight(0.1f),
+            Column(
+                modifier = Modifier.fillMaxSize()
             ) {
-                routing(navController)
-            }
-            NavigationBar(
-                containerColor = colorScheme.surface
-            ) {
-                TabScreen.all.forEach { entry ->
-                    val selected = entry == selectedTab
-
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                entry.icon,
-                                contentDescription = null
-                            )
-                        },
-                        label = {
-                            Text(
-                                stringResource(entry.title),
-                            )
-                        },
-                        selected = selected,
-                        onClick = {
-                            navController.navigate(entry.route) {
-                                popUpTo(entry.route) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                            }
-                        }
-                    )
+                NavHost(
+                    navController = navController,
+                    startDestination = Route.BrowseIndex,
+                    modifier = Modifier.weight(0.1f),
+                ) {
+                    routing(navController)
                 }
+                NavigationBar(
+                    containerColor = colorScheme.surface
+                ) {
+                    TabScreen.all.forEach { entry ->
+                        val selected = entry == selectedTab
 
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    entry.icon,
+                                    contentDescription = null
+                                )
+                            },
+                            label = {
+                                Text(
+                                    stringResource(entry.title),
+                                )
+                            },
+                            selected = selected,
+                            onClick = {
+                                navController.navigate(entry.route) {
+                                    popUpTo(entry.route) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                }
+                            }
+                        )
+                    }
+
+                }
             }
         }
     }
