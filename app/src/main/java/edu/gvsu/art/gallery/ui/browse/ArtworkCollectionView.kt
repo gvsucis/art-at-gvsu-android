@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.client.ArtworkCollection
 import edu.gvsu.art.gallery.R
+import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.ui.ArtworkRow
 import edu.gvsu.art.gallery.ui.GalleryTopAppBar
 
@@ -52,7 +53,7 @@ fun ArtworkCollectionView(
             )
         }
     ) { padding ->
-        Column(Modifier.padding(padding)) {
+        Column(Modifier.nestedScaffoldPadding(padding)) {
             LazyColumn {
                 items(artworks, key = { it.id }) { artwork ->
                     ArtworkRow(

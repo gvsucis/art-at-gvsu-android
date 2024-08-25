@@ -95,9 +95,7 @@ fun BottomNavigationView() {
                 ) {
                     routing(navController)
                 }
-                NavigationBar(
-                    containerColor = colorScheme.surface
-                ) {
+                NavigationBar {
                     TabScreen.all.forEach { entry ->
                         val selected = entry == selectedTab
 

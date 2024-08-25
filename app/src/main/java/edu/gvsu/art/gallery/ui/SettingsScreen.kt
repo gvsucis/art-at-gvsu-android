@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import edu.gvsu.art.gallery.BuildConfig
 import edu.gvsu.art.gallery.R
+import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 
@@ -58,7 +59,7 @@ fun SettingsScreen(navController: NavController) {
     ) { padding ->
         Column(
             Modifier
-                .padding(padding)
+                .nestedScaffoldPadding(padding)
                 .fillMaxSize()
                 .verticalScroll(state = scrollState)
         ) {

@@ -53,6 +53,7 @@ import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.client.ArtworkCollection
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.Route
+import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.navigateToCollection
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
@@ -91,7 +92,7 @@ fun BrowseScreen(
     ) { padding ->
         Column(
             Modifier
-                .padding(padding)
+                .nestedScaffoldPadding(padding)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {

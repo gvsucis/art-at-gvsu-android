@@ -11,13 +11,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults.pinnedScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import edu.gvsu.art.client.Location
 import edu.gvsu.art.gallery.R
+import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToLocation
 
@@ -25,6 +28,7 @@ import edu.gvsu.art.gallery.navigateToLocation
 @Composable
 fun LocationIndexScreen(navController: NavController) {
     val (data, retry) = useCampuses()
+    val scrollBehavior = pinnedScrollBehavior()
 
     fun navigateToLocation(campus: Location) {
         navController.navigateToLocation(
@@ -34,9 +38,11 @@ fun LocationIndexScreen(navController: NavController) {
     }
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             GalleryTopAppBar(
-                title = stringResource(id = R.string.navigation_Campuses),
+                title = stringResource(R.string.navigation_Campuses),
+                scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
@@ -47,8 +53,8 @@ fun LocationIndexScreen(navController: NavController) {
     ) { padding ->
         Box(
             Modifier
+                .nestedScaffoldPadding(padding)
                 .fillMaxSize()
-                .padding(padding)
         ) {
             when (data) {
                 is Async.Success ->
@@ -56,11 +62,13 @@ fun LocationIndexScreen(navController: NavController) {
                         campuses = data(),
                         onCampusClick = { navigateToLocation(it) }
                     )
+
                 is Async.Failure ->
                     ErrorView(
                         error = data.error,
                         onRetryClick = { retry() }
                     )
+
                 else -> LoadingView()
             }
         }

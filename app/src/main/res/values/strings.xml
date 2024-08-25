@@ -17,7 +17,7 @@
     <!-- campuses -->
     <string name="location_detail_empty_message">Location is empty</string>
     <string name="location_detail_child_locations">Locations</string>
-    <string name="location_detail_artworks">Artwork</string>
+    <string name="location_detail_artworks">Artworks</string>
 
     <!-- tours -->
     <string name="tour_marker_more_details">Tap for details</string>

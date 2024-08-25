@@ -13,6 +13,8 @@ import androidx.core.view.WindowCompat
 import edu.gvsu.art.gallery.ui.Theme
 import edu.gvsu.art.gallery.ui.useSettingsTheme
 
+// Generated from https://material-foundation.github.io/material-theme-builder/
+
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
     onPrimary = onPrimaryLight,
