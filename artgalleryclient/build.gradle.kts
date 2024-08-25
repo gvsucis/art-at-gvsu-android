@@ -17,6 +17,7 @@ android {
 sqldelight {
     database("ArtGalleryDatabase") {
         packageName = "edu.gvsu.art.db"
+        verifyMigrations = true
     }
 }
 

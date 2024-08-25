@@ -19,6 +19,5 @@ CREATE TABLE IF NOT EXISTS Artworks (
   media_medium_url TEXT,
   media_large_url TEXT,
   thumbnail_url TEXT,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  ar_digital_asset_url TEXT
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
