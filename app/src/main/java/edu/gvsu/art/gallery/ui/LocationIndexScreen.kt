@@ -80,9 +80,7 @@ fun CampusLoadedView(
     campuses: List<Location>,
     onCampusClick: (campus: Location) -> Unit,
 ) {
-    LazyColumn(
-
-    ) {
+    LazyColumn {
         items(campuses, key = { it.id }) { campus ->
             Box(
                 modifier = Modifier

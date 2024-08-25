@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Scaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults.pinnedScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -22,11 +24,14 @@ import edu.gvsu.art.gallery.navigateToTour
 fun ToursIndexScreen(navController: NavController) {
     val (key, refreshKey) = useUniqueKey()
     val data = useTours(key)
+    val scrollBehavior = pinnedScrollBehavior()
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             GalleryTopAppBar(
                 title = stringResource(id = R.string.navigation_Tours),
+                scrollBehavior = scrollBehavior,
             )
         }
     ) { padding ->
