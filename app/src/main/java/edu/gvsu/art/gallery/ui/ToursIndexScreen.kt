@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import edu.gvsu.art.client.Tour
 import edu.gvsu.art.gallery.R
+import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToTour
 
@@ -38,7 +39,7 @@ fun ToursIndexScreen(navController: NavController) {
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .nestedScaffoldPadding(padding)
         ) {
             when (data) {
                 is Async.Success ->
