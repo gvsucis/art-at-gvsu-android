@@ -3,7 +3,6 @@ package edu.gvsu.art.gallery.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val Red = Color(0xFFDE022D)
-val LightBlue = Color(0xFF64B5F6)
 val OffWhite = Color(0xFFF3F5F7)
 val OffWhiteSecondary = Color(0xFFE9EBEE)
 

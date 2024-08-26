@@ -10,6 +10,8 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -21,9 +23,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
 import com.mxalbert.zoomable.Zoomable
 import edu.gvsu.art.gallery.lib.MediaTypes
 import edu.gvsu.art.gallery.ui.foundation.VideoPlayer
@@ -32,7 +31,6 @@ import moe.tlaster.swiper.Swiper
 import moe.tlaster.swiper.SwiperState
 import java.net.URL
 
-@ExperimentalPagerApi
 @Composable
 fun MediaView(
     urls: List<URL>,
@@ -59,8 +57,7 @@ fun MediaView(
 
     Swiper(state = swiperState) {
         HorizontalPager(
-            itemSpacing = 8.dp,
-            count = urls.size,
+            pageSpacing = 8.dp,
             state = pagerState,
             key = { urls[it] },
         ) { page ->

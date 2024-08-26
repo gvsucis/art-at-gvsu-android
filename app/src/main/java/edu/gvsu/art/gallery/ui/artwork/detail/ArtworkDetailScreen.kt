@@ -3,8 +3,10 @@ package edu.gvsu.art.gallery.ui.artwork.detail
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -12,12 +14,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -37,14 +50,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.HorizontalPagerIndicator
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.DetailDivider
 import edu.gvsu.art.gallery.R
+import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.extensions.openGoogleMaps
 import edu.gvsu.art.gallery.lib.MediaTypes
 import edu.gvsu.art.gallery.lib.VideoPool
@@ -65,7 +74,6 @@ import java.net.URL
 
 
 @ExperimentalComposeUiApi
-@ExperimentalPagerApi
 @Composable
 fun ArtworkDetailScreen(
     navController: NavController,
@@ -77,7 +85,11 @@ fun ArtworkDetailScreen(
         modifier = Modifier
             .fillMaxSize()
     ) { padding ->
-        Box(Modifier.padding(padding)) {
+        Box(
+            Modifier
+                .nestedScaffoldPadding(padding)
+                .fillMaxSize()
+        ) {
             if (artwork == null) {
                 LoadingView(progressIndicatorDelay = 500)
             } else {
@@ -99,7 +111,6 @@ fun ArtworkDetailScreen(
 }
 
 @ExperimentalComposeUiApi
-@ExperimentalPagerApi
 @Composable
 fun ArtworkView(
     navController: NavController,
@@ -108,8 +119,13 @@ fun ArtworkView(
     toggleFavorite: () -> Unit,
 ) {
     val isDialogVisible = rememberSaveable { mutableStateOf(false) }
-    val thumbnailState = rememberPagerState()
-    val dialogState = rememberPagerState()
+    val mediaURLs = artwork.mediaRepresentations
+    val thumbnailState = rememberPagerState(initialPage = 0) {
+        mediaURLs.size
+    }
+    val dialogState = rememberPagerState(initialPage = 0) {
+        mediaURLs.size
+    }
 
     Column(
         Modifier
@@ -119,12 +135,13 @@ fun ArtworkView(
         Box(Modifier.aspectRatio(4 / 3f)) {
             Box(
                 Modifier
-                    .background(MaterialTheme.colors.surface)
+                    .background(colorScheme.surface)
                     .fillMaxSize()
             )
 
             ArtworkMediaPager(
-                artwork = artwork,
+                artwork,
+                mediaURLs = mediaURLs,
                 pagerState = thumbnailState,
                 navigateToMedia = { isDialogVisible.value = true }
             )
@@ -157,18 +174,15 @@ fun ArtworkView(
 }
 
 @ExperimentalComposeUiApi
-@ExperimentalPagerApi
 @Composable
 fun ArtworkMediaPager(
     artwork: Artwork,
+    mediaURLs: List<URL>,
     pagerState: PagerState,
     navigateToMedia: () -> Unit = {},
 ) {
-    val mediaURLs = artwork.mediaRepresentations
-
     Box {
         HorizontalPager(
-            count = mediaURLs.size,
             state = pagerState,
             modifier = Modifier.aspectRatio(4 / 3f),
             key = { mediaURLs[it] }
@@ -183,14 +197,17 @@ fun ArtworkMediaPager(
                 }
             }
         }
-        if (mediaURLs.size > 1) {
-            HorizontalPagerIndicator(
-                pagerState = pagerState,
-                activeColor = Color.White,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(16.dp)
-            )
+        Row(
+            Modifier
+                .wrapContentHeight()
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            if (mediaURLs.size > 1) {
+                HorizontalPagerIndicator(pagerState = pagerState)
+            }
         }
     }
 }
@@ -297,7 +314,9 @@ private fun ArtistNameRow(artwork: Artwork, onClick: () -> Unit = {}) {
         return
     }
 
-    Box(
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
@@ -308,12 +327,22 @@ private fun ArtistNameRow(artwork: Artwork, onClick: () -> Unit = {}) {
                 description = artwork.formattedArtistName
             )
         )
+
+        Spacer(Modifier.width(16.dp))
+        Icon(
+            imageVector = Icons.Filled.ChevronRight,
+            contentDescription = null,
+            modifier = Modifier.padding(end = 16.dp)
+        )
     }
 }
 
 @Composable
 private fun DetailTextRow(row: ArtworkRow) {
-    Column(Modifier.padding(vertical = 8.dp)) {
+    Column(
+        Modifier.padding(vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
         DetailTitle(title = row.title)
         Text(
             row.description,
@@ -325,8 +354,8 @@ private fun DetailTextRow(row: ArtworkRow) {
 @Composable
 private fun DetailTitle(@StringRes title: Int) {
     Text(
-        text = stringResource(title), style = MaterialTheme.typography.h4,
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.6f),
+        text = stringResource(title), style = MaterialTheme.typography.headlineMedium,
+        color = colorScheme.onSurface.copy(alpha = 0.6f),
         modifier = Modifier.padding(horizontal = 16.dp)
     )
 }
