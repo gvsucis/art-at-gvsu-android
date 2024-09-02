@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
@@ -100,11 +100,11 @@ fun VideoPlayer(
             ) {
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
-                    tint = Color.White.copy(alpha = LocalContentAlpha.current),
+                    tint = Color.White.copy(alpha = LocalContentColor.current.alpha),
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(44.dp)
-                        .background(MaterialTheme.colors.primary, CircleShape),
+                        .background(MaterialTheme.colorScheme.primary, CircleShape),
                     contentDescription = null
                 )
             }

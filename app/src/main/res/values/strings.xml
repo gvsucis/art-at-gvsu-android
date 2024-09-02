@@ -142,4 +142,5 @@
     <string name="artwork_detail_share">Share Artwork</string>
     <string name="browse_featured_title">Featured</string>
     <string name="settings_section_title_build_info">Build Information</string>
+    <string name="search_list_no_results_found">No results found</string>
 </resources>

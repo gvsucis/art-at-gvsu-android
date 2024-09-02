@@ -8,6 +8,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,9 +33,10 @@ fun MediaScreen(
         }
     )
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Black.copy(alpha = 1f - swiperState.progress))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 1f - swiperState.progress))
     ) {
         Box {
             MediaView(
@@ -45,10 +47,14 @@ fun MediaScreen(
                 onClick = { controlVisibility = !controlVisibility }
             )
         }
-        CloseButton(
-            onClick = { onDismiss() },
-            visible = controlVisibility && swiperState.progress == 0f
-        )
+        Box(
+            Modifier.statusBarsPadding()
+        ) {
+            CloseButton(
+                onClick = { onDismiss() },
+                visible = controlVisibility && swiperState.progress == 0f
+            )
+        }
     }
 }
 

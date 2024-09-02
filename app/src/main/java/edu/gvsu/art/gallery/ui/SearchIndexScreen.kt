@@ -2,34 +2,46 @@ package edu.gvsu.art.gallery.ui
 
 import android.content.Intent
 import android.net.Uri
-import android.provider.Settings.*
+import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.ClipOp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
@@ -47,20 +59,24 @@ import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 fun SearchIndexScreen(navController: NavController) {
     val tabScreen = LocalTabScreen.current
     val (query, setQuery) = rememberSaveable { mutableStateOf("") }
-    val (selectedModel, setModel) = rememberSaveable { mutableStateOf(SearchModel.ARTIST) }
+    val (selectedModel, setModel) = rememberSaveable { mutableStateOf(SearchCategory.ARTIST) }
     val (isQRDialogOpen, openQRDialog) = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
-            SearchIndexSearchBar(
-                query = query,
-                selectedModel = selectedModel,
-                setQuery = setQuery,
-                setModel = setModel,
-                selectQRScanner = {
-                    openQRDialog(true)
-                }
-            )
+            Box(
+                modifier = Modifier.statusBarsPadding()
+            ) {
+                SearchIndexSearchBar(
+                    query = query,
+                    selectedCategory = selectedModel,
+                    setQuery = setQuery,
+                    setCategory = setModel,
+                    selectQRScanner = {
+                        openQRDialog(true)
+                    }
+                )
+            }
         }
     ) { padding ->
         Box(
@@ -68,8 +84,8 @@ fun SearchIndexScreen(navController: NavController) {
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            SearchIndexModelList(
-                selectedModel = selectedModel,
+            SearchIndexList(
+                selected = selectedModel,
                 query = query,
                 onArtistSelect = { artist ->
                     navController.navigateToArtistDetail(tabScreen, artist.id)
@@ -111,9 +127,11 @@ fun QRScannerDialog(
             CameraRationaleDialog(onDismiss = { onDismiss() })
         }
     ) {
-        Dialog(onDismissRequest = { onDismiss() },
-            properties = DialogProperties(usePlatformDefaultWidth = false)) {
-            Scaffold(backgroundColor = Color.Transparent) {
+        Dialog(
+            onDismissRequest = { onDismiss() },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Scaffold(containerColor = Color.Transparent) {
                 Box {
                     QRCodeReader(callback = { setURL(it) })
                     CloseIconButton(onClick = { onDismiss() })
@@ -204,7 +222,12 @@ fun QRCodeReader(callback: QRCodeFoundCallback) {
             Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
                 clipPath(
                     Path().apply {
-                        addRoundRect(RoundRect(Rect(center, viewFinderRadius), CornerRadius(viewFinderBorderRadius)))
+                        addRoundRect(
+                            RoundRect(
+                                Rect(center, viewFinderRadius),
+                                CornerRadius(viewFinderBorderRadius)
+                            )
+                        )
                     },
                     clipOp = ClipOp.Difference
                 ) {
@@ -212,7 +235,12 @@ fun QRCodeReader(callback: QRCodeFoundCallback) {
                 }
                 drawPath(
                     path = Path().apply {
-                        addRoundRect(RoundRect(Rect(center, viewFinderRadius), CornerRadius(viewFinderBorderRadius)))
+                        addRoundRect(
+                            RoundRect(
+                                Rect(center, viewFinderRadius),
+                                CornerRadius(viewFinderBorderRadius)
+                            )
+                        )
                     },
                     color = Color.White,
                     style = Stroke(viewFinderBorderSize),

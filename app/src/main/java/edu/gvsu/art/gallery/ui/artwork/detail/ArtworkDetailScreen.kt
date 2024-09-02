@@ -68,6 +68,7 @@ import edu.gvsu.art.gallery.ui.MapSnapshot
 import edu.gvsu.art.gallery.ui.RelatedArtworks
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
 import edu.gvsu.art.gallery.ui.foundation.LocalVideoPool
+import edu.gvsu.art.gallery.ui.mediaviewer.LocalMediaViewerState
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 import org.koin.androidx.compose.koinViewModel
 import java.net.URL
@@ -93,18 +94,12 @@ fun ArtworkDetailScreen(
             if (artwork == null) {
                 LoadingView(progressIndicatorDelay = 500)
             } else {
-                val videoPool = rememberSaveable { VideoPool() }
-
-                CompositionLocalProvider(
-                    LocalVideoPool provides videoPool
-                ) {
-                    ArtworkView(
-                        navController = navController,
-                        artwork = artwork,
-                        isFavorite = viewModel.isFavorite,
-                        toggleFavorite = viewModel::toggleFavorite,
-                    )
-                }
+                ArtworkView(
+                    navController = navController,
+                    artwork = artwork,
+                    isFavorite = viewModel.isFavorite,
+                    toggleFavorite = viewModel::toggleFavorite,
+                )
             }
         }
     }
@@ -118,12 +113,9 @@ fun ArtworkView(
     isFavorite: Boolean,
     toggleFavorite: () -> Unit,
 ) {
-    val isDialogVisible = rememberSaveable { mutableStateOf(false) }
+    val mediaViewer = LocalMediaViewerState.current
     val mediaURLs = artwork.mediaRepresentations
     val thumbnailState = rememberPagerState(initialPage = 0) {
-        mediaURLs.size
-    }
-    val dialogState = rememberPagerState(initialPage = 0) {
         mediaURLs.size
     }
 
@@ -143,7 +135,12 @@ fun ArtworkView(
                 artwork,
                 mediaURLs = mediaURLs,
                 pagerState = thumbnailState,
-                navigateToMedia = { isDialogVisible.value = true }
+                navigateToMedia = {
+                    mediaViewer.present(
+                        artwork,
+                        currentIndex = thumbnailState.currentPage
+                    )
+                }
             )
 
             CloseIconButton(style = CloseIconStyle.Back) {
@@ -159,17 +156,10 @@ fun ArtworkView(
         )
     }
 
-    if (isDialogVisible.value) {
-        ArtworkMediaDialog(
-            artwork = artwork,
-            pagerState = dialogState,
-            selectedPage = thumbnailState.currentPage,
-            onDismiss = { isDialogVisible.value = false }
-        )
-    }
-
-    LaunchedEffect(dialogState.currentPage) {
-        thumbnailState.scrollToPage(dialogState.currentPage)
+    LaunchedEffect(mediaViewer.currentIndex) {
+        if (mediaViewer.artwork != null) {
+            thumbnailState.scrollToPage(mediaViewer.currentIndex)
+        }
     }
 }
 

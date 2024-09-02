@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
@@ -29,8 +28,8 @@ fun HorizontalPagerIndicator(
     pagerState: PagerState,
     modifier: Modifier = Modifier,
     pageIndexMapping: (Int) -> Int = { it },
-    activeColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
-    inactiveColor: Color = activeColor.copy(ContentAlpha.disabled),
+    activeColor: Color = Color.White.copy(alpha = LocalContentColor.current.alpha),
+    inactiveColor: Color = activeColor.copy(alpha = 0.38f),
     indicatorWidth: Dp = 8.dp,
     indicatorHeight: Dp = indicatorWidth,
     spacing: Dp = indicatorWidth,
@@ -66,7 +65,7 @@ private fun HorizontalPagerIndicator(
     modifier: Modifier = Modifier,
     pageIndexMapping: (Int) -> Int = { it },
     activeColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
-    inactiveColor: Color = activeColor.copy(ContentAlpha.disabled),
+    inactiveColor: Color = activeColor.copy(alpha = 0.38f),
     indicatorWidth: Dp = 8.dp,
     indicatorHeight: Dp = indicatorWidth,
     spacing: Dp = indicatorWidth,

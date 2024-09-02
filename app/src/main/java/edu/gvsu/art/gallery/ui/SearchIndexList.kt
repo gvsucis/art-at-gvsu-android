@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -23,17 +23,18 @@ import kotlinx.coroutines.*
 
 @ExperimentalComposeUiApi
 @Composable
-fun SearchIndexModelList(
-    selectedModel: SearchModel,
+fun SearchIndexList(
+    selected: SearchCategory,
     query: String,
     onArtworkSelect: (artwork: Artwork) -> Unit = {},
     onArtistSelect: (artist: Artist) -> Unit = {},
 ) {
-    when (selectedModel) {
-        SearchModel.ARTIST -> ArtistSearchView(query) { artist ->
+    when (selected) {
+        SearchCategory.ARTIST -> ArtistSearchView(query) { artist ->
             onArtistSelect(artist)
         }
-        SearchModel.ARTWORK -> ArtworkSearchView(query) { artwork ->
+
+        SearchCategory.ARTWORK -> ArtworkSearchView(query) { artwork ->
             onArtworkSelect(artwork)
         }
     }
@@ -56,7 +57,8 @@ fun ArtistSearchView(query: String, onClick: (Artist) -> Unit) {
                 )
             }
         }
-        is Async.Loading -> LoadingView(progressIndicatorDelay = 1000L)
+
+        is Async.Loading -> LoadingView(progressIndicatorDelay = 500L)
         else -> Unit
     }
 }
@@ -75,7 +77,8 @@ fun ArtworkSearchView(query: String, onClick: (Artwork) -> Unit) {
                 ArtworkRow(artwork = artwork)
             }
         }
-        is Async.Loading -> LoadingView()
+
+        is Async.Loading -> LoadingView(progressIndicatorDelay = 500L)
         else -> Unit
     }
 }
@@ -108,12 +111,12 @@ fun <T> SearchLoadedView(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text("No results found")
+            Text(stringResource(R.string.search_list_no_results_found))
         }
     }
 }
 
-enum class SearchModel {
+enum class SearchCategory {
     ARTIST,
     ARTWORK,
 }
@@ -160,10 +163,8 @@ private fun <T> useSearch(query: String, fetch: suspend (String) -> Result<T>): 
     return state.value
 }
 
-@Composable
-fun SearchModel.localized(): String {
-    return when (this) {
-        SearchModel.ARTIST -> stringResource(R.string.search_index_artist_radio)
-        SearchModel.ARTWORK -> stringResource(R.string.search_index_artworks_radio)
+val SearchCategory.title: Int
+    get() = when (this) {
+        SearchCategory.ARTIST -> R.string.search_index_artist_radio
+        SearchCategory.ARTWORK -> R.string.search_index_artworks_radio
     }
-}

@@ -6,6 +6,7 @@ import android.os.StrictMode.setThreadPolicy
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
@@ -28,6 +29,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import edu.gvsu.art.gallery.ui.ArtistDetailScreen
+import edu.gvsu.art.gallery.ui.ArtworkMediaDialog
 import edu.gvsu.art.gallery.ui.FavoriteIndexScreen
 import edu.gvsu.art.gallery.ui.LocationDetailScreen
 import edu.gvsu.art.gallery.ui.LocationIndexScreen
@@ -39,6 +41,8 @@ import edu.gvsu.art.gallery.ui.artwork.detail.ArtworkDetailScreen
 import edu.gvsu.art.gallery.ui.browse.ArtworkCollectionScreen
 import edu.gvsu.art.gallery.ui.browse.BrowseScreen
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
+import edu.gvsu.art.gallery.ui.mediaviewer.LocalMediaViewerState
+import edu.gvsu.art.gallery.ui.mediaviewer.rememberMediaViewerState
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 @ExperimentalComposeUiApi
@@ -72,52 +76,59 @@ fun BottomNavigationView() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val selectedTab = TabScreen.findSelected(currentDestination)
+    val mediaViewerState = rememberMediaViewerState()
 
     CompositionLocalProvider(
         LocalTabScreen provides selectedTab
     ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = colorScheme.background
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                NavHost(
-                    navController = navController,
-                    startDestination = Route.BrowseIndex,
-                    modifier = Modifier.weight(0.1f),
-                ) {
-                    routing(navController)
-                }
-                NavigationBar {
-                    TabScreen.all.forEach { entry ->
-                        val selected = entry == selectedTab
+        CompositionLocalProvider(LocalMediaViewerState provides mediaViewerState) {
+            Box(modifier = Modifier.fillMaxSize()) {
 
-                        NavigationBarItem(
-                            icon = {
-                                Icon(
-                                    entry.icon,
-                                    contentDescription = null
-                                )
-                            },
-                            label = {
-                                Text(
-                                    stringResource(entry.title),
-                                )
-                            },
-                            selected = selected,
-                            onClick = {
-                                navController.navigate(entry.route) {
-                                    popUpTo(entry.route) {
-                                        saveState = true
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = colorScheme.background
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        NavHost(
+                            navController = navController,
+                            startDestination = Route.BrowseIndex,
+                            modifier = Modifier.weight(0.1f),
+                        ) {
+                            routing(navController)
+                        }
+                        NavigationBar {
+                            TabScreen.all.forEach { entry ->
+                                val selected = entry == selectedTab
+
+                                NavigationBarItem(
+                                    icon = {
+                                        Icon(
+                                            entry.icon,
+                                            contentDescription = null
+                                        )
+                                    },
+                                    label = {
+                                        Text(
+                                            stringResource(entry.title),
+                                        )
+                                    },
+                                    selected = selected,
+                                    onClick = {
+                                        navController.navigate(entry.route) {
+                                            popUpTo(entry.route) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                        }
                                     }
-                                    launchSingleTop = true
-                                }
+                                )
                             }
-                        )
+                        }
                     }
 
+                    ArtworkMediaDialog()
                 }
             }
         }
