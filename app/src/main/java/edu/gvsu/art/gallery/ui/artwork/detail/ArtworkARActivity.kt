@@ -7,7 +7,6 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
@@ -33,7 +32,7 @@ import com.google.ar.sceneform.ux.BaseArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.ui.CloseIconButton
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 import java.nio.ByteBuffer
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -222,7 +221,7 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         findViewById<ComposeView>(R.id.close_button).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                ArtAtGVSUTheme {
+                ArtGalleryTheme {
                     CloseIconButton {
                         finish()
                     }

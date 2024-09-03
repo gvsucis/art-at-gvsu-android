@@ -1,5 +1,3 @@
-BEGIN TRANSACTION;
-
 CREATE TABLE artworks_copy (
   id TEXT NOT NULL PRIMARY KEY,
   is_public INTEGER,
@@ -77,5 +75,3 @@ FROM Artworks;
 DROP TABLE Artworks;
 
 ALTER TABLE artworks_copy RENAME TO Artworks;
-
-COMMIT;

@@ -2,14 +2,29 @@ package edu.gvsu.art.gallery.ui
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,9 +36,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import edu.gvsu.art.gallery.BuildConfig
 import edu.gvsu.art.gallery.R
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController) {
     val scrollState = rememberScrollState()
@@ -34,7 +51,7 @@ fun SettingsScreen(navController: NavController) {
                 title = stringResource(R.string.navigation_Settings),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 }
             )
@@ -42,7 +59,7 @@ fun SettingsScreen(navController: NavController) {
     ) { padding ->
         Column(
             Modifier
-                .padding(padding)
+                .nestedScaffoldPadding(padding)
                 .fillMaxSize()
                 .verticalScroll(state = scrollState)
         ) {
@@ -55,11 +72,11 @@ fun SettingsScreen(navController: NavController) {
 @Composable
 private fun SettingsContent() {
     AboutView()
-    Divider()
+    HorizontalDivider()
     AppearanceView()
-    Divider()
+    HorizontalDivider()
     ExternalLinksView()
-    Divider()
+    HorizontalDivider()
     BuildInfoView()
     Spacer(modifier = Modifier.height(16.dp))
 }
@@ -69,7 +86,7 @@ private fun AboutView() {
     SettingsColumn(title = stringResource(R.string.settings_about_title)) {
         Text(
             stringResource(R.string.settings_about_description),
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.bodyLarge,
         )
     }
 }
@@ -108,7 +125,7 @@ private fun AppearanceView() {
                     )
                     Text(
                         text = stringResource(text),
-                        style = MaterialTheme.typography.body1.merge(),
+                        style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.padding(start = 8.dp),
                     )
                 }
@@ -151,10 +168,10 @@ fun ExternalLink(linkText: String, link: Uri) {
 @Composable
 private fun BuildInfoView() {
     val text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
-    SettingsColumn(title = "Build Information") {
+    SettingsColumn(title = stringResource(R.string.settings_section_title_build_info)) {
         Text(
             text = text,
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.bodyLarge
         )
     }
 }
@@ -169,7 +186,7 @@ private fun SettingsColumn(
         if (title.isNotBlank()) {
             Text(
                 title,
-                style = MaterialTheme.typography.subtitle2,
+                style = MaterialTheme.typography.titleSmall,
                 modifier = Modifier.padding(start = 16.dp, top = 8.dp)
             )
         }
@@ -182,7 +199,7 @@ private fun SettingsColumn(
 @Preview
 @Composable
 fun PreviewSettingsContent() {
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         Column {
             SettingsContent()
         }

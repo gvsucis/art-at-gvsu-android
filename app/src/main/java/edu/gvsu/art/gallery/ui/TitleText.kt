@@ -1,7 +1,7 @@
 package edu.gvsu.art.gallery.ui
 
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -15,7 +15,7 @@ fun TitleText(
 ) {
     Text(
         text,
-        style = MaterialTheme.typography.h3,
+        style = MaterialTheme.typography.headlineLarge,
         textAlign = textAlign,
         fontWeight = FontWeight.SemiBold,
         modifier = modifier

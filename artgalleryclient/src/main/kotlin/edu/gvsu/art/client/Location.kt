@@ -9,4 +9,6 @@ data class Location(
     val mediaLargeURL: URL? = null,
     val locations: List<Location> = emptyList(),
     val artworks: List<Artwork> = emptyList(),
-)
+) {
+    val distinctWorks = artworks.distinctBy { it.id }
+}

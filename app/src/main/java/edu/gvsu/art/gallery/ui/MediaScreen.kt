@@ -1,19 +1,25 @@
 package edu.gvsu.art.gallery.ui
 
-import android.annotation.SuppressLint
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.PagerState
 import moe.tlaster.swiper.rememberSwiperState
 import java.net.URL
 
-@ExperimentalPagerApi
 @Composable
 fun MediaScreen(
     urls: List<URL>,
@@ -27,9 +33,10 @@ fun MediaScreen(
         }
     )
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Black.copy(alpha = 1f - swiperState.progress))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 1f - swiperState.progress))
     ) {
         Box {
             MediaView(
@@ -40,10 +47,14 @@ fun MediaScreen(
                 onClick = { controlVisibility = !controlVisibility }
             )
         }
-        CloseButton(
-            onClick = { onDismiss() },
-            visible = controlVisibility && swiperState.progress == 0f
-        )
+        Box(
+            Modifier.statusBarsPadding()
+        ) {
+            CloseButton(
+                onClick = { onDismiss() },
+                visible = controlVisibility && swiperState.progress == 0f
+            )
+        }
     }
 }
 

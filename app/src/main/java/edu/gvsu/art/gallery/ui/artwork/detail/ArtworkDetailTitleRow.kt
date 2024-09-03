@@ -1,7 +1,5 @@
 package edu.gvsu.art.gallery.ui.artwork.detail
 
-import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,16 +8,12 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.ViewInAr
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,7 +25,7 @@ import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.extensions.shareArtwork
 import edu.gvsu.art.gallery.ui.TitleText
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 import edu.gvsu.art.gallery.ui.theme.Red
 import java.net.URL
 
@@ -94,7 +88,7 @@ fun ArtworkDetailTitleRow(
 @Preview
 fun PreviewArtworkDetailTitleRow() {
     val artwork = Artwork(name = "My Artwork")
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         ArtworkDetailTitleRow(artwork = artwork)
     }
 }
@@ -104,7 +98,7 @@ fun PreviewArtworkDetailTitleRow() {
 @Preview("Long title that could wrap")
 fun PreviewArtworkDetailTitleRowLongText() {
     val artwork = Artwork(name = "My Artwork Continuous Stream of Words")
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         ArtworkDetailTitleRow(artwork = artwork)
     }
 }
@@ -116,7 +110,7 @@ fun PreviewArtworkDetailTitleWithAR() {
         name = "My Life's Work",
         arDigitalAssetURL = URL("https://example.com")
     )
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         ArtworkDetailTitleRow(artwork = artwork)
     }
 }

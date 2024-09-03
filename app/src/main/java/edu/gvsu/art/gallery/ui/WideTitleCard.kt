@@ -1,13 +1,12 @@
 package edu.gvsu.art.gallery.ui
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 import edu.gvsu.art.gallery.ui.theme.OffWhite
 import java.net.URL
 
@@ -36,7 +35,6 @@ fun WideTitleCard(
 
     Surface(
         shape = cornerShape,
-        elevation = 3.dp,
     ) {
         Box(
             modifier = Modifier
@@ -75,13 +73,13 @@ fun WideTitleCard(
                 Text(
                     title,
                     color = OffWhite,
-                    style = MaterialTheme.typography.h5,
+                    style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                 )
                 if (subtitle.isNotBlank()) {
                     Text(subtitle,
                         color = OffWhite.copy(alpha = 0.8f),
-                        style = MaterialTheme.typography.subtitle1
+                        style = MaterialTheme.typography.titleMedium
                     )
                 }
             }
@@ -93,7 +91,7 @@ fun WideTitleCard(
 @Composable
 @Preview
 fun PreviewWideTitleRow() {
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         WideTitleCard(
             imageURL = null,
             title = "My Card Title",

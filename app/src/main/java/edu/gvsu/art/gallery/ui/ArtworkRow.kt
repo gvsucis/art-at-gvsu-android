@@ -1,12 +1,15 @@
 package edu.gvsu.art.gallery.ui
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,7 +35,7 @@ fun ArtworkRow(artwork: Artwork, modifier: Modifier = Modifier) {
                 .aspectRatio(1f)
                 .fillMaxWidth()
                 .clip(CircleShape)
-                .border(BorderStroke(2.dp, MaterialTheme.colors.onSurface), CircleShape)
+                .border(BorderStroke(2.dp, colorScheme.onSurface), CircleShape)
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(

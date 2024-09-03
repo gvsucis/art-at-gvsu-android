@@ -17,7 +17,7 @@
     <!-- campuses -->
     <string name="location_detail_empty_message">Location is empty</string>
     <string name="location_detail_child_locations">Locations</string>
-    <string name="location_detail_artworks">Artwork</string>
+    <string name="location_detail_artworks">Artworks</string>
 
     <!-- tours -->
     <string name="tour_marker_more_details">Tap for details</string>
@@ -140,4 +140,7 @@
     <string name="activity_tour_search" translatable="false">TOUR_SEARCH_ACTIVITY</string>
     <string name="activity_featured_work" translatable="false">FEATURED_WORK_ACTIVITY</string>
     <string name="artwork_detail_share">Share Artwork</string>
+    <string name="browse_featured_title">Featured</string>
+    <string name="settings_section_title_build_info">Build Information</string>
+    <string name="search_list_no_results_found">No results found</string>
 </resources>

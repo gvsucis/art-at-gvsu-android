@@ -1,50 +1,58 @@
 package edu.gvsu.art.gallery.ui
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults.pinnedScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.client.Location
 import edu.gvsu.art.gallery.R
+import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.navigateToLocation
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
-import edu.gvsu.art.gallery.ui.theme.ArtAtGVSUTheme
+import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocationDetailScreen(navController: NavController, locationID: String?, locationName: String) {
     locationID ?: return
 
     val (data, retry) = useLocation(locationID)
+    val scrollBehavior = pinnedScrollBehavior()
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             GalleryTopAppBar(
                 title = locationName,
+                scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
@@ -56,40 +64,44 @@ fun LocationDetailScreen(navController: NavController, locationID: String?, loca
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .nestedScaffoldPadding(padding)
         ) {
             when (data) {
                 is Async.Success ->
                     LocationList(navController, location = data())
+
                 is Async.Failure ->
                     ErrorView(
                         error = data.error,
                         onRetryClick = { retry() }
                     )
+
                 else -> LoadingView()
             }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun LocationList(navController: NavController, location: Location) {
     val tabScreen = LocalTabScreen.current
 
-    if (location.locations.isEmpty() && location.artworks.isEmpty()) {
-        return LocationEmptyView()
-    }
-
-    LazyColumn {
-        childLocations(locations = location.locations) { selected ->
-            navController.navigateToLocation(selected.id, selected.name)
-        }
-        artworks(artworks = location.artworks) { selected ->
-            navController.navigateToArtworkDetail(tabScreen, selected.id)
+    if (location.locations.isEmpty() && location.distinctWorks.isEmpty()) {
+        LocationEmptyView()
+    } else {
+        LazyColumn {
+            childLocations(locations = location.locations) { selected ->
+                navController.navigateToLocation(selected.id, selected.name)
+            }
+            artworks(artworks = location.distinctWorks) { selected ->
+                navController.navigateToArtworkDetail(tabScreen, selected.id)
+            }
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.childLocations(
     locations: List<Location>,
     navigateToLocation: (location: Location) -> Unit,
@@ -98,8 +110,8 @@ private fun LazyListScope.childLocations(
         return
     }
 
-    item("location_section_title") {
-        SectionTitle(stringResource(R.string.location_detail_child_locations))
+    stickyHeader {
+        SectionHeader(stringResource(R.string.location_detail_child_locations))
     }
 
     items(locations, key = { "location:${it.id}" }) { location ->
@@ -107,14 +119,16 @@ private fun LazyListScope.childLocations(
             modifier = Modifier
                 .clickable { navigateToLocation(location) }
         ) {
-            Text(location.name, modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            Text(
+                location.name, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
             )
         }
     }
 }
 
+@ExperimentalFoundationApi
 fun LazyListScope.artworks(
     artworks: List<Artwork>,
     navigateToArtwork: (artwork: Artwork) -> Unit,
@@ -123,11 +137,11 @@ fun LazyListScope.artworks(
         return
     }
 
-    item(key = "location_artwork_title") {
-        SectionTitle(stringResource(R.string.location_detail_artworks))
+    stickyHeader {
+        SectionHeader(stringResource(R.string.location_detail_artworks))
     }
 
-    itemsIndexed(artworks, key = { index, item -> "artwork:${item.id}_$index" }) { _, artwork ->
+    items(artworks, key = { item -> "artwork:${item.id}" }) { artwork ->
         ArtworkRow(
             artwork = artwork,
             modifier = Modifier
@@ -139,21 +153,18 @@ fun LazyListScope.artworks(
 }
 
 @Composable
-private fun SectionTitle(title: String) {
-    Column(
+private fun SectionHeader(title: String) {
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .background(color = colorScheme.surfaceContainerHigh)
     ) {
         Text(
-            title,
-            style = MaterialTheme.typography.subtitle1,
-            modifier = Modifier
-                .alpha(0.8f)
-                .padding(vertical = 8.dp)
-
+            text = title,
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+            style = typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+            color = colorScheme.onSurface,
         )
-        Divider()
     }
 }
 
@@ -167,10 +178,18 @@ private fun LocationEmptyView() {
     }
 }
 
+@Preview
+@Composable
+private fun SectionHeaderPreview() {
+    ArtGalleryTheme {
+        SectionHeader(title = "Title goes here")
+    }
+}
+
 @Composable
 @Preview
 fun PreviewEmptyView() {
-    ArtAtGVSUTheme {
+    ArtGalleryTheme {
         LocationEmptyView()
     }
 }

@@ -5,22 +5,26 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -47,15 +51,15 @@ import com.google.maps.android.ktx.awaitMap
 import edu.gvsu.art.client.Tour
 import edu.gvsu.art.client.TourStop
 import edu.gvsu.art.gallery.R
+import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
-import edu.gvsu.art.gallery.ui.theme.LightBlue
 import edu.gvsu.art.gallery.ui.theme.Shapes
 import edu.gvsu.art.gallery.ui.theme.isAppInDarkTheme
 import kotlinx.coroutines.launch
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TourDetailScreen(navController: NavController, tourID: String?, tourName: String) {
     tourID ?: return
@@ -84,7 +88,7 @@ fun TourDetailScreen(navController: NavController, tourID: String?, tourName: St
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .nestedScaffoldPadding(padding)
         ) {
             when (data) {
                 is Async.Success ->
@@ -92,6 +96,7 @@ fun TourDetailScreen(navController: NavController, tourID: String?, tourName: St
                         data(),
                         navigateToArtwork = { navigateToArtwork(it) }
                     )
+
                 is Async.Failure ->
                     ErrorView(
                         error = data.error,
@@ -135,16 +140,25 @@ private fun TourDetailView(tour: Tour, navigateToArtwork: (artworkID: String) ->
         }
         LazyRow(
             state = listState,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .height(144.dp)
-                .background(MaterialTheme.colors.surface)
+                .background(colorScheme.surface)
         ) {
             itemsIndexed(tourStops, key = { _, stop -> stop.artworkID }) { index, tourStop ->
+                if (index == 0) {
+                    Spacer(Modifier.width(16.dp))
+                }
+
                 TourStopCell(
                     tourStop,
                     isSelected = index == selectedTourStopIndex,
                     onClick = { setSelectedTourStopIndex(index) }
                 )
+
+                if (index == tourStops.lastIndex) {
+                    Spacer(Modifier.width(16.dp))
+                }
             }
         }
     }
@@ -225,6 +239,21 @@ private fun MapView(
         }
     }
 
+    LaunchedEffect(isDarkTheme) {
+        googleMap?.let { map ->
+            if (isDarkTheme) {
+                map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        context,
+                        R.raw.google_maps_dark
+                    )
+                )
+            } else {
+                map.setMapStyle(null)
+            }
+        }
+    }
+
     LaunchedEffect(selectedTourStop) {
         selectedTourStop?.let { stop ->
             val marker = tourStopMarkers.find { it.tag == stop.artworkID }
@@ -249,14 +278,14 @@ fun TourStopCell(
 ) {
     Box(
         modifier = Modifier
-            .padding(horizontal = 4.dp, vertical = 8.dp)
+            .padding(vertical = 8.dp)
             .selectedBorder(isSelected)
             .clip(Shapes.large)
             .clickable { onClick(tourStop) }
     ) {
         Box(
             modifier = Modifier
-                .background(MaterialTheme.colors.onSurface)
+                .background(colorScheme.onSurface)
                 .aspectRatio(1f)
         )
         AsyncImage(
@@ -269,9 +298,10 @@ fun TourStopCell(
     }
 }
 
+@Composable
 private fun Modifier.selectedBorder(isSelected: Boolean) =
     if (isSelected) {
-        this.then(Modifier.border(BorderStroke(4.dp, LightBlue), Shapes.large))
+        this.then(Modifier.border(BorderStroke(4.dp, colorScheme.surfaceTint), Shapes.large))
     } else {
         this
     }
