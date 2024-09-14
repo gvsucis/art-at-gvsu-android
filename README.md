@@ -1,6 +1,12 @@
 # Art at GVSU Android
 
-[![CalVer 2024.07.1013][img_version]][url_version]
+![Tests](https://github.com/gvsucis/art-at-gvsu-ios/actions/workflows/ci.yml/badge.svg) [![CalVer 2024.07.1013][img_version]][url_version]
+
+## Download
+
+<a href="https://play.google.com/store/apps/details?id=edu.gvsu.art.gallery">
+  <img src="./site/play-badge.png" width="150px" />
+</a>
 
 ## Getting Started
 
