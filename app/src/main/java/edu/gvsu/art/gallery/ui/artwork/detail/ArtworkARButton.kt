@@ -1,13 +1,14 @@
 package edu.gvsu.art.gallery.ui.artwork.detail
 
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ViewInAr
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,10 +27,11 @@ fun ArtworkARButton(
     IconButton(onClick = { onRequestARAsset() }) {
         if (arAsset.isLoading && progress > 0) {
             CircularProgressIndicator(
-                progress = progress,
-                strokeWidth = 3.dp,
+                progress = { progress },
                 modifier = Modifier.size(20.dp),
-                color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+                color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
+                strokeWidth = 3.dp,
+                trackColor = ProgressIndicatorDefaults.circularIndeterminateTrackColor,
             )
         } else {
             Icon(
