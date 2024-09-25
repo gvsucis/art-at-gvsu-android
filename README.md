@@ -1,6 +1,6 @@
 # Art at GVSU Android
 
-![Tests](https://github.com/gvsucis/art-at-gvsu-ios/actions/workflows/ci.yml/badge.svg) [![CalVer 2024.07.1013][img_version]][url_version]
+![Tests](https://github.com/gvsucis/art-at-gvsu-ios/actions/workflows/ci.yml/badge.svg) [![CalVer 2024.09.1014][img_version]][url_version]
 
 ## Download
 
@@ -14,7 +14,7 @@
 2. Add an emulator or set up a physical device via USB debugging
 3. Hit "Run 'app'" in the top toolbar.
 
-[img_version]: https://img.shields.io/static/v1.svg?label=CalVer&message=2024.07.1013&color=blue
+[img_version]: https://img.shields.io/static/v1.svg?label=CalVer&message=2024.09.1014&color=blue
 [url_version]: https://github.com/gvsucis/art-at-gvsu-android
 
 ## Directory Structure
