@@ -11,8 +11,12 @@
 ## Getting Started
 
 1. Download the latest version of Android Studio
-2. Add an emulator or set up a physical device via USB debugging
-3. Hit "Run 'app'" in the top toolbar.
+1. Copy over the project properties and replace the `art_gallery_base_url` key with the correct value
+    ```sh
+    cp project-sample.properties project.properties
+    ```
+1. Add an emulator or set up a physical device via USB debugging
+1. Hit "Run 'app'" in the top toolbar.
 
 [img_version]: https://img.shields.io/static/v1.svg?label=CalVer&message=2024.09.1014&color=blue
 [url_version]: https://github.com/gvsucis/art-at-gvsu-android
