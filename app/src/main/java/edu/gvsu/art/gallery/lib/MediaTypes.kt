@@ -9,5 +9,8 @@ object MediaTypes {
         return knownVideoExtensions.contains(extension)
     }
 
-    private val knownVideoExtensions = listOf("m4v")
+    private val knownVideoExtensions = listOf(
+        "m4v",
+        "mp4",
+    )
 }
