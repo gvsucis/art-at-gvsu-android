@@ -7,6 +7,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.firebase.crashlytics")
     id("org.jetbrains.kotlin.plugin.parcelize")
+    alias(libs.plugins.compose.compiler)
 }
 
 val properties = Properties().apply {
