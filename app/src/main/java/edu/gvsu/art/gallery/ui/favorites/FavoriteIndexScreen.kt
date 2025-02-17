@@ -33,6 +33,7 @@ import edu.gvsu.art.gallery.TabScreen
 import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.bookmarks.BookmarksExport
 import edu.gvsu.art.gallery.navigateToArtworkDetail
+import edu.gvsu.art.gallery.ui.GalleryTopAppBar
 import edu.gvsu.art.gallery.ui.WideTitleCard
 import edu.gvsu.art.gallery.ui.exportFavorites
 import kotlinx.coroutines.launch
@@ -74,9 +75,9 @@ fun FavoriteIndexScreen(
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            TopAppBar(
+            GalleryTopAppBar(
                 scrollBehavior = scrollBehavior,
-                title = { Text(stringResource(R.string.navigation_favorites)) },
+                title = stringResource(R.string.navigation_favorites),
                 actions = {
                     ImportExportMenu(
                         onRequestImport = {

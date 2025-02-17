@@ -12,8 +12,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import edu.gvsu.art.gallery.lib.VideoPool
@@ -23,28 +21,22 @@ import edu.gvsu.art.gallery.ui.mediaviewer.LocalMediaViewerState
 @ExperimentalComposeUiApi
 @Composable
 fun ArtworkMediaDialog() {
+    val videoPool = rememberSaveable { VideoPool() }
     val mediaViewer = LocalMediaViewerState.current
-    val artwork = mediaViewer.artwork ?: return
+    val media = mediaViewer.artwork?.mediaRepresentations.orEmpty()
 
-    val view = LocalView.current
-
-    AnimatedVisibility(
-        enter = fadeIn(),
-        exit = fadeOut(),
-        visible = mediaViewer.artwork != null
-    ) {
-
-        val videoPool = rememberSaveable() { VideoPool() }
-
-        CompositionLocalProvider(
-            LocalVideoPool provides videoPool
+    CompositionLocalProvider(LocalVideoPool provides videoPool) {
+        AnimatedVisibility(
+            enter = fadeIn(),
+            exit = fadeOut(),
+            visible = mediaViewer.artwork != null
         ) {
             val pagerState = rememberPagerState(initialPage = mediaViewer.currentIndex) {
-                artwork.mediaRepresentations.size
+                media.size
             }
 
             MediaScreen(
-                urls = artwork.mediaRepresentations,
+                urls = media,
                 pagerState = pagerState,
                 onDismiss = {
                     mediaViewer.close()
@@ -55,23 +47,5 @@ fun ArtworkMediaDialog() {
                 mediaViewer.updateIndex(pagerState.currentPage)
             }
         }
-    }
-
-    DisposableEffect(artwork.id) {
-        val window = (view.context as Activity).window
-
-        val previousAppearanceLightStatusBars =
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars
-
-        onDispose {
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
-                previousAppearanceLightStatusBars
-        }
-    }
-
-    SideEffect {
-        val window = (view.context as Activity).window
-
-        WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
     }
 }

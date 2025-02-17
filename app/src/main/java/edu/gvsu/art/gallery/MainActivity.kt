@@ -6,6 +6,7 @@ import android.os.StrictMode.setThreadPolicy
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
@@ -85,47 +86,49 @@ fun BottomNavigationView() {
                 modifier = Modifier.fillMaxSize(),
                 color = colorScheme.background
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = Route.BrowseIndex,
-                        modifier = Modifier.weight(0.1f),
+                Box(Modifier.fillMaxSize()) {
+                    Column(
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        routing(navController)
-                    }
-                    NavigationBar {
-                        TabScreen.all.forEach { entry ->
-                            val selected = entry == selectedTab
+                        NavHost(
+                            navController = navController,
+                            startDestination = Route.BrowseIndex,
+                            modifier = Modifier.weight(0.1f),
+                        ) {
+                            routing(navController)
+                        }
+                        NavigationBar {
+                            TabScreen.all.forEach { entry ->
+                                val selected = entry == selectedTab
 
-                            NavigationBarItem(
-                                icon = {
-                                    Icon(
-                                        entry.icon,
-                                        contentDescription = null
-                                    )
-                                },
-                                label = {
-                                    Text(
-                                        stringResource(entry.title),
-                                    )
-                                },
-                                selected = selected,
-                                onClick = {
-                                    navController.navigate(entry.route) {
-                                        popUpTo(entry.route) {
-                                            saveState = true
+                                NavigationBarItem(
+                                    icon = {
+                                        Icon(
+                                            entry.icon,
+                                            contentDescription = null
+                                        )
+                                    },
+                                    label = {
+                                        Text(
+                                            stringResource(entry.title),
+                                        )
+                                    },
+                                    selected = selected,
+                                    onClick = {
+                                        navController.navigate(entry.route) {
+                                            popUpTo(entry.route) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
                                         }
-                                        launchSingleTop = true
                                     }
-                                }
-                            )
+                                )
+                            }
                         }
                     }
-                }
 
-                ArtworkMediaDialog()
+                    ArtworkMediaDialog()
+                }
             }
         }
     }
