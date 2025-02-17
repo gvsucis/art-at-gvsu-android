@@ -28,12 +28,12 @@ val secrets = Properties().apply {
 
 android {
     namespace = "edu.gvsu.art.gallery"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
-        applicationId = "edu.gvsu.artgallery"
-        minSdk = 26
-        targetSdk = 34
+        applicationId = "edu.gvsu.art.gallery"
+        minSdk = 31
+        targetSdk = 35
         versionCode = 1014
         versionName = "2024.09.1014"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -92,11 +92,10 @@ android {
 dependencies {
     val camerax_version = "1.3.4"
     val koin_version = "3.5.0"
-    val paging_version = "1.0.0"
     val datastore_version = "1.1.1"
     val accompanist_version = "0.22.0-rc"
 
-    implementation(platform("androidx.compose:compose-bom:2024.08.00"))
+    implementation(libs.androidx.compose.bom)
     implementation("androidx.camera:camera-core:${camerax_version}")
     implementation("androidx.camera:camera-camera2:${camerax_version}")
     implementation("androidx.camera:camera-lifecycle:${camerax_version}")
@@ -108,16 +107,15 @@ dependencies {
     implementation("androidx.media3:media3-ui:1.4.1")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.1")
     implementation("androidx.datastore:datastore-preferences:${datastore_version}")
-    implementation("androidx.compose.animation:animation")
-    implementation("androidx.compose.compiler:compiler:1.5.15")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.compose.material3:material3:1.3.0-rc01")
-    implementation("androidx.compose.material:material")
+    implementation(libs.androidx.animation)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.material)
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.ui:ui-util")
     implementation("androidx.datastore:datastore-preferences:${datastore_version}")
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.androidx.navigation.compose)
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
     implementation("com.github.Tlaster:Swiper:0.7.1")
     implementation("com.google.accompanist:accompanist-permissions:${accompanist_version}")
@@ -128,7 +126,7 @@ dependencies {
     implementation("io.insert-koin:koin-android:${koin_version}")
     implementation("io.insert-koin:koin-androidx-compose:${koin_version}")
     implementation("io.insert-koin:koin-core:${koin_version}")
-    implementation("androidx.activity:activity-compose:1.9.1")
+    implementation("androidx.activity:activity-compose:1.10.0")
     implementation("com.google.android.gms:play-services-analytics:18.1.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("com.google.android.gms:play-services-maps:19.0.0")

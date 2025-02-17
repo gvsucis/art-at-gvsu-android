@@ -6,9 +6,14 @@ import android.os.StrictMode.setThreadPolicy
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.NavigationBar
@@ -82,54 +87,51 @@ fun BottomNavigationView() {
         LocalTabScreen provides selectedTab
     ) {
         CompositionLocalProvider(LocalMediaViewerState provides mediaViewerState) {
-            Box(modifier = Modifier.fillMaxSize()) {
-
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = colorScheme.background
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = colorScheme.background
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize()
+                    NavHost(
+                        navController = navController,
+                        startDestination = Route.BrowseIndex,
+                        modifier = Modifier.weight(0.1f),
                     ) {
-                        NavHost(
-                            navController = navController,
-                            startDestination = Route.BrowseIndex,
-                            modifier = Modifier.weight(0.1f),
-                        ) {
-                            routing(navController)
-                        }
-                        NavigationBar {
-                            TabScreen.all.forEach { entry ->
-                                val selected = entry == selectedTab
+                        routing(navController)
+                    }
+                    NavigationBar {
+                        TabScreen.all.forEach { entry ->
+                            val selected = entry == selectedTab
 
-                                NavigationBarItem(
-                                    icon = {
-                                        Icon(
-                                            entry.icon,
-                                            contentDescription = null
-                                        )
-                                    },
-                                    label = {
-                                        Text(
-                                            stringResource(entry.title),
-                                        )
-                                    },
-                                    selected = selected,
-                                    onClick = {
-                                        navController.navigate(entry.route) {
-                                            popUpTo(entry.route) {
-                                                saveState = true
-                                            }
-                                            launchSingleTop = true
+                            NavigationBarItem(
+                                icon = {
+                                    Icon(
+                                        entry.icon,
+                                        contentDescription = null
+                                    )
+                                },
+                                label = {
+                                    Text(
+                                        stringResource(entry.title),
+                                    )
+                                },
+                                selected = selected,
+                                onClick = {
+                                    navController.navigate(entry.route) {
+                                        popUpTo(entry.route) {
+                                            saveState = true
                                         }
+                                        launchSingleTop = true
                                     }
-                                )
-                            }
+                                }
+                            )
                         }
                     }
-
-                    ArtworkMediaDialog()
                 }
+
+                ArtworkMediaDialog()
             }
         }
     }

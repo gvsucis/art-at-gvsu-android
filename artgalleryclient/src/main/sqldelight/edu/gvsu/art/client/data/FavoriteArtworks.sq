@@ -1,21 +1,22 @@
 CREATE TABLE  IF NOT EXISTS FavoriteArtworks (
-    id TEXT NOT NULL PRIMARY KEY,
+    id INTEGER PRIMARY KEY,
+    artwork_id TEXT NOT NULL UNIQUE,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 insert:
-INSERT INTO FavoriteArtworks(id)
+INSERT INTO FavoriteArtworks(artwork_id)
 VALUES (  ?);
 
 delete:
 DELETE FROM FavoriteArtworks
-WHERE id = ?;
+WHERE artwork_id = ?;
 
 favoriteExists:
 SELECT EXISTS (
   SELECT id
   FROM FavoriteArtworks
-  WHERE id = ?
+  WHERE artwork_id = ?
   LIMIT 1
 );
 
@@ -23,5 +24,5 @@ findAll:
 SELECT
   Artworks.*
 FROM FavoriteArtworks
-JOIN Artworks ON FavoriteArtworks.id = Artworks.id
+JOIN Artworks ON FavoriteArtworks.artwork_id = Artworks.id
 ORDER BY FavoriteArtworks.created_at DESC;
