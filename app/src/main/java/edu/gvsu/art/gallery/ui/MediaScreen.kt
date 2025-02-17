@@ -1,6 +1,7 @@
 package edu.gvsu.art.gallery.ui
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import edu.gvsu.art.gallery.ui.foundation.LocalVideoPool
 import moe.tlaster.swiper.rememberSwiperState
 import java.net.URL
 
@@ -31,12 +33,18 @@ fun MediaScreen(
     pagerState: PagerState,
     onDismiss: () -> Unit = {},
 ) {
+    val videoPool = LocalVideoPool.current
     val view = LocalView.current
+
+    fun dismiss() {
+        videoPool.clear()
+        onDismiss()
+    }
 
     var controlVisibility by remember { mutableStateOf(true) }
     val swiperState = rememberSwiperState(
         onDismiss = {
-            onDismiss()
+           dismiss()
         }
     )
 
@@ -58,10 +66,14 @@ fun MediaScreen(
             Modifier.statusBarsPadding()
         ) {
             CloseButton(
-                onClick = { onDismiss() },
+                onClick = { dismiss() },
                 visible = controlVisibility && swiperState.progress == 0f
             )
         }
+    }
+
+    BackHandler {
+        dismiss()
     }
 
     SideEffect {

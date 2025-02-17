@@ -39,21 +39,6 @@ fun MediaView(
     videoControlVisibility: Boolean,
     onClick: () -> Unit,
 ) {
-    val (videoUrl, setVideoUrl) = remember { mutableStateOf<URL?>(null) }
-    val videoState = rememberVideoPlayerState(
-        url = videoUrl?.toString()
-    )
-
-    LaunchedEffect(pagerState.currentPage) {
-        val url = urls.getOrNull(pagerState.currentPage) ?: return@LaunchedEffect
-
-        if (MediaTypes.isVideo(url)) {
-            setVideoUrl(url)
-        } else {
-            setVideoUrl(null)
-        }
-    }
-
     Swiper(state = swiperState) {
         HorizontalPager(
             pageSpacing = 8.dp,
@@ -67,9 +52,11 @@ fun MediaView(
                         onTap = { onClick() }
                     )
                 }) {
-                    videoState?.let {
+                    val videoState = rememberVideoPlayerState(url = url.toString())
+
+                    if (pagerState.currentPage == page) {
                         VideoPlayer(
-                            videoState = it,
+                            videoState = videoState,
                             playEnable = true,
                             zOrderMediaOverlay = true,
                             keepScreenOn = true,
@@ -80,7 +67,7 @@ fun MediaView(
                             exit = shrinkVertically() + fadeOut(),
                             modifier = Modifier.align(Alignment.BottomStart)
                         ) {
-                            VideoControl(state = it)
+                            VideoControl(state = videoState)
                         }
                     }
                 }

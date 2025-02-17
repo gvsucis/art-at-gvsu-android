@@ -20,94 +20,93 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.media3.common.util.UnstableApi
 
 @OptIn(UnstableApi::class)
 @Composable
 fun VideoPlayer(
     videoState: VideoPlayerState,
-    playEnable: Boolean = true,
+    playEnable: Boolean = false,
     zOrderMediaOverlay: Boolean = false,
     keepScreenOn: Boolean = false,
-    thumb: @Composable() (() -> Unit)? = null,
+    thumb: @Composable (() -> Unit)? = null,
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val videoPool = LocalVideoPool.current
 
     Box {
-        if (playEnable) {
-            val mediaPlayerView = remember(videoState.url) {
-                MediaPlayerView(
-                    url = videoState.url,
-                    zOrderMediaOverlay = zOrderMediaOverlay,
-                    keepScreenOn = keepScreenOn,
-                    videoPool = videoPool,
-                ).apply {
-                    videoState.bind(this)
-                }
+        val mediaPlayerView = remember(videoState.url) {
+            MediaPlayerView(
+                url = videoState.url,
+                zOrderMediaOverlay = zOrderMediaOverlay,
+                keepScreenOn = keepScreenOn,
+                videoPool = videoPool,
+            ).apply {
+                videoState.bind(this)
             }
-            DisposableEffect(Unit) {
-                val observer = object : DefaultLifecycleObserver {
-                    override fun onResume(owner: LifecycleOwner) {
-                        super.onResume(owner)
-                        videoState.onResume()
-                    }
+        }
 
-                    override fun onPause(owner: LifecycleOwner) {
-                        super.onPause(owner)
-                        videoState.onPause()
-                    }
+        DisposableEffect(Unit) {
+            val observer = object : DefaultLifecycleObserver {
+                override fun onResume(owner: LifecycleOwner) {
+                    super.onResume(owner)
+                    videoState.onResume()
                 }
-                lifecycle.addObserver(observer)
-                onDispose {
+
+                override fun onPause(owner: LifecycleOwner) {
+                    super.onPause(owner)
                     videoState.onPause()
-                    mediaPlayerView.release()
-                    lifecycle.removeObserver(observer)
                 }
             }
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                mediaPlayerView.Content(
-                    modifier = Modifier
-                        .aspectRatio(16 / 9f)
-                        .fillMaxSize()
-                )
-            }
-        }
-        if ((videoState.showThumbnail || !playEnable) && thumb != null) {
-            thumb()
-        }
-        if (videoState.showLoading && playEnable) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            lifecycle.addObserver(observer)
+            onDispose {
+                videoState.onPause()
+                mediaPlayerView.release()
+                lifecycle.removeObserver(observer)
             }
         }
 
-        if (!playEnable) {
-            Box(
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            mediaPlayerView.Content(
                 modifier = Modifier
+                    .aspectRatio(16 / 9f)
                     .fillMaxSize()
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    tint = Color.White.copy(alpha = LocalContentColor.current.alpha),
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(44.dp)
-                        .background(MaterialTheme.colorScheme.primary, CircleShape),
-                    contentDescription = null
-                )
-            }
+            )
+        }
+    }
+    if ((videoState.showThumbnail || !playEnable) && thumb != null) {
+        thumb()
+    }
+    if (videoState.showLoading && playEnable) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
+    }
+
+    if (!playEnable) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Icon(
+                imageVector = Icons.Default.PlayArrow,
+                tint = Color.White.copy(alpha = LocalContentColor.current.alpha),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(44.dp)
+                    .background(MaterialTheme.colorScheme.primary, CircleShape),
+                contentDescription = null
+            )
         }
     }
 }
