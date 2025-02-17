@@ -1,4 +1,4 @@
-package edu.gvsu.art.gallery.lib
+package edu.gvsu.art.gallery.bookmarks
 
 data class BookmarksExport(val html: String) {
     class Builder {
@@ -38,6 +38,7 @@ data class BookmarksExport(val html: String) {
         private const val DOCTYPE = "<!DOCTYPE NETSCAPE-Bookmark-file-1>"
         private const val METADATA =
             "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=UTF-8\">"
+        const val DEFAULT_FILE_NAME = "favorites.html"
     }
 }
 

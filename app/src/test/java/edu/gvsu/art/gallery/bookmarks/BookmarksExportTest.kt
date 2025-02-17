@@ -1,4 +1,4 @@
-package edu.gvsu.art.gallery.lib
+package edu.gvsu.art.gallery.bookmarks
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
