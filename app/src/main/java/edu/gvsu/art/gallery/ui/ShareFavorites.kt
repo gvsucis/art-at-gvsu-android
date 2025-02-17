@@ -1,65 +1,40 @@
 package edu.gvsu.art.gallery.ui
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
-import androidx.core.content.FileProvider
+import android.widget.Toast
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.R
-import edu.gvsu.art.gallery.lib.BookmarksHTML
+import edu.gvsu.art.gallery.bookmarks.BookmarksExport
 import edu.gvsu.art.gallery.lib.Links
-import java.io.File
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.FileOutputStream
-import java.io.IOException
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
-fun Context.shareFavoritesHTML(favorites: List<Artwork>) {
-    val formattedTime =
-        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-    val bookmarks = BookmarksHTML.Builder(formattedTime).run {
-        favorites.forEach { favorite ->
-            append(favorite.name, Links.artworkDetail(favorite.id))
-        }
-        build()
-    }
+suspend fun Context.exportFavorites(favorites: List<Artwork>, target: Uri?) {
+    target ?: return
 
-    val uri = writeBookmark(bookmarks.html)
-    if (uri != null) {
-        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            type = contentResolver.getType(uri)
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    val result = runCatching {
+        val (html) = BookmarksExport.Builder().run {
+            favorites.forEach { favorite ->
+                addBookmark(favorite.name, Links.artworkDetail(favorite.id))
+            }
+            build()
         }
 
-        startActivity(
-            Intent.createChooser(
-                shareIntent,
-                getString(R.string.favorites_index_export_chooser_title)
-            )
-        )
+        return@runCatching withContext(Dispatchers.IO) {
+            contentResolver.openFileDescriptor(target, "w")?.use { descriptor ->
+                FileOutputStream(descriptor.fileDescriptor).use {
+                    it.write(html.toByteArray())
+                }
+            }
+        }
     }
+
+    val messageRes = result.fold(
+        onSuccess = { R.string.favorites_export_success },
+        onFailure = { R.string.favorites_export_failure }
+    )
+
+    Toast.makeText(this, getString(messageRes), Toast.LENGTH_SHORT).show()
 }
-
-fun Context.writeBookmark(str: String): Uri? {
-    val filename = "art_at_gvsu_favorites.html"
-    val bookmarks = File(File(cacheDir, "bookmarks"), filename)
-
-    try {
-        bookmarks.createNewFile()
-        FileOutputStream(bookmarks).apply {
-            write(str.toByteArray())
-            close()
-        }
-    } catch (e: IOException) {
-        return null
-    }
-
-    return try {
-        FileProvider.getUriForFile(this, FILE_PROVIDER, bookmarks)
-    } catch (e: IllegalArgumentException) {
-        null
-    }
-}
-
-private const val FILE_PROVIDER = "edu.gvsu.art.gallery.fileprovider"

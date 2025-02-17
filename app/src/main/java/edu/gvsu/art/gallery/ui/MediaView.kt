@@ -34,7 +34,6 @@ import java.net.URL
 @Composable
 fun MediaView(
     urls: List<URL>,
-    volume: Float = 1f,
     swiperState: SwiperState,
     pagerState: PagerState,
     videoControlVisibility: Boolean,
@@ -46,7 +45,7 @@ fun MediaView(
     )
 
     LaunchedEffect(pagerState.currentPage) {
-        val url = urls[pagerState.currentPage]
+        val url = urls.getOrNull(pagerState.currentPage) ?: return@LaunchedEffect
 
         if (MediaTypes.isVideo(url)) {
             setVideoUrl(url)

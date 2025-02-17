@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 data class ObjectDetail(
     val ok: Boolean? = false,
     val access: String = "0",
-    val object_id: Int? = 0,
+    val object_id: Int?,
     val idno: String? = "",
     val mimetypes: String? = "",
     val media_large_url: String? = "",

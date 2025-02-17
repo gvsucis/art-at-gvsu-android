@@ -1,5 +1,6 @@
 [versions]
 junitVersion = "4.13.2"
+koin = "3.5.6"
 sqldelight = "2.0.2"
 kotlin = "2.1.0"
 
@@ -10,9 +11,20 @@ androidx-material = { module = "androidx.compose.material:material" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version = "1.3.1" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version = "2.8.7" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version = "2.10.0" }
+androidx-ui-util = { module = "androidx.compose.ui:ui-util" }
 junit-junit = { module = "junit:junit", version.ref = "junitVersion" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
+jsoup = { module = "org.jsoup:jsoup", version = "1.17.1" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version = "1.8.1" }
+mockk = { module = "io.mockk:mockk", version = "1.13.12" }
 sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 
 [plugins]
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

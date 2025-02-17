@@ -1,5 +1,6 @@
 package edu.gvsu.art.gallery.ui
 
+import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -11,12 +12,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import moe.tlaster.swiper.rememberSwiperState
 import java.net.URL
 
@@ -26,6 +31,8 @@ fun MediaScreen(
     pagerState: PagerState,
     onDismiss: () -> Unit = {},
 ) {
+    val view = LocalView.current
+
     var controlVisibility by remember { mutableStateOf(true) }
     val swiperState = rememberSwiperState(
         onDismiss = {
@@ -54,6 +61,24 @@ fun MediaScreen(
                 onClick = { onDismiss() },
                 visible = controlVisibility && swiperState.progress == 0f
             )
+        }
+    }
+
+    SideEffect {
+        val window = (view.context as Activity).window
+
+        WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
+    }
+
+    DisposableEffect(Unit) {
+        val window = (view.context as Activity).window
+
+        val previousAppearanceLightStatusBars =
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars
+
+        onDispose {
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                previousAppearanceLightStatusBars
         }
     }
 }

@@ -4,7 +4,7 @@
     <string name="navigation_Browse">Browse</string>
     <string name="navigation_Tours">Tours</string>
     <string name="navigation_Search">Search</string>
-    <string name="navigation_Favorites">Favorites</string>
+    <string name="navigation_favorites">Favorites</string>
     <string name="navigation_Campuses">Campuses</string>
     <string name="navigation_Settings">Settings</string>
     <string name="navigation_featured_index">All Featured</string>
@@ -143,4 +143,15 @@
     <string name="browse_featured_title">Featured</string>
     <string name="settings_section_title_build_info">Build Information</string>
     <string name="search_list_no_results_found">No results found</string>
+    <string name="favorites_export_success">Export complete</string>
+    <string name="favorites_export_failure">Export failed</string>
+    <string name="favorites_menu_item_export">Export to HTML</string>
+    <string name="favorites_menu_item_import">Import from File</string>
+    <string name="favorites_menu_title">Favorites options</string>
+    <string name="bookmarks_import_toast_complete">Import complete</string>
+    <string name="bookmarks_import_toast_failed">Import failed</string>
+    <string name="bookmarks_import_progress_content_text_start">Starting import</string>
+    <string name="bookmarks_import_notification_title">Importing favorites...</string>
+    <string name="notifications_channel_title_bookmarks_import">Favorites Imports</string>
+    <string name="bookmarks_import_notification_cancel">Stop</string>
 </resources>

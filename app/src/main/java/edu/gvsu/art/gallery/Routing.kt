@@ -57,7 +57,7 @@ sealed class TabScreen(
 
     object Favorites : TabScreen(
         route = Route.FavoritesIndex,
-        title = R.string.navigation_Favorites,
+        title = R.string.navigation_favorites,
         icon = Icons.Default.Favorite
     )
 

@@ -38,7 +38,11 @@ android {
         versionName = "2024.09.1014"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "ART_GALLERY_BASE_URL", properties["art_gallery_base_url"] as String)
+        buildConfigField(
+            "String",
+            "ART_GALLERY_BASE_URL",
+            properties["art_gallery_base_url"] as String
+        )
         buildConfigField("String", "APPLICATION_NAME", properties["application_name"] as String)
     }
 
@@ -91,7 +95,6 @@ android {
 
 dependencies {
     val camerax_version = "1.3.4"
-    val koin_version = "3.5.0"
     val datastore_version = "1.1.1"
     val accompanist_version = "0.22.0-rc"
 
@@ -112,8 +115,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.compose.ui:ui-tooling")
-    implementation("androidx.compose.ui:ui-util")
+    implementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.ui.util)
     implementation("androidx.datastore:datastore-preferences:${datastore_version}")
     implementation(libs.androidx.navigation.compose)
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
@@ -123,9 +126,12 @@ dependencies {
     implementation("androidx.media3:media3-datasource-okhttp:1.4.1")
     implementation(libs.sqldelight.android.driver)
     implementation("io.coil-kt:coil-compose:2.7.0")
-    implementation("io.insert-koin:koin-android:${koin_version}")
-    implementation("io.insert-koin:koin-androidx-compose:${koin_version}")
-    implementation("io.insert-koin:koin-core:${koin_version}")
+    implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.core)
+    implementation(libs.koin.androidx.workmanager)
+    implementation(libs.jsoup)
     implementation("androidx.activity:activity-compose:1.10.0")
     implementation("com.google.android.gms:play-services-analytics:18.1.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
@@ -140,15 +146,14 @@ dependencies {
     implementation("com.google.maps.android:maps-utils-ktx:3.2.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.android.filament:filamat-android:1.21.1")
-    implementation(fileTree(mapOf("include" to listOf("*.jar"), "dir" to "libs")))
     implementation(project(":artgalleryclient"))
 
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.sqldelight.sqlite.driver)
+    testImplementation(kotlin("test"))
     testImplementation(libs.junit.junit)
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
-    testImplementation("org.mockito:mockito-core:3.6.0")
     androidTestImplementation(libs.junit.junit)
-    androidTestImplementation("org.mockito:mockito-core:3.6.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.8")
 }
 
 tasks.register("useGoogleServicesDebugFile") {
