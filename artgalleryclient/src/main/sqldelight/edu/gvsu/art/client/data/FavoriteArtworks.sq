@@ -6,7 +6,8 @@ CREATE TABLE  IF NOT EXISTS FavoriteArtworks (
 
 insert:
 INSERT INTO FavoriteArtworks(artwork_id)
-VALUES (  ?);
+VALUES (  ?)
+ON CONFLICT DO NOTHING;
 
 delete:
 DELETE FROM FavoriteArtworks

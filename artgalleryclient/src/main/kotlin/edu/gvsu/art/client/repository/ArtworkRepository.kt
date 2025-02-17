@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.firstOrNull
 
 interface ArtworkRepository {
     suspend fun find(id: String): Result<Artwork>
+
     fun insert(objectDetail: ObjectDetail)
 }
 
