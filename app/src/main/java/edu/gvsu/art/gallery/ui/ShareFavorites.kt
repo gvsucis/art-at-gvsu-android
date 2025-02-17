@@ -7,7 +7,7 @@ import androidx.core.content.FileProvider
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.BuildConfig
 import edu.gvsu.art.gallery.R
-import edu.gvsu.art.gallery.lib.BookmarksHTML
+import edu.gvsu.art.gallery.lib.BookmarksExport
 import edu.gvsu.art.gallery.lib.Links
 import java.io.File
 import java.io.FileOutputStream
@@ -18,9 +18,9 @@ import java.time.format.DateTimeFormatter
 fun Context.shareFavoritesHTML(favorites: List<Artwork>) {
     val formattedTime =
         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-    val bookmarks = BookmarksHTML.Builder(formattedTime).run {
+    val bookmarks = BookmarksExport.Builder().run {
         favorites.forEach { favorite ->
-            append(favorite.name, Links.artworkDetail(favorite.id))
+            addBookmark(favorite.name, Links.artworkDetail(favorite.id))
         }
         build()
     }

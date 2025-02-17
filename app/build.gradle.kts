@@ -140,15 +140,12 @@ dependencies {
     implementation("com.google.maps.android:maps-utils-ktx:3.2.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.android.filament:filamat-android:1.21.1")
-    implementation(fileTree(mapOf("include" to listOf("*.jar"), "dir" to "libs")))
+//    implementation(fileTree(mapOf("include" to listOf("*.jar"), "dir" to "libs")))
     implementation(project(":artgalleryclient"))
 
+    testImplementation(kotlin("test"))
     testImplementation(libs.junit.junit)
-    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
-    testImplementation("org.mockito:mockito-core:3.6.0")
     androidTestImplementation(libs.junit.junit)
-    androidTestImplementation("org.mockito:mockito-core:3.6.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.8")
 }
 
 tasks.register("useGoogleServicesDebugFile") {
