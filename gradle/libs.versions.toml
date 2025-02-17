@@ -1,0 +1,12 @@
+[versions]
+junitVersion = "4.13.2"
+sqldelight = "2.0.2"
+kotlin = "2.1.0"
+
+[libraries]
+junit-junit = { module = "junit:junit", version.ref = "junitVersion" }
+sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
+sqldelight-sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+
+[plugins]
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

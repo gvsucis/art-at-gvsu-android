@@ -13,7 +13,7 @@ push = false
 "bumpver.toml" = [
     'current_version = "{version}"',
 ]
-"app/build.gradle" = [
-    'versionName "{version}"',
-    'versionCode BUILD'
+"app/build.gradle.kt" = [
+    'versionName = "{version}"',
+    'versionCode = BUILD'
 ]
