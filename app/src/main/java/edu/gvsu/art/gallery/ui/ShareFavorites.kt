@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.core.content.FileProvider
 import edu.gvsu.art.client.Artwork
+import edu.gvsu.art.gallery.BuildConfig
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.lib.BookmarksHTML
 import edu.gvsu.art.gallery.lib.Links
@@ -43,11 +44,17 @@ fun Context.shareFavoritesHTML(favorites: List<Artwork>) {
 
 fun Context.writeBookmark(str: String): Uri? {
     val filename = "art_at_gvsu_favorites.html"
-    val bookmarks = File(File(cacheDir, "bookmarks"), filename)
+    val bookmarks = File(cacheDir, "bookmarks").apply {
+        if (!exists()) {
+            mkdir()
+        }
+    }
+
+    val file = File(bookmarks, filename)
 
     try {
-        bookmarks.createNewFile()
-        FileOutputStream(bookmarks).apply {
+        file.createNewFile()
+        FileOutputStream(file).apply {
             write(str.toByteArray())
             close()
         }
@@ -56,10 +63,11 @@ fun Context.writeBookmark(str: String): Uri? {
     }
 
     return try {
-        FileProvider.getUriForFile(this, FILE_PROVIDER, bookmarks)
+        fileURI(file)
     } catch (e: IllegalArgumentException) {
         null
     }
 }
 
-private const val FILE_PROVIDER = "edu.gvsu.art.gallery.fileprovider"
+fun Context.fileURI(file: File): Uri =
+    FileProvider.getUriForFile(this, "${BuildConfig.APPLICATION_ID}.fileprovider", file)
