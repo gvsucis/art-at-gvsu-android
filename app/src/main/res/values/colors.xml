@@ -7,7 +7,6 @@
     <color name="primary_dark_material">#000000</color>
     <color name="accent_dark">#80cbc4</color>
     <color name="background_dark">#303030</color>
-    <color name="statusBarColor">#000000</color>
     <color name="windowBackground">@color/background_material_dark</color>
     <color name="primary_dark">#ffffff</color>
     <color name="placeholder_background">#E0E0E0</color>

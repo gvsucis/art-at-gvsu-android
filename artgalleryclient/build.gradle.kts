@@ -1,29 +1,34 @@
 plugins {
     id("com.android.library")
     id("kotlin-android")
-    id("com.squareup.sqldelight")
+    id("app.cash.sqldelight") version libs.versions.sqldelight
     id("org.jetbrains.kotlin.plugin.parcelize")
 }
 
 android {
     namespace = "edu.gvsu.art.client"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 26
     }
-}
 
-sqldelight {
-    database("ArtGalleryDatabase") {
-        packageName = "edu.gvsu.art.db"
-        verifyMigrations = true
+    sqldelight {
+        databases {
+            create("ArtGalleryDatabase") {
+                val sqldelightVersion = libs.versions.sqldelight.get()
+
+                packageName.set("edu.gvsu.art.db")
+                verifyMigrations.set(true)
+                dialect("app.cash.sqldelight:sqlite-3-38-dialect:$sqldelightVersion")
+            }
+        }
     }
-}
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
 }
 
 dependencies {
@@ -32,14 +37,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
     testImplementation(kotlin("test"))
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("com.squareup.sqldelight:sqlite-driver:1.5.3")
+    testImplementation(libs.junit.junit)
+    testImplementation(libs.sqldelight.sqlite.driver)
     testImplementation("io.mockk:mockk:1.13.12")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }

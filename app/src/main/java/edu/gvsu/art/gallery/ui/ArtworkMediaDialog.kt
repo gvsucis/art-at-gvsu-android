@@ -24,7 +24,7 @@ import edu.gvsu.art.gallery.ui.mediaviewer.LocalMediaViewerState
 @Composable
 fun ArtworkMediaDialog() {
     val mediaViewer = LocalMediaViewerState.current
-
+    val artwork = mediaViewer.artwork ?: return
 
     val view = LocalView.current
 
@@ -39,8 +39,6 @@ fun ArtworkMediaDialog() {
         CompositionLocalProvider(
             LocalVideoPool provides videoPool
         ) {
-            val artwork = mediaViewer.artwork ?: return@CompositionLocalProvider
-
             val pagerState = rememberPagerState(initialPage = mediaViewer.currentIndex) {
                 artwork.mediaRepresentations.size
             }
@@ -59,27 +57,21 @@ fun ArtworkMediaDialog() {
         }
     }
 
-    SideEffect {
+    DisposableEffect(artwork.id) {
         val window = (view.context as Activity).window
 
-        window.statusBarColor = Color.Black.toArgb()
-        window.navigationBarColor = Color.Black.toArgb()
-        WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
-    }
-
-    DisposableEffect(mediaViewer.artwork?.id) {
-        val window = (view.context as Activity).window
-
-        val previousStatusBarColor = window.statusBarColor
-        val previousNavColor = window.navigationBarColor
         val previousAppearanceLightStatusBars =
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars
 
         onDispose {
-            window.navigationBarColor = previousNavColor
-            window.statusBarColor = previousStatusBarColor
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
                 previousAppearanceLightStatusBars
         }
+    }
+
+    SideEffect {
+        val window = (view.context as Activity).window
+
+        WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
     }
 }

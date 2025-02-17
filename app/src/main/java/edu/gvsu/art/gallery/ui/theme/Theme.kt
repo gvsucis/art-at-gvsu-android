@@ -90,8 +90,12 @@ private val darkScheme = darkColorScheme(
     surfaceContainerHigh = surfaceContainerHighDark,
     surfaceContainerHighest = surfaceContainerHighestDark,
 )
+
 @Composable
-fun ArtGalleryTheme(darkTheme: Boolean = isAppInDarkTheme(), content: @Composable () -> Unit) {
+fun ArtGalleryTheme(
+    darkTheme: Boolean = isAppInDarkTheme(),
+    content: @Composable () -> Unit
+) {
     val colorScheme = if (darkTheme) {
         darkScheme
     } else {
@@ -102,7 +106,6 @@ fun ArtGalleryTheme(darkTheme: Boolean = isAppInDarkTheme(), content: @Composabl
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.navigationBarColor = colorScheme.surface.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }

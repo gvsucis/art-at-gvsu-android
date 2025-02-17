@@ -1,6 +1,6 @@
 package edu.gvsu.art.gallery.di
 
-import com.squareup.sqldelight.android.AndroidSqliteDriver
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import edu.gvsu.art.db.ArtGalleryDatabase
 import org.koin.dsl.module
 
