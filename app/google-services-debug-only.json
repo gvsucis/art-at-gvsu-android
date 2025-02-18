@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "1012557198299",
     "project_id": "art-at-gvsu-debug",
-    "storage_bucket": "art-at-gvsu-debug.appspot.com"
+    "storage_bucket": "art-at-gvsu-debug.firebasestorage.app"
   },
   "client": [
     {
@@ -10,6 +10,25 @@
         "mobilesdk_app_id": "1:1012557198299:android:18864c8323c2297ab22dfe",
         "android_client_info": {
           "package_name": "edu.gvsu.art.gallery"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8EYf8WcAl_B4Q8DvEVoiDq8AWbHGazFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012557198299:android:6b6face2b75caa5fb22dfe",
+        "android_client_info": {
+          "package_name": "edu.gvsu.artmuseum"
         }
       },
       "oauth_client": [],

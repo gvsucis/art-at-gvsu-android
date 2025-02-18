@@ -12,10 +12,14 @@ class VideoPool(
     private val pool: ConcurrentHashMap<String, Long> = ConcurrentHashMap()
 ) : Parcelable {
     fun get(url: String): Long {
-        return pool[url] ?: 1L
+        return pool[url] ?: 0L
     }
 
     fun set(url: String, position: Long) {
         pool[url] = position
+    }
+
+    fun clear() {
+        pool.clear()
     }
 }

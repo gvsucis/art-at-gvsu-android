@@ -1,8 +1,6 @@
 name: Deploy Beta
 
-on:
-  push:
-    branches: main
+on: workflow_dispatch
 
 jobs:
   beta:

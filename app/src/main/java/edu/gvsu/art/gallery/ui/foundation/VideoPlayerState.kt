@@ -9,17 +9,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 
 @Composable
 fun rememberVideoPlayerState(
-    url: String?,
+    url: String,
     isPlaying: Boolean = false,
     volume: Float = 1f,
     isReady: Boolean = false,
     currentPosition: Long = 0L,
     isMute: Boolean = false,
-): VideoPlayerState? {
-    if (url.isNullOrEmpty()) {
-        return null
-    }
-
+): VideoPlayerState {
     return rememberSaveable(
         saver = VideoPlayerState.Saver(url),
         key = url
