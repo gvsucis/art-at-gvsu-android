@@ -1,0 +1,3 @@
+• Update behind-the-scenes dependencies
+• Add import/export options for favorites
+• Fix bug around some video types
