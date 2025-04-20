@@ -5,6 +5,9 @@ on: workflow_dispatch
 jobs:
   beta:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4.1.7
       - name: Set up Ruby
