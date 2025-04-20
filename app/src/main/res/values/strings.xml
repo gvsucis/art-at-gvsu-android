@@ -36,13 +36,13 @@
     <string name="favorites_index_export_chooser_title">Share Favorites export</string>
 
     <!-- settings -->
-    <string name="settings_about_description">The mission of the Grand Valley State University Art Gallery is to encourage appreciation and understanding of art and its role in society through direct engagement with original works of art. The Art Gallery acquires, preserves, interprets, exhibits, and otherwise makes accessible works of art for the benefit of a variety of audiences, in support of the interdisciplinary educational goals of the University and for the benefit of the community at large.\n\nArt at GVSU is a collaborative project between the Grand Valley State University\'s Art Gallery, School of Computing and the open-source collection management project Collective Access.</string>
+    <string name="settings_about_description">The mission of the Grand Valley State University Art Museum is to encourage appreciation and understanding of art and its role in society through direct engagement with original works of art. The Art Museum acquires, preserves, interprets, exhibits, and otherwise makes accessible works of art for the benefit of a variety of audiences, in support of the interdisciplinary educational goals of the University and for the benefit of the community at large.\n\nArt at GVSU is a collaborative project between the Grand Valley State University\'s Art Museum, College of Computing and the open-source collection management project Collective Access.</string>
     <string name="settings_theme_light">Light</string>
     <string name="settings_theme_dark">Dark</string>
     <string name="settings_theme_system_default">System Default</string>
     <string name="settings_about_title">About Art at GVSU</string>
     <string name="settings_appearance_title">Appearance</string>
-    <string name="settings_art_gallery_link">GVSU Art Gallery</string>
+    <string name="settings_art_gallery_link">GVSU Art Museum</string>
     <string name="settings_more_apps_link">More Apps by GVSU</string>
     <string name="settings_aci_link">GVSU Applied Computing Institute</string>
 
@@ -120,13 +120,11 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_example">Example action</string>
     <string name="more_apps">More apps by GVSU</string>
     <string name="learn_more">Learn more</string>
     <string name="get_on_google_play">Get it on Google Play</string>
     <string name="laker_mobile_description">More here</string>
     <!-- Screen names-->
-    <string name="activity_about" translatable="false">ABOUT_ACTIVITY</string>
     <string name="activity_browse" translatable="false">BROWSE_ACTIVITY</string>
     <string name="activity_entity_detail" translatable="false">ENTITY_DETAIL_ACTIVITY</string>
     <string name="activity_favorites" translatable="false">FAVORITES_ACTIVITY</string>
@@ -151,7 +149,7 @@
     <string name="bookmarks_import_toast_complete">Import complete</string>
     <string name="bookmarks_import_toast_failed">Import failed</string>
     <string name="bookmarks_import_progress_content_text_start">Starting import</string>
-    <string name="bookmarks_import_notification_title">Importing favorites...</string>
+    <string name="bookmarks_import_notification_title">Importing favorites…</string>
     <string name="notifications_channel_title_bookmarks_import">Favorites Imports</string>
     <string name="bookmarks_import_notification_cancel">Stop</string>
 </resources>
