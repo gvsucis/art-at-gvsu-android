@@ -4,7 +4,7 @@
 
 ## Download
 
-<a href="https://play.google.com/store/apps/details?id=edu.gvsu.art.gallery">
+<a href="https://play.google.com/store/apps/details?id=edu.gvsu.artmuseum">
   <img src="./site/play-badge.png" width="150px" />
 </a>
 
