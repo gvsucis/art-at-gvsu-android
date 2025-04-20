@@ -45,7 +45,7 @@ Runs all the tests
 [bundle exec] fastlane android beta
 ```
 
-Submit a new Beta Build to Firebase App Distribution
+Submit a new Beta Build to Google Play
 
 ### android production
 
