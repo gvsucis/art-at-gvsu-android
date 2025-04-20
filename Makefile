@@ -32,7 +32,7 @@ secrets:
 ci-test: ci-secrets
 	$(FASTLANE) test
 
-deploy-beta: ci-secrets release-secrets
+deploy-beta: ci-secrets release-secrets production-secrets
 	$(FASTLANE) beta
 
 deploy-production: ci-secrets release-secrets production-secrets
