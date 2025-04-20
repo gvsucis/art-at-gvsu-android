@@ -1,2 +1,2 @@
 json_key_file('google-play-service-account.json')
-package_name('edu.gvsu.art.gallery')
+package_name('edu.gvsu.artmuseum')
