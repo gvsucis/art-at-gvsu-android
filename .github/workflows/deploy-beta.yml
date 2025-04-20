@@ -16,7 +16,15 @@ jobs:
         with:
           distribution: "zulu"
           java-version: "21"
-      - name: Deploy Beta to Firebase App Distribution
+      - name: Setup build dependencies
+        run: make py-deps
+      - name: Configure Git user
+        run: |
+          git config user.name "GV Bot"
+          git config user.email "137118308+gvcis-bot@users.noreply.github.com"
+      - name: Bump version
+        run: make bump-version-beta
+      - name: Deploy Beta
         env:
           ENCODED_GOOGLE_ANALYTICS_KEY: ${{ secrets.ENCODED_GOOGLE_ANALYTICS_KEY }}
           ENCODED_GOOGLE_PLAY_CREDENTIALS: ${{ secrets.ENCODED_GOOGLE_PLAY_CREDENTIALS }}
@@ -29,3 +37,5 @@ jobs:
           FASTLANE_APP_ID: ${{ secrets.FASTLANE_APP_ID }}
           SLACK_URL: ${{ secrets.SLACK_URL }}
         run: make deploy-beta
+      - name: Sync versioning to Main
+        run: git push --follow-tags

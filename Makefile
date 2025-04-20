@@ -32,6 +32,10 @@ secrets:
 ci-test: ci-secrets
 	$(FASTLANE) test
 
+.PHONY: bump-version-beta
+bump-version-beta:
+	bumpver update --tag=beta
+
 deploy-beta: ci-secrets release-secrets production-secrets
 	$(FASTLANE) beta
 
