@@ -22,7 +22,7 @@ platform :android do
   desc 'Submit a new Beta Build to Google Play'
   lane :beta do
     build_release
-    upload_to_play_store(track: 'beta')
+    upload_to_play_store(track: 'alpha')
     slack(message: "Android beta app successfully deployed to Play Store!")
   end
 
