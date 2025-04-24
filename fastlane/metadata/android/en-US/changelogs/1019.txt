@@ -1,0 +1,2 @@
+• Update descriptions in settings
+• Fix crash for artists and tours

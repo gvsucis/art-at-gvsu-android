@@ -27,7 +27,7 @@ jobs:
           git config user.name "GV Bot"
           git config user.email "137118308+gvcis-bot@users.noreply.github.com"
       - name: Bump version
-        run: bumpver update
+        run: make bump-version-final
       - name: Deploy App to Production
         env:
           ENCODED_GOOGLE_ANALYTICS_KEY: ${{ secrets.ENCODED_GOOGLE_ANALYTICS_KEY }}
