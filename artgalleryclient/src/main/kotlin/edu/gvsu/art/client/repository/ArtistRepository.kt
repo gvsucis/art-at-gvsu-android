@@ -19,7 +19,13 @@ class DefaultArtistRepository(
 ) : ArtistRepository {
     override suspend fun search(query: String): Result<List<Artist>> {
         return request { client.fetchArtistSearch(query = query) }.fold(
-            onSuccess = { Result.success(it.toDomainModel) },
+            onSuccess = {
+                try {
+                    Result.success(it.toDomainModel)
+                } catch (e: Exception) {
+                    Result.failure(e)
+                }
+            },
             onFailure = { Result.failure(it) }
         )
     }

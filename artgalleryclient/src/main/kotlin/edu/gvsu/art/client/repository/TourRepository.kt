@@ -30,9 +30,13 @@ class DefaultTourRepository(val client: ArtGalleryClient) : TourRepository {
     override suspend fun find(tourID: String): Result<Tour> {
         return request { client.fetchTour(tourID) }.fold(
             onSuccess = {
-                val tour = it.toDomainModel
-                val tourStops = findTourStops(tour)
-                Result.success(tour.copy(stops = tourStops))
+                try {
+                    val tour = it.toDomainModel
+                    val tourStops = findTourStops(tour)
+                    Result.success(tour.copy(stops = tourStops))
+                } catch (e: Exception) {
+                    Result.failure(e)
+                }
             },
             onFailure = { Result.failure(it) }
         )
