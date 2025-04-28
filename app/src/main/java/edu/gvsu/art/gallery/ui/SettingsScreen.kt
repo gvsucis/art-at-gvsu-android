@@ -2,6 +2,7 @@ package edu.gvsu.art.gallery.ui
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +16,6 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -40,9 +40,16 @@ import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(navController: NavController) {
+    SettingsContent {
+        navController.popBackStack()
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SettingsContent(onNavigateBack: () -> Unit) {
     val scrollState = rememberScrollState()
 
     Scaffold(
@@ -50,7 +57,7 @@ fun SettingsScreen(navController: NavController) {
             GalleryTopAppBar(
                 title = stringResource(R.string.navigation_Settings),
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 }
@@ -58,27 +65,24 @@ fun SettingsScreen(navController: NavController) {
         }
     ) { padding ->
         Column(
-            Modifier
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = Modifier
                 .nestedScaffoldPadding(padding)
                 .fillMaxSize()
                 .verticalScroll(state = scrollState)
         ) {
-            SettingsContent()
+            Column {
+                AboutView()
+                ExternalLinksView()
+            }
+            HorizontalDivider()
+            AppearanceView()
+            HorizontalDivider()
+            BuildInfoView()
+            Spacer(modifier = Modifier.height(16.dp))
         }
     }
 
-}
-
-@Composable
-private fun SettingsContent() {
-    AboutView()
-    HorizontalDivider()
-    AppearanceView()
-    HorizontalDivider()
-    ExternalLinksView()
-    HorizontalDivider()
-    BuildInfoView()
-    Spacer(modifier = Modifier.height(16.dp))
 }
 
 @Composable
@@ -136,14 +140,10 @@ private fun AppearanceView() {
 
 @Composable
 private fun ExternalLinksView() {
-    SettingsColumn {
+    Column(Modifier.padding(horizontal = 4.dp)) {
         ExternalLink(
             linkText = stringResource(R.string.settings_art_gallery_link),
-            Uri.parse("https://www.gvsu.edu/artgallery/")
-        )
-        ExternalLink(
-            linkText = stringResource(R.string.settings_more_apps_link),
-            Uri.parse("https://play.google.com/store/apps/developer?id=GVSU+School+of+Computing")
+            Uri.parse("https://www.gvsu.edu/artmuseum/")
         )
         ExternalLink(
             linkText = stringResource(R.string.settings_aci_link),
@@ -182,15 +182,19 @@ private fun SettingsColumn(
     title: String = "",
     section: @Composable () -> Unit,
 ) {
-    Column {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+    ) {
         if (title.isNotBlank()) {
             Text(
                 title,
                 style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
             )
         }
-        Column(Modifier.padding(start = 16.dp, bottom = 8.dp)) {
+        Column(Modifier.padding(horizontal = 16.dp)) {
             section()
         }
     }
@@ -201,7 +205,7 @@ private fun SettingsColumn(
 fun PreviewSettingsContent() {
     ArtGalleryTheme {
         Column {
-            SettingsContent()
+            SettingsContent {}
         }
     }
 }
