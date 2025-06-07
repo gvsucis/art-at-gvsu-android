@@ -35,7 +35,7 @@ import edu.gvsu.art.client.Artist
 import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
-import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
+import edu.gvsu.art.gallery.ui.foundation.LocalTopLevelRoute
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +43,7 @@ import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 fun ArtistDetailScreen(navController: NavController, artistID: String?) {
     artistID ?: return
 
-    val currentTab = LocalTabScreen.current
+    val currentTab = LocalTopLevelRoute.current
     fun navigateToArtwork(artworkID: String) {
         navController.navigateToArtworkDetail(currentTab, artworkID)
     }

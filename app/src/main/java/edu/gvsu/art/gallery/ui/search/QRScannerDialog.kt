@@ -1,4 +1,4 @@
-package edu.gvsu.art.gallery.ui
+package edu.gvsu.art.gallery.ui.search
 
 import android.content.Intent
 import android.net.Uri
@@ -11,8 +11,6 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
@@ -21,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -49,61 +46,11 @@ import com.google.accompanist.permissions.rememberPermissionState
 import edu.gvsu.art.gallery.BuildConfig
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.lib.Links
-import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
-import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
-
-@ExperimentalPermissionsApi
-@ExperimentalComposeUiApi
-@Composable
-fun SearchIndexScreen(navController: NavController) {
-    val tabScreen = LocalTabScreen.current
-    val (query, setQuery) = rememberSaveable { mutableStateOf("") }
-    val (selectedModel, setModel) = rememberSaveable { mutableStateOf(SearchCategory.ARTIST) }
-    val (isQRDialogOpen, openQRDialog) = remember { mutableStateOf(false) }
-
-    Scaffold(
-        topBar = {
-            Box(
-                modifier = Modifier.statusBarsPadding()
-            ) {
-                SearchIndexSearchBar(
-                    query = query,
-                    selectedCategory = selectedModel,
-                    setQuery = setQuery,
-                    setCategory = setModel,
-                    selectQRScanner = {
-                        openQRDialog(true)
-                    }
-                )
-            }
-        }
-    ) { padding ->
-        Box(
-            Modifier
-                .padding(padding)
-                .fillMaxSize()
-        ) {
-            SearchIndexList(
-                selected = selectedModel,
-                query = query,
-                onArtistSelect = { artist ->
-                    navController.navigateToArtistDetail(tabScreen, artist.id)
-                },
-                onArtworkSelect = { artwork ->
-                    navController.navigateToArtworkDetail(tabScreen, artwork.id)
-                }
-            )
-        }
-    }
-
-    if (isQRDialogOpen) {
-        QRScannerDialog(
-            navController = navController,
-            onDismiss = { openQRDialog(false) },
-        )
-    }
-}
+import edu.gvsu.art.gallery.ui.CloseIconButton
+import edu.gvsu.art.gallery.ui.QRCodeFoundCallback
+import edu.gvsu.art.gallery.ui.QRScanner
+import edu.gvsu.art.gallery.ui.foundation.LocalTopLevelRoute
 
 @ExperimentalPermissionsApi
 @ExperimentalComposeUiApi
@@ -113,7 +60,7 @@ fun QRScannerDialog(
     navController: NavController,
 ) {
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
-    val tabScreen = LocalTabScreen.current
+    val tabScreen = LocalTopLevelRoute.current
     val (url, setURL) = remember { mutableStateOf("") }
 
     PermissionRequired(
@@ -166,7 +113,7 @@ fun CameraRationaleDialog(onDismiss: () -> Unit) {
                     data = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null)
                 })
             }) {
-                Text(stringResource(R.string.search_qr_permission_go_to_settings))
+                Text(stringResource(R.string.search_camera_permission_go_to_settings))
             }
         },
         onDismissRequest = { onDismiss() },

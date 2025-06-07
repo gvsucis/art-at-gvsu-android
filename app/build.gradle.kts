@@ -7,6 +7,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.firebase.crashlytics")
     id("org.jetbrains.kotlin.plugin.parcelize")
+    kotlin("plugin.serialization") version libs.versions.kotlin
     alias(libs.plugins.compose.compiler)
 }
 
@@ -122,6 +123,7 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.util)
+    implementation(libs.kotlinx.serialization.json)
     implementation("androidx.datastore:datastore-preferences:${datastore_version}")
     implementation(libs.androidx.navigation.compose)
     implementation("com.google.mlkit:barcode-scanning:17.3.0")

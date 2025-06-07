@@ -25,7 +25,5 @@ interface VisionSearchClient {
                 .build()
                 .create()
         }
-
-        
     }
 }

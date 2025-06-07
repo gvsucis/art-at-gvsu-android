@@ -4,6 +4,7 @@ import edu.gvsu.art.gallery.bookmarks.bookmarksModule
 import edu.gvsu.art.gallery.ui.artwork.detail.artworkDetailModule
 import edu.gvsu.art.gallery.ui.browse.browseModule
 import edu.gvsu.art.gallery.ui.favorites.favoritesModule
+import edu.gvsu.art.gallery.ui.search.searchModule
 import org.koin.core.KoinApplication
 
 fun KoinApplication.setupModules() {
@@ -13,6 +14,7 @@ fun KoinApplication.setupModules() {
         repositoryModule,
         artworkDetailModule,
         browseModule,
+        searchModule,
         favoritesModule,
         bookmarksModule,
     )

@@ -54,7 +54,7 @@ import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToArtworkDetail
-import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
+import edu.gvsu.art.gallery.ui.foundation.LocalTopLevelRoute
 import edu.gvsu.art.gallery.ui.theme.Shapes
 import edu.gvsu.art.gallery.ui.theme.isAppInDarkTheme
 import kotlinx.coroutines.launch
@@ -63,7 +63,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun TourDetailScreen(navController: NavController, tourID: String?, tourName: String) {
     tourID ?: return
-    val tabScreen = LocalTabScreen.current
+    val tabScreen = LocalTopLevelRoute.current
     val (data, refresh) = useTour(tourID)
     val coroutineScope = rememberCoroutineScope()
 

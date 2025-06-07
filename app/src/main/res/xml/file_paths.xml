@@ -2,4 +2,5 @@
 <paths>
     <cache-path name="bookmarks" path="bookmarks/" />
     <cache-path name="ar_assets" path="ar_assets/" />
+    <cache-path name="vision_search" path="vision_search/" />
 </paths>
