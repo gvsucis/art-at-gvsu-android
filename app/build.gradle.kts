@@ -43,6 +43,11 @@ android {
             "ART_GALLERY_BASE_URL",
             properties["art_gallery_base_url"] as String
         )
+        buildConfigField(
+            "String",
+            "VISION_SEARCH_BASE_URL",
+            properties["vision_search_base_url"] as String
+        )
         buildConfigField("String", "APPLICATION_NAME", properties["application_name"] as String)
     }
 

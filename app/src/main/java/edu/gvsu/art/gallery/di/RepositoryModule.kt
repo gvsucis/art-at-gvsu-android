@@ -1,6 +1,7 @@
 package edu.gvsu.art.gallery.di
 
 import edu.gvsu.art.client.api.ArtGalleryClient
+import edu.gvsu.art.client.api.VisionSearchClient
 import edu.gvsu.art.client.repository.*
 import edu.gvsu.art.gallery.BuildConfig
 import org.koin.dsl.module
@@ -10,6 +11,9 @@ internal val repositoryModule = module {
         ArtGalleryClient.create(
             baseURL = BuildConfig.ART_GALLERY_BASE_URL
         )
+    }
+    single {
+        VisionSearchClient.create(BuildConfig.VISION_SEARCH_BASE_URL)
     }
     single<ArtistRepository> { DefaultArtistRepository(database = get(), client = get()) }
     single<ArtworkRepository> { DefaultArtworkRepository(database = get(), client = get()) }
