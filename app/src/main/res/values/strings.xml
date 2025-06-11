@@ -27,7 +27,10 @@
     <string name="search_index_artist_radio">Artists</string>
     <string name="search_index_artworks_radio">Artworks</string>
     <string name="search_qr_permission_rationale">QR reader requires camera access to scan. Go to settings to enable.</string>
-    <string name="search_qr_permission_go_to_settings">Go to Settings</string>
+    <string name="search_vision_search_permission_rationale">Vision search requires camera access to scan. Go to settings to enable.</string>
+    <string name="search_camera_permission_go_to_settings">Go to Settings</string>
+    <string name="scan_qr_code_button">Scan QR Code</string>
+    <string name="vision_search_button">Vision Search</string>
 
     <!-- favorites -->
     <string name="favorites_index_favorites_will_display_here">Favorites will show up here.</string>
@@ -152,4 +155,5 @@
     <string name="bookmarks_import_notification_title">Importing favorites…</string>
     <string name="notifications_channel_title_bookmarks_import">Favorites Imports</string>
     <string name="bookmarks_import_notification_cancel">Stop</string>
+    <string name="vision_search_results_title">Similar Works</string>
 </resources>

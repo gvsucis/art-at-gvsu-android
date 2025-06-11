@@ -13,7 +13,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.pinnedScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +28,8 @@ import androidx.navigation.NavController
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.Route
-import edu.gvsu.art.gallery.TabScreen
+import edu.gvsu.art.gallery.Routing
+import edu.gvsu.art.gallery.TopLevelRoute
 import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.bookmarks.BookmarksExport
 import edu.gvsu.art.gallery.navigateToArtworkDetail
@@ -51,7 +51,7 @@ fun FavoriteIndexScreen(
     val coroutineScope = rememberCoroutineScope()
 
     fun navigateToArtwork(artworkID: String) {
-        navController.navigateToArtworkDetail(TabScreen.Favorites, artworkID = artworkID)
+        navController.navigateToArtworkDetail(TopLevelRoute.Favorites, artworkID = artworkID)
     }
 
     fun navigateToBrowse() {

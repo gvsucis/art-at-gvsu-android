@@ -1,4 +1,4 @@
-package edu.gvsu.art.gallery.ui
+package edu.gvsu.art.gallery.ui.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,6 +19,9 @@ import edu.gvsu.art.client.repository.ArtistRepository
 import edu.gvsu.art.client.repository.ArtworkSearchRepository
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.lib.Async
+import edu.gvsu.art.gallery.ui.ArtworkRow
+import edu.gvsu.art.gallery.ui.LoadingView
+import edu.gvsu.art.gallery.ui.get
 import kotlinx.coroutines.*
 
 @ExperimentalComposeUiApi

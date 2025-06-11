@@ -14,14 +14,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -32,10 +30,7 @@ import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -56,18 +51,15 @@ import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.extensions.openGoogleMaps
 import edu.gvsu.art.gallery.lib.MediaTypes
-import edu.gvsu.art.gallery.lib.VideoPool
 import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
-import edu.gvsu.art.gallery.ui.ArtworkMediaDialog
 import edu.gvsu.art.gallery.ui.ArtworkVideoPlaceholder
 import edu.gvsu.art.gallery.ui.CloseIconButton
 import edu.gvsu.art.gallery.ui.CloseIconStyle
 import edu.gvsu.art.gallery.ui.LoadingView
 import edu.gvsu.art.gallery.ui.MapSnapshot
 import edu.gvsu.art.gallery.ui.RelatedArtworks
-import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
-import edu.gvsu.art.gallery.ui.foundation.LocalVideoPool
+import edu.gvsu.art.gallery.ui.foundation.LocalTopLevelRoute
 import edu.gvsu.art.gallery.ui.mediaviewer.LocalMediaViewerState
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 import org.koin.androidx.compose.koinViewModel
@@ -209,7 +201,7 @@ fun ArtworkDetailBody(
     isFavorite: Boolean,
     toggleFavorite: () -> Unit,
 ) {
-    val currentTab = LocalTabScreen.current
+    val currentTab = LocalTopLevelRoute.current
 
     val context = LocalContext.current
     val descriptionRows = artwork.asDescriptionRows

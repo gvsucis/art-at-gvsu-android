@@ -50,10 +50,10 @@ import coil.request.ImageRequest
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.client.ArtworkCollection
 import edu.gvsu.art.gallery.R
-import edu.gvsu.art.gallery.Route
+import edu.gvsu.art.gallery.Routing
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.navigateToCollection
-import edu.gvsu.art.gallery.ui.foundation.LocalTabScreen
+import edu.gvsu.art.gallery.ui.foundation.LocalTopLevelRoute
 import edu.gvsu.art.gallery.ui.theme.OffWhite
 import edu.gvsu.art.gallery.ui.theme.OffWhiteSecondary
 import org.koin.androidx.compose.koinViewModel
@@ -72,7 +72,7 @@ fun BrowseScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            navController.navigate(Route.Settings)
+                            navController.navigate(Routing.Settings)
                         }
                     ) {
                         Icon(
@@ -116,7 +116,7 @@ fun BrowseScreen(
             }
 
             BrowseAction(text = R.string.home_browse_campuses) {
-                navController.navigate(Route.BrowseLocationsIndex)
+                navController.navigate(Routing.BrowseLocationsIndex)
             }
         }
     }
@@ -148,7 +148,7 @@ fun HomeFeaturedImageView(
     currentArtwork: Artwork,
     navController: NavController,
 ) {
-    val currentTab = LocalTabScreen.current
+    val currentTab = LocalTopLevelRoute.current
     fun navigateToArtwork() {
         if (currentArtwork.id.isBlank()) {
             return
