@@ -5,7 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults.pinnedScrollBehavior
 import androidx.compose.runtime.Composable
@@ -33,6 +37,11 @@ fun ToursIndexScreen(navController: NavController) {
             GalleryTopAppBar(
                 title = stringResource(id = R.string.navigation_Tours),
                 scrollBehavior = scrollBehavior,
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
+                    }
+                }
             )
         }
     ) { padding ->

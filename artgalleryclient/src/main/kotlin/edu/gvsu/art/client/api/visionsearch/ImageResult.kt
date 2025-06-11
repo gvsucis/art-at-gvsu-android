@@ -7,8 +7,8 @@ data class ImageResult(
     var image_url: String = ""
 ) {
     val id: String
-        get() = image_url
+        get() = object_id
 
-    val imageURL: URL
-        get() = URL(image_url)
+    val imageURL: String
+        get() = image_url
 }

@@ -98,23 +98,6 @@ sealed class TopLevelRoute(
             Search,
             Favorites,
         )
-//
-//        fun findSelected(navDestination: NavDestination?): TopLevelRoute {
-//            val route = navDestination?.route
-//            route?.isNotBlank() ?: return Browse
-//
-//            val tabRoute = route.split("/").first()
-//            return fromRoute(tabRoute)
-//        }
-//
-//        private fun fromRoute(route: String): TopLevelRoute {
-//            return mapOf(
-//                Browse.route to Browse,
-//                Tours.route to Tours,
-//                Search.route to Search,
-//                Favorites.route to Favorites
-//            ).getOrDefault(route, Browse)
-//        }
     }
 }
 

@@ -8,7 +8,8 @@ val searchModule = module {
     viewModel<VisionSearchResultsViewModel> {
         VisionSearchResultsViewModel(
             client = get(),
-            handle = get()
+            handle = get(),
+            application = get(),
         )
     }
 }
