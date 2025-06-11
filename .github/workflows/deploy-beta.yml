@@ -10,6 +10,8 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4.1.7
+        with:
+          ssh-key: ${{ secrets.RELEASE_SSH_KEY }}
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1.190.0
         with:
