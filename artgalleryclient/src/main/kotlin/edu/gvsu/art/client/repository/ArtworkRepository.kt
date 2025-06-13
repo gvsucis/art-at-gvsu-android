@@ -7,6 +7,7 @@ import edu.gvsu.art.client.api.ArtGalleryClient
 import edu.gvsu.art.client.api.ObjectDetail
 import edu.gvsu.art.client.data.ArtworksQueries
 import edu.gvsu.art.client.common.request
+import edu.gvsu.art.client.data.Artworks
 import edu.gvsu.art.db.ArtGalleryDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
@@ -24,7 +25,7 @@ class DefaultArtworkRepository(
     override suspend fun find(id: String): Result<Artwork> {
         val artwork = table.findByID(id = id).executeAsOneOrNull()
 
-        if (artwork != null && isFreshCache(artwork.created_at)) {
+        if (artwork != null && isArtworkFreshCache(artwork)) {
             return Result.success(artwork.toDomainModel)
         }
 
@@ -32,6 +33,11 @@ class DefaultArtworkRepository(
             onSuccess = { cacheAndFind(it) },
             onFailure = { Result.failure(Throwable("object detail was missing. id=${id}")) }
         )
+    }
+
+    private fun isArtworkFreshCache(artwork: Artworks): Boolean {
+        return isFreshCache(artwork.created_at) &&
+                !artwork.location_id.isNullOrBlank()
     }
 
     private suspend fun cacheAndFind(objectDetail: ObjectDetail): Result<Artwork> {

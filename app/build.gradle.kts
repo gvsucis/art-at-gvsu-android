@@ -131,6 +131,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-permissions:${accompanist_version}")
     implementation("androidx.media3:media3-exoplayer:1.4.1")
     implementation("androidx.media3:media3-datasource-okhttp:1.4.1")
+
     implementation(libs.sqldelight.android.driver)
     implementation("io.coil-kt:coil-compose:2.7.0")
     implementation(libs.androidx.work.runtime.ktx)
@@ -151,7 +152,7 @@ dependencies {
     implementation("com.google.maps.android:android-maps-utils:2.2.3")
     implementation("com.google.maps.android:maps-ktx:3.2.1")
     implementation("com.google.maps.android:maps-utils-ktx:3.2.1")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation(libs.okhttp.client)
     implementation("com.google.android.filament:filamat-android:1.21.1")
     implementation(project(":artgalleryclient"))
 

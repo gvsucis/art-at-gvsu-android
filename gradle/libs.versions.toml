@@ -3,6 +3,7 @@ junitVersion = "4.13.2"
 koin = "3.5.6"
 sqldelight = "2.0.2"
 kotlin = "2.1.0"
+okhttp = "4.12.0"
 
 [libraries]
 androidx-animation = { module = "androidx.compose.animation:animation" }
@@ -26,6 +27,7 @@ mockk = { module = "io.mockk:mockk", version = "1.14.2" }
 sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+okhttp-client = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 
 [plugins]
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

@@ -14,10 +14,14 @@ fun <T> useRepositoryResource(fetch: suspend () -> Result<T>, key: Any = Unit): 
     val state = produceState<Async<T>>(initialValue = Async.Uninitialized, key) {
         value = Async.Loading
         withContext(Dispatchers.IO) {
-            value = fetch().fold(
-                onSuccess = { Async.Success(it) },
-                onFailure = { Async.Failure(it) }
-            )
+            try {
+                value = fetch().fold(
+                    onSuccess = { Async.Success(it) },
+                    onFailure = { Async.Failure(it) }
+                )
+            } catch (e: Throwable) {
+                value = Async.Failure(e)
+            }
         }
     }
     return state.value
