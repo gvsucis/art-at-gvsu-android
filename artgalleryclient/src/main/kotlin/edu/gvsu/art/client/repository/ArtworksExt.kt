@@ -18,6 +18,7 @@ internal val Artworks.toDomainModel: Artwork
         workDescription = work_description ?: "",
         workDate = work_date ?: "",
         workMedium = work_medium ?: "",
+        locationID = location_id.orEmpty(),
         location = location ?: "",
         identifier = identifier ?: "",
         creditLine = credit_line ?: "",

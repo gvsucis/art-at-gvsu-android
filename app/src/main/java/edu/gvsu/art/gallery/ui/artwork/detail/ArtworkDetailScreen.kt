@@ -53,6 +53,7 @@ import edu.gvsu.art.gallery.extensions.openGoogleMaps
 import edu.gvsu.art.gallery.lib.MediaTypes
 import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
+import edu.gvsu.art.gallery.navigateToLocation
 import edu.gvsu.art.gallery.ui.ArtworkVideoPlaceholder
 import edu.gvsu.art.gallery.ui.CloseIconButton
 import edu.gvsu.art.gallery.ui.CloseIconStyle
@@ -222,14 +223,28 @@ fun ArtworkDetailBody(
         )
     }
     DetailDivider()
-    ArtistNameRow(artwork = artwork) {
-        navController.navigateToArtistDetail(currentTab, artwork.artistID)
+    if (artwork.formattedArtistName.isNotBlank()) {
+        ArtworkActionRow(
+            title = R.string.artwork_detail_artist,
+            description = artwork.formattedArtistName
+        ) {
+            navController.navigateToArtistDetail(currentTab, artwork.artistID)
+        }
     }
     DetailDivider()
     descriptionRows.forEachIndexed { index, row ->
         DetailTextRow(row = row)
         if (index != descriptionRows.lastIndex) {
             DetailDivider()
+        }
+    }
+    if (artwork.location.isNotBlank()) {
+        DetailDivider()
+        ArtworkActionRow(
+            title = R.string.artwork_detail_location,
+            description = artwork.location
+        ) {
+            navController.navigateToLocation(artwork.locationID, artwork.location)
         }
     }
     artwork.locationGeoreference?.let { location ->
@@ -291,11 +306,7 @@ fun PagerImage(url: URL) {
 }
 
 @Composable
-private fun ArtistNameRow(artwork: Artwork, onClick: () -> Unit = {}) {
-    if (artwork.formattedArtistName.isBlank()) {
-        return
-    }
-
+private fun ArtworkActionRow(@StringRes title: Int, description: String, onClick: () -> Unit = {}) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -305,8 +316,8 @@ private fun ArtistNameRow(artwork: Artwork, onClick: () -> Unit = {}) {
     ) {
         DetailTextRow(
             ArtworkRow(
-                title = R.string.artwork_detail_artist,
-                description = artwork.formattedArtistName
+                title = title,
+                description = description
             )
         )
 
@@ -355,7 +366,6 @@ private val Artwork.asDescriptionRows: List<ArtworkRow>
             ),
             ArtworkRow(title = R.string.artwork_detail_work_medium, description = workMedium),
             ArtworkRow(title = R.string.artwork_detail_work_date, description = workDate),
-            ArtworkRow(title = R.string.artwork_detail_location, description = location),
             ArtworkRow(title = R.string.artwork_detail_identifier, description = identifier),
             ArtworkRow(title = R.string.artwork_detail_credit_line, description = creditLine),
         ).filterNot { it.description.isBlank() }

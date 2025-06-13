@@ -36,7 +36,7 @@ class DefaultFavoritesRepository(private val database: ArtGalleryDatabase) : Fav
 
     override fun all(): Flow<List<Artwork>> {
         return table
-            .findAll(mapper = ::artworkMapper)
+            .findAll(::artworkMapper)
             .asFlow()
             .mapToList(Dispatchers.IO)
     }

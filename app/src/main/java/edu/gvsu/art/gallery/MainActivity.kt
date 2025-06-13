@@ -32,6 +32,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import edu.gvsu.art.gallery.ui.ArtistDetailScreen
 import edu.gvsu.art.gallery.ui.ArtworkMediaDialog
@@ -167,13 +168,6 @@ fun NavGraphBuilder.featuredGraph(navController: NavController) {
         composable(Routing.BrowseLocationsIndex) {
             LocationIndexScreen(navController)
         }
-        composable(Routing.BrowseLocationDetail) { backStackEntry ->
-            LocationDetailScreen(
-                navController,
-                locationID = backStackEntry.arguments?.getString("location_id"),
-                locationName = backStackEntry.arguments?.getString("display_name") ?: ""
-            )
-        }
         composable(Routing.BrowseCollection) {
             val tab = LocalTopLevelRoute.current
 
@@ -186,7 +180,7 @@ fun NavGraphBuilder.featuredGraph(navController: NavController) {
                 }
             )
         }
-        artworkDetailScreen(Routing.FeaturedArtworkDetail, navController)
+        artworkScreens(Routing.FeaturedArtworkDetail, navController)
         artistDetailScreen(Routing.FeaturedArtistDetail, navController)
         composable(Routing.Settings) {
             SettingsScreen(navController)
@@ -207,7 +201,7 @@ fun NavGraphBuilder.toursGraph(navController: NavController) {
                 tourName = backStackEntry.arguments?.getString("display_name") ?: ""
             )
         }
-        artworkDetailScreen(Routing.TourArtworkDetail, navController)
+        artworkScreens(Routing.TourArtworkDetail, navController)
         artistDetailScreen(Routing.TourArtistDetail, navController)
     }
 }
@@ -233,7 +227,7 @@ fun NavGraphBuilder.searchGraph(navController: NavController) {
                 }
             )
         }
-        artworkDetailScreen(Routing.SearchArtworkDetail, navController)
+        artworkScreens(Routing.SearchArtworkDetail, navController)
         artistDetailScreen(Routing.SearchArtistDetail, navController)
     }
 }
@@ -244,16 +238,29 @@ fun NavGraphBuilder.favoritesGraph(navController: NavController) {
         composable<Route.FavoritesIndex> {
             FavoriteIndexScreen(navController = navController)
         }
-        artworkDetailScreen(Routing.FavoritesArtworkDetail, navController)
+        artworkScreens(Routing.FavoritesArtworkDetail, navController)
         artistDetailScreen(Routing.FavoritesArtistDetail, navController)
     }
 }
 
+fun NavGraphBuilder.locationDetailScreen(navController: NavController) {
+    composable<Route.LocationDetail> { backStackEntry ->
+        val route = backStackEntry.toRoute<Route.LocationDetail>()
+
+        LocationDetailScreen(
+            navController,
+            locationID = route.locationID,
+            locationName = route.displayName,
+        )
+    }
+}
+
 @ExperimentalComposeUiApi
-fun NavGraphBuilder.artworkDetailScreen(route: String, navController: NavController) {
+fun NavGraphBuilder.artworkScreens(route: String, navController: NavController) {
     composable(route) {
         ArtworkDetailScreen(navController)
     }
+    locationDetailScreen(navController)
 }
 
 fun NavGraphBuilder.artistDetailScreen(route: String, navController: NavController) {

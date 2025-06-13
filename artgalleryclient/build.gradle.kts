@@ -20,6 +20,7 @@ android {
 
                 packageName.set("edu.gvsu.art.db")
                 verifyMigrations.set(true)
+                deriveSchemaFromMigrations.set(true)
                 dialect("app.cash.sqldelight:sqlite-3-38-dialect:$sqldelightVersion")
             }
         }

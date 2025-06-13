@@ -38,6 +38,7 @@ INSERT OR REPLACE INTO Artworks(
   work_description,
   work_date,
   work_medium,
+  location_id,
   location,
   identifier,
   credit_line,
@@ -51,6 +52,7 @@ INSERT OR REPLACE INTO Artworks(
   ar_digital_asset_url
 )
 VALUES (
+  ?,
   ?,
   ?,
   ?,

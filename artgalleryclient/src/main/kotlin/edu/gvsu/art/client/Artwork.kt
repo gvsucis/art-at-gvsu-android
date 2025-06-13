@@ -16,6 +16,7 @@ data class Artwork(
     val workDescription: String = "",
     val workDate: String = "",
     val workMedium: String = "",
+    val locationID: String = "",
     val location: String = "",
     val identifier: String = "",
     val creditLine: String = "",
