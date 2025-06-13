@@ -65,6 +65,7 @@ class DefaultArtworkRepository(
             work_description = objectDetail.work_description,
             work_date = objectDetail.work_date,
             work_medium = objectDetail.work_medium,
+            location_id = objectDetail.location_id,
             location = objectDetail.location,
             identifier = objectDetail.idno,
             credit_line = objectDetail.credit_line,

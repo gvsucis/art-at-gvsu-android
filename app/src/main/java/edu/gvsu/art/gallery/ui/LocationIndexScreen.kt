@@ -23,6 +23,7 @@ import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.navigateToLocation
+import edu.gvsu.art.gallery.ui.foundation.LocalTopLevelRoute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

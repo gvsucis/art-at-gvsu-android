@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import edu.gvsu.art.client.ArtworkCollection
 import kotlinx.serialization.Serializable
 
@@ -19,6 +18,9 @@ sealed class Route {
 
     @Serializable
     data object BrowseIndex : Route()
+
+    @Serializable
+    data class LocationDetail(val locationID: String, val displayName: String): Route()
 
     @Serializable
     data object Tours: Route()
@@ -48,7 +50,6 @@ sealed class Route {
 @Deprecated("Use safe-typed Route instead")
 object Routing {
     const val BrowseCollection = "browse/collections/{collection_slug}"
-    const val BrowseLocationDetail = "browse/locations/{location_id}?display_name={display_name}"
     const val BrowseLocationsIndex = "browse/locations"
     const val FavoritesArtistDetail = "favorites/artists/{artist_id}"
     const val FavoritesArtworkDetail = "favorites/artworks/{artwork_id}"
@@ -108,8 +109,7 @@ fun NavController.navigateToArtworkDetail(topLevelRoute: TopLevelRoute, artworkI
     navigate("${topLevelRoute.route}/artworks/${artworkID}")
 
 fun NavController.navigateToLocation(locationID: String, displayName: String) =
-    navigate("browse/locations/$locationID?display_name=${displayName}")
-
+    navigate(Route.LocationDetail(locationID, displayName))
 
 fun NavController.navigateToTour(tourID: String, displayName: String) =
     navigate("tours/$tourID?display_name=${displayName}")

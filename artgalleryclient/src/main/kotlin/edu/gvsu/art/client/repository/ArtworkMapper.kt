@@ -28,6 +28,7 @@ fun artworkMapper(
     thumbnailURL: String?,
     createdAt: String,
     arDigitalAssetURL: String?,
+    locationID: String?,
 ) = Artwork(
     id = id,
     isPublic = isPublic == 1L,
@@ -39,6 +40,7 @@ fun artworkMapper(
     workDescription = workDescription ?: "",
     workDate = workDate ?: "",
     workMedium = workMedium ?: "",
+    locationID = locationID.orEmpty(),
     location = location ?: "",
     identifier = identifier ?: "",
     creditLine = creditLine ?: "",

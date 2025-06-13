@@ -65,3 +65,5 @@ release.keystore
 app/src/release/res/values/google_maps_api.xml
 app/src/release/res/values/google_analytics_api.xml
 .env.default
+
+.idea/runConfigurations.xml
