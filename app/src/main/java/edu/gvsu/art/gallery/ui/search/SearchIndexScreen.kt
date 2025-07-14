@@ -38,14 +38,11 @@ fun SearchIndexScreen(navController: NavController) {
                     selectedCategory = selectedModel,
                     setQuery = setQuery,
                     setCategory = setModel,
-                    onVisionSearchImageResult = { imageURI ->
-                        navController.navigate(Route.VisionSearchResults(imageURI.toString()))
+                    onSelectQRScanner = {
+                        openQRDialog(true)
                     },
                     onSelectVisionSearch = {
                         openVisionSearch(true)
-                    },
-                    onSelectQRScanner = {
-                        openQRDialog(true)
                     }
                 )
             }
@@ -78,7 +75,8 @@ fun SearchIndexScreen(navController: NavController) {
 
     if (isVisionSearchOpen) {
         VisionSearchDialog(
-            onCapture = { navController.navigate(Route.VisionSearchResults(it.toString())) }
+            onCapture = { navController.navigate(Route.VisionSearchResults(it.toString())) },
+            onDismiss = { openVisionSearch(false) }
         )
     }
 }

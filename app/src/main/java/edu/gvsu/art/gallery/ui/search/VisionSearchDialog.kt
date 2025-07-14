@@ -4,7 +4,10 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -19,7 +22,10 @@ import edu.gvsu.art.gallery.ui.GalleryTopAppBar
 
 @OptIn(ExperimentalPermissionsApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun VisionSearchDialog(onCapture: (Uri) -> Unit) {
+fun VisionSearchDialog(
+    onCapture: (Uri) -> Unit,
+    onDismiss: () -> Unit,
+) {
     val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
 
     PermissionRequired(
@@ -30,17 +36,25 @@ fun VisionSearchDialog(onCapture: (Uri) -> Unit) {
             }
         },
         permissionNotAvailableContent = {
-            CameraRationaleDialog(onDismiss = { })
+            CameraRationaleDialog(onDismiss = { onDismiss() })
         }
     ) {
         Dialog(
-            onDismissRequest = {  },
+            onDismissRequest = { onDismiss() },
             properties = DialogProperties(usePlatformDefaultWidth = false)
         ) {
             Scaffold(
-                containerColor = Color.Transparent,
+                containerColor = Color.Black,
                 topBar = {
-                    GalleryTopAppBar()
+                    TopAppBar(
+                        title = {},
+                        navigationIcon = {
+                            CloseIconButton(onClick = { onDismiss() })
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color.Transparent
+                        )
+                    )
                 }
             ) { paddingValues ->
                 Box(Modifier.padding(paddingValues)) {

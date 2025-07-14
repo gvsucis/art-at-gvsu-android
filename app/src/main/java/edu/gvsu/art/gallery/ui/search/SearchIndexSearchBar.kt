@@ -1,12 +1,5 @@
 package edu.gvsu.art.gallery.ui.search
 
-import android.Manifest
-import android.content.Context
-import android.graphics.Bitmap
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.RequestPermission
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,7 +9,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -29,24 +21,15 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import edu.gvsu.art.gallery.R
-import edu.gvsu.art.gallery.lib.createTempImage
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 @ExperimentalComposeUiApi
 @Composable
@@ -55,7 +38,6 @@ fun SearchIndexSearchBar(
     selectedCategory: SearchCategory,
     setQuery: (String) -> Unit,
     setCategory: (SearchCategory) -> Unit,
-    onVisionSearchImageResult: (uri: Uri) -> Unit,
     onSelectQRScanner: () -> Unit,
     onSelectVisionSearch: () -> Unit,
 ) {
@@ -87,17 +69,12 @@ fun SearchIndexSearchBar(
                         }
                     } else {
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-//                            VisionSearchButton(
-//                                onResult = { uri ->
-//                                    onVisionSearchImageResult(uri)
-//                                }
-//                            )
                             IconButton(
                                 onClick = { onSelectVisionSearch() }
                             ) {
                                 Icon(
                                     Icons.Default.CameraAlt,
-                                    contentDescription = null,
+                                    contentDescription = stringResource(R.string.vision_search_button),
                                     tint = MaterialTheme.colorScheme.onSurface,
                                 )
                             }
@@ -145,53 +122,6 @@ fun SearchIndexSearchBar(
     }
 }
 
-@Composable
-fun VisionSearchButton(onResult: (uri: Uri) -> Unit) {
-    val context = LocalContext.current
-    var uri by rememberSaveable { mutableStateOf(value = Uri.EMPTY) }
-
-    val takePictureLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture(),
-        onResult = { success ->
-            if (success) {
-                onResult(uri)
-            }
-        }
-    )
-
-    val permissions = rememberLauncherForActivityResult(RequestPermission()) { _ ->
-        uri = context.createTempImage()
-        takePictureLauncher.launch(uri)
-    }
-
-    IconButton(
-        onClick = {
-            permissions.launch(Manifest.permission.CAMERA)
-        }
-    ) {
-        Icon(
-            Icons.Default.PhotoCamera,
-            contentDescription = stringResource(R.string.vision_search_button),
-            tint = MaterialTheme.colorScheme.onSurface,
-        )
-    }
-}
-
-private fun saveBitmapToCache(bitmap: Bitmap, context: Context): File? {
-    val cacheDir = context.cacheDir
-    val fileName = "vision_search_${System.currentTimeMillis()}.jpg"
-    val file = File(cacheDir, fileName)
-
-    try {
-        FileOutputStream(file).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
-        }
-        return file
-    } catch (e: IOException) {
-        return null
-    }
-}
-
 @ExperimentalComposeUiApi
 @Composable
 @Preview
@@ -203,7 +133,6 @@ fun SearchBarPreview() {
             setQuery = {},
             setCategory = {},
             onSelectQRScanner = {},
-            onVisionSearchImageResult = {},
             onSelectVisionSearch = {},
         )
     }

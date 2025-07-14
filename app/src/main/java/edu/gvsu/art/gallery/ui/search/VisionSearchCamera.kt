@@ -11,10 +11,13 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -28,26 +31,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.graphics.ClipOp
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.scale
 import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import edu.gvsu.art.gallery.R
 
 @Composable
 fun VisionSearchCamera(
@@ -60,19 +58,23 @@ fun VisionSearchCamera(
     val imageCapture = remember { ImageCapture.Builder().build() }
     val density = LocalDensity.current
     val containerSize = LocalWindowInfo.current.containerSize
-    val viewFinderPadding = with(density) { 16.dp.toPx() }
-    val viewFinderSize = containerSize.width.toFloat() - (viewFinderPadding * 2)
-
-    val viewFinderBorderSize = with(density) { 3.dp.toPx() }
-    val viewFinderBorderRadius = with(density) { 12.dp.toPx() }
+    val viewFinderSize = containerSize.width.toFloat()
 
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
     ) {
         AndroidView(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .padding(16.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .align(Alignment.TopCenter),
             factory = { viewContext ->
-                val previewView = PreviewView(viewContext)
+                val previewView = PreviewView(viewContext).apply {
+                    scaleType = PreviewView.ScaleType.FILL_CENTER
+                }
                 val executor = ContextCompat.getMainExecutor(viewContext)
 
                 cameraProviderFuture.addListener({
@@ -101,65 +103,42 @@ fun VisionSearchCamera(
             },
         )
 
-        Canvas(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            val canvasSize = size
-            val centerX = canvasSize.width / 2
-            val viewFinderRadius = viewFinderSize / 2
-            
-            // Position viewfinder with padding from top and center horizontally
-            val viewFinderCenterY = viewFinderPadding + viewFinderRadius
-
-            val viewFinderPath = Path().apply {
-                addRoundRect(
-                    RoundRect(
-                        Rect(
-                            Offset(centerX - viewFinderRadius, viewFinderCenterY - viewFinderRadius),
-                            Offset(centerX + viewFinderRadius, viewFinderCenterY + viewFinderRadius)
-                        ),
-                        CornerRadius(viewFinderBorderRadius)
-                    )
-                )
-            }
-
-            clipPath(viewFinderPath, clipOp = ClipOp.Difference) {
-                drawRect(SolidColor(Color.Black))
-            }
-
-            drawPath(
-                path = viewFinderPath,
-                color = Color.White,
-                style = Stroke(viewFinderBorderSize)
-            )
-        }
-
-        FloatingActionButton(
-            onClick = {
-                captureImage(
-                    imageCapture,
-                    context,
-                    viewFinderSize.toInt(),
-                    viewFinderPadding,
-                    containerSize
-                ) { uri ->
-                    onImageCaptured(uri)
-                }
-            },
+        Column(
+            verticalArrangement = Arrangement.spacedBy(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 32.dp)
-                .size(64.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary),
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
-            Icon(
-                imageVector = Icons.Default.CameraAlt,
-                contentDescription = "Capture photo",
-                modifier = Modifier.size(32.dp)
+            Text(
+                stringResource(R.string.vision_search_call_to_action),
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center,
+                color = Color.White,
+                modifier = Modifier.padding(horizontal = 32.dp)
             )
+            FloatingActionButton(
+                onClick = {
+                    captureImage(
+                        imageCapture,
+                        context,
+                        viewFinderSize.toInt()
+                    ) { uri ->
+                        onImageCaptured(uri)
+                    }
+                },
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CameraAlt,
+                    contentDescription = "Capture photo",
+                    modifier = Modifier.size(32.dp)
+                )
+            }
         }
     }
 }
@@ -168,8 +147,6 @@ private fun captureImage(
     imageCapture: ImageCapture,
     context: Context,
     viewFinderSize: Int,
-    viewFinderPadding: Float,
-    containerSize: IntSize,
     onImageCaptured: (Uri) -> Unit
 ) {
     val outputFileOptions = ImageCapture.OutputFileOptions.Builder(
@@ -187,26 +164,18 @@ private fun captureImage(
 
                 val rotatedBitmap = applyExifRotation(bitmap, imageFile.absolutePath)
 
-                // Debug: Log the dimensions
-                android.util.Log.d("CameraCrop", "Bitmap: ${rotatedBitmap.width}x${rotatedBitmap.height}")
-                android.util.Log.d("CameraCrop", "Container: ${containerSize.width}x${containerSize.height}")
-                android.util.Log.d("CameraCrop", "ViewFinder size: $viewFinderSize, padding: $viewFinderPadding")
-                
-                // Use actual screen dimensions instead of container size
-                val displayMetrics = context.resources.displayMetrics
-                val croppedBitmap = cropImageToViewFinder(
-                    rotatedBitmap,
-                    viewFinderSize,
-                    viewFinderPadding,
-                    displayMetrics.widthPixels,
-                    displayMetrics.heightPixels
-                )
+                val size = minOf(rotatedBitmap.width, rotatedBitmap.height)
+                val x = (rotatedBitmap.width - size) / 2
+                val y = (rotatedBitmap.height - size) / 2
+
+                val croppedBitmap = Bitmap.createBitmap(rotatedBitmap, x, y, size, size)
+                val scaledBitmap = croppedBitmap.scale(viewFinderSize, viewFinderSize)
 
                 // Save the cropped bitmap back to file
                 val croppedFile = context.cacheDir.resolve("temp_camera_image_cropped.jpg")
 
                 croppedFile.outputStream().use { outputStream ->
-                    croppedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
+                    scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream)
                 }
 
                 val uri = Uri.fromFile(croppedFile)

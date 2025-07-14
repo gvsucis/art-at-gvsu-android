@@ -62,21 +62,15 @@ fun VisionSearchResultsScreen(
         },
     ) { padding ->
         Box(Modifier.nestedScaffoldPadding(padding)) {
-            AsyncImage(
-                model = viewModel.uri,
-                contentDescription = "Captured image",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit
-            )
-//            when (data) {
-//                is Async.Success -> ResultList(onClick = onNavigateToArtwork, artworks = data())
-//                is Async.Failure -> ErrorView(
-//                    error = data.error,
-//                    onRetryClick = { viewModel.retry() }
-//                )
-//
-//                else -> LoadingView()
-//            }
+            when (data) {
+                is Async.Success -> ResultList(onClick = onNavigateToArtwork, artworks = data())
+                is Async.Failure -> ErrorView(
+                    error = data.error,
+                    onRetryClick = { viewModel.retry() }
+                )
+
+                else -> LoadingView()
+            }
         }
     }
 }
