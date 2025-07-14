@@ -1,0 +1,1 @@
+Adds AI-powered visual search to find similar artworks by taking a photo
