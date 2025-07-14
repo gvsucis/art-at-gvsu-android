@@ -26,6 +26,7 @@ fun SearchIndexScreen(navController: NavController) {
     val (query, setQuery) = rememberSaveable { mutableStateOf("") }
     val (selectedModel, setModel) = rememberSaveable { mutableStateOf(SearchCategory.ARTIST) }
     val (isQRDialogOpen, openQRDialog) = remember { mutableStateOf(false) }
+    val (isVisionSearchOpen, openVisionSearch) = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -37,11 +38,11 @@ fun SearchIndexScreen(navController: NavController) {
                     selectedCategory = selectedModel,
                     setQuery = setQuery,
                     setCategory = setModel,
-                    onVisionSearchImageResult = { imageURI ->
-                        navController.navigate(Route.VisionSearchResults(imageURI.toString()))
-                    },
                     onSelectQRScanner = {
                         openQRDialog(true)
+                    },
+                    onSelectVisionSearch = {
+                        openVisionSearch(true)
                     }
                 )
             }
@@ -69,6 +70,13 @@ fun SearchIndexScreen(navController: NavController) {
         QRScannerDialog(
             navController = navController,
             onDismiss = { openQRDialog(false) },
+        )
+    }
+
+    if (isVisionSearchOpen) {
+        VisionSearchDialog(
+            onCapture = { navController.navigate(Route.VisionSearchResults(it.toString())) },
+            onDismiss = { openVisionSearch(false) }
         )
     }
 }

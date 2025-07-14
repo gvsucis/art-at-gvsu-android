@@ -156,4 +156,5 @@
     <string name="notifications_channel_title_bookmarks_import">Favorites Imports</string>
     <string name="bookmarks_import_notification_cancel">Stop</string>
     <string name="vision_search_results_title">Similar Works</string>
+    <string name="vision_search_call_to_action">Take a photo to find\nsimilar artworks</string>
 </resources>
