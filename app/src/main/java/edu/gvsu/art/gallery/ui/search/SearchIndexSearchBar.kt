@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.QrCodeScanner
@@ -56,6 +57,7 @@ fun SearchIndexSearchBar(
     setCategory: (SearchCategory) -> Unit,
     onVisionSearchImageResult: (uri: Uri) -> Unit,
     onSelectQRScanner: () -> Unit,
+    onSelectVisionSearch: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val options = listOf(SearchCategory.ARTIST, SearchCategory.ARTWORK)
@@ -85,11 +87,20 @@ fun SearchIndexSearchBar(
                         }
                     } else {
                         Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            VisionSearchButton(
-                                onResult = { uri ->
-                                    onVisionSearchImageResult(uri)
-                                }
-                            )
+//                            VisionSearchButton(
+//                                onResult = { uri ->
+//                                    onVisionSearchImageResult(uri)
+//                                }
+//                            )
+                            IconButton(
+                                onClick = { onSelectVisionSearch() }
+                            ) {
+                                Icon(
+                                    Icons.Default.CameraAlt,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurface,
+                                )
+                            }
                             IconButton(
                                 onClick = { onSelectQRScanner() }
                             ) {
@@ -193,6 +204,7 @@ fun SearchBarPreview() {
             setCategory = {},
             onSelectQRScanner = {},
             onVisionSearchImageResult = {},
+            onSelectVisionSearch = {},
         )
     }
 }

@@ -1,5 +1,6 @@
 package edu.gvsu.art.gallery.ui.search
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,15 +62,21 @@ fun VisionSearchResultsScreen(
         },
     ) { padding ->
         Box(Modifier.nestedScaffoldPadding(padding)) {
-            when (data) {
-                is Async.Success -> ResultList(onClick = onNavigateToArtwork, artworks = data())
-                is Async.Failure -> ErrorView(
-                    error = data.error,
-                    onRetryClick = { viewModel.retry() }
-                )
-
-                else -> LoadingView()
-            }
+            AsyncImage(
+                model = viewModel.uri,
+                contentDescription = "Captured image",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Fit
+            )
+//            when (data) {
+//                is Async.Success -> ResultList(onClick = onNavigateToArtwork, artworks = data())
+//                is Async.Failure -> ErrorView(
+//                    error = data.error,
+//                    onRetryClick = { viewModel.retry() }
+//                )
+//
+//                else -> LoadingView()
+//            }
         }
     }
 }
