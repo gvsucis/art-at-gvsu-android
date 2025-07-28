@@ -50,7 +50,7 @@ import edu.gvsu.art.gallery.DetailDivider
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.extensions.openGoogleMaps
-import edu.gvsu.art.gallery.lib.MediaTypes
+import edu.gvsu.art.client.common.MediaTypes
 import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.navigateToLocation

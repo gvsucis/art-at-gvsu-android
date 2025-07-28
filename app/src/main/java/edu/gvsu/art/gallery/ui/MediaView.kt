@@ -24,7 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.mxalbert.zoomable.Zoomable
-import edu.gvsu.art.gallery.lib.MediaTypes
+import edu.gvsu.art.client.common.MediaTypes
 import edu.gvsu.art.gallery.ui.foundation.VideoPlayer
 import edu.gvsu.art.gallery.ui.foundation.rememberVideoPlayerState
 import moe.tlaster.swiper.Swiper
