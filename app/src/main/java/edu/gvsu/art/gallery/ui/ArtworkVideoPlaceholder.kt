@@ -53,7 +53,6 @@ fun ArtworkVideoPlaceholder(url: URL?) {
                 contentDescription = null
             )
         }
-
     }
 }
 

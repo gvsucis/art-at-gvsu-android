@@ -50,7 +50,6 @@ import edu.gvsu.art.gallery.DetailDivider
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.extensions.openGoogleMaps
-import edu.gvsu.art.client.common.MediaTypes
 import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.navigateToLocation
@@ -173,11 +172,7 @@ fun ArtworkMediaPager(
             val url = mediaURLs[page]
 
             Box(modifier = Modifier.clickable(onClick = { navigateToMedia() })) {
-                if (MediaTypes.isVideo(url)) {
-                    ArtworkVideoPlaceholder(url = artwork.mediaSmall)
-                } else {
-                    PagerImage(url = url)
-                }
+                PagerImage(url = url)
             }
         }
         Row(
@@ -202,6 +197,7 @@ fun ArtworkDetailBody(
     isFavorite: Boolean,
     toggleFavorite: () -> Unit,
 ) {
+    val mediaViewer = LocalMediaViewerState.current
     val currentTab = LocalTopLevelRoute.current
 
     val context = LocalContext.current
@@ -232,6 +228,14 @@ fun ArtworkDetailBody(
         }
     }
     DetailDivider()
+
+    if (artwork.videoLinks.isNotEmpty()) {
+        ArtworkVideoRow(artwork) {
+            mediaViewer.present(artwork.videoLinks)
+        }
+        DetailDivider()
+    }
+
     descriptionRows.forEachIndexed { index, row ->
         DetailTextRow(row = row)
         if (index != descriptionRows.lastIndex) {
@@ -278,6 +282,21 @@ fun ArtworkDetailBody(
         )
     }
     Spacer(Modifier.height(16.dp))
+}
+
+@Composable
+fun ArtworkVideoRow(artwork: Artwork, onClick: (links: List<URL>) -> Unit) {
+    Box(
+        Modifier
+            .aspectRatio(4 / 3f)
+            .padding(16.dp)
+            .clip(RoundedCornerShape(3.dp))
+            .clickable {
+                onClick(artwork.videoLinks)
+            }
+    ) {
+        ArtworkVideoPlaceholder(url = artwork.mediaSmall)
+    }
 }
 
 @Composable
