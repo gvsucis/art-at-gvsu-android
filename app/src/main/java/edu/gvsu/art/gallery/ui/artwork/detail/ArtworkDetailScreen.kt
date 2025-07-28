@@ -107,9 +107,9 @@ fun ArtworkView(
     toggleFavorite: () -> Unit,
 ) {
     val mediaViewer = LocalMediaViewerState.current
-    val mediaURLs = artwork.mediaRepresentations
+    val imageLinks = artwork.imageLinks
     val thumbnailState = rememberPagerState(initialPage = 0) {
-        mediaURLs.size
+        imageLinks.size
     }
 
     Column(
@@ -126,11 +126,11 @@ fun ArtworkView(
 
             ArtworkMediaPager(
                 artwork,
-                mediaURLs = mediaURLs,
+                mediaURLs = imageLinks,
                 pagerState = thumbnailState,
                 navigateToMedia = {
                     mediaViewer.present(
-                        artwork,
+                        imageLinks,
                         currentIndex = thumbnailState.currentPage
                     )
                 }
@@ -150,7 +150,7 @@ fun ArtworkView(
     }
 
     LaunchedEffect(mediaViewer.currentIndex) {
-        if (mediaViewer.artwork != null) {
+        if (mediaViewer.links != null) {
             thumbnailState.scrollToPage(mediaViewer.currentIndex)
         }
     }
