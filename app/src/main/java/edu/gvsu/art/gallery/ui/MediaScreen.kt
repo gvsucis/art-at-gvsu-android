@@ -44,7 +44,7 @@ fun MediaScreen(
     var controlVisibility by remember { mutableStateOf(true) }
     val swiperState = rememberSwiperState(
         onDismiss = {
-           dismiss()
+            dismiss()
         }
     )
 
@@ -58,8 +58,8 @@ fun MediaScreen(
                 urls = urls,
                 swiperState = swiperState,
                 pagerState = pagerState,
+                onClick = { controlVisibility = !controlVisibility },
                 videoControlVisibility = controlVisibility && swiperState.progress == 0f,
-                onClick = { controlVisibility = !controlVisibility }
             )
         }
         Box(

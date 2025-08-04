@@ -1,4 +1,5 @@
 [versions]
+coil = "2.7.0"
 junitVersion = "4.13.2"
 koin = "3.5.6"
 sqldelight = "2.0.2"
@@ -14,6 +15,8 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version = "2.10.1" }
 androidx-ui-util = { module = "androidx.compose.ui:ui-util" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+coil-video = { module = "io.coil-kt:coil-video", version.ref = "coil" }
 junit-junit = { module = "junit:junit", version.ref = "junitVersion" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }

@@ -50,11 +50,9 @@ import edu.gvsu.art.gallery.DetailDivider
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.extensions.nestedScaffoldPadding
 import edu.gvsu.art.gallery.extensions.openGoogleMaps
-import edu.gvsu.art.gallery.lib.MediaTypes
 import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.navigateToLocation
-import edu.gvsu.art.gallery.ui.ArtworkVideoPlaceholder
 import edu.gvsu.art.gallery.ui.CloseIconButton
 import edu.gvsu.art.gallery.ui.CloseIconStyle
 import edu.gvsu.art.gallery.ui.LoadingView
@@ -107,9 +105,9 @@ fun ArtworkView(
     toggleFavorite: () -> Unit,
 ) {
     val mediaViewer = LocalMediaViewerState.current
-    val mediaURLs = artwork.mediaRepresentations
+    val imageLinks = artwork.imageLinks
     val thumbnailState = rememberPagerState(initialPage = 0) {
-        mediaURLs.size
+        imageLinks.size
     }
 
     Column(
@@ -125,12 +123,11 @@ fun ArtworkView(
             )
 
             ArtworkMediaPager(
-                artwork,
-                mediaURLs = mediaURLs,
+                mediaURLs = imageLinks,
                 pagerState = thumbnailState,
                 navigateToMedia = {
                     mediaViewer.present(
-                        artwork,
+                        imageLinks,
                         currentIndex = thumbnailState.currentPage
                     )
                 }
@@ -150,7 +147,7 @@ fun ArtworkView(
     }
 
     LaunchedEffect(mediaViewer.currentIndex) {
-        if (mediaViewer.artwork != null) {
+        if (mediaViewer.links != null) {
             thumbnailState.scrollToPage(mediaViewer.currentIndex)
         }
     }
@@ -159,7 +156,6 @@ fun ArtworkView(
 @ExperimentalComposeUiApi
 @Composable
 fun ArtworkMediaPager(
-    artwork: Artwork,
     mediaURLs: List<URL>,
     pagerState: PagerState,
     navigateToMedia: () -> Unit = {},
@@ -173,11 +169,7 @@ fun ArtworkMediaPager(
             val url = mediaURLs[page]
 
             Box(modifier = Modifier.clickable(onClick = { navigateToMedia() })) {
-                if (MediaTypes.isVideo(url)) {
-                    ArtworkVideoPlaceholder(url = artwork.mediaSmall)
-                } else {
-                    PagerImage(url = url)
-                }
+                PagerImage(url = url)
             }
         }
         Row(
@@ -202,6 +194,7 @@ fun ArtworkDetailBody(
     isFavorite: Boolean,
     toggleFavorite: () -> Unit,
 ) {
+    val mediaViewer = LocalMediaViewerState.current
     val currentTab = LocalTopLevelRoute.current
 
     val context = LocalContext.current
@@ -232,6 +225,14 @@ fun ArtworkDetailBody(
         }
     }
     DetailDivider()
+
+    if (artwork.videoLinks.isNotEmpty()) {
+        ArtworkVideoRow(artwork.videoLinks) { link ->
+            mediaViewer.present(listOf(link))
+        }
+        DetailDivider()
+    }
+
     descriptionRows.forEachIndexed { index, row ->
         DetailTextRow(row = row)
         if (index != descriptionRows.lastIndex) {

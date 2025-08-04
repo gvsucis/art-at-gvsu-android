@@ -2,12 +2,15 @@ package edu.gvsu.art.gallery
 
 import android.app.Application
 import android.content.Context
+import coil.ImageLoader
+import coil.ImageLoaderFactory
+import coil.decode.VideoFrameDecoder
 import edu.gvsu.art.gallery.di.setupModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import java.util.*
 
-class GalleryApplication : Application() {
+class GalleryApplication : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
         appContext = applicationContext
@@ -15,6 +18,14 @@ class GalleryApplication : Application() {
             androidContext(this@GalleryApplication)
             setupModules()
         }
+    }
+
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .components {
+                add(VideoFrameDecoder.Factory())
+            }
+            .build()
     }
 
     companion object {

@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import edu.gvsu.art.client.Artwork
+import java.net.URL
 
 val LocalMediaViewerState = compositionLocalOf { MediaViewerState() }
 
@@ -25,16 +26,16 @@ fun rememberMediaViewerState(): MediaViewerState {
 
 @Stable
 class MediaViewerState(
-    private val initialArtwork: Artwork? = null,
+    private val initialLinks: List<URL>? = null,
     private var initialIndex: Int = 0,
 ) {
     var currentIndex by mutableIntStateOf(initialIndex)
         private set
-    var artwork by mutableStateOf(initialArtwork)
+    var links by mutableStateOf(initialLinks)
         private set
 
-    fun present(artwork: Artwork, currentIndex: Int) {
-        this.artwork = artwork
+    fun present(links: List<URL>, currentIndex: Int = 0) {
+        this.links = links
         this.currentIndex = currentIndex
     }
 
@@ -43,7 +44,7 @@ class MediaViewerState(
     }
 
     fun close() {
-        this.artwork = null
+        this.links = null
         this.currentIndex = 0
     }
 
@@ -51,13 +52,13 @@ class MediaViewerState(
         fun Saver(): Saver<MediaViewerState, *> = listSaver(
             save = {
                 listOf(
-                    it.artwork,
+                    it.links,
                     it.currentIndex
                 )
             },
             restore = {
                 MediaViewerState(
-                    initialArtwork = it[0] as? Artwork?,
+                    initialLinks = it[0] as? List<URL>? ?: emptyList(),
                     initialIndex = it[1] as? Int ?: 0,
                 )
             }

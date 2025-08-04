@@ -13,9 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -24,7 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.mxalbert.zoomable.Zoomable
-import edu.gvsu.art.gallery.lib.MediaTypes
+import edu.gvsu.art.client.common.MediaTypes
 import edu.gvsu.art.gallery.ui.foundation.VideoPlayer
 import edu.gvsu.art.gallery.ui.foundation.rememberVideoPlayerState
 import moe.tlaster.swiper.Swiper
@@ -42,6 +39,7 @@ fun MediaView(
     Swiper(state = swiperState) {
         HorizontalPager(
             pageSpacing = 8.dp,
+            userScrollEnabled = urls.size > 1,
             state = pagerState,
             key = { urls[it] },
         ) { page ->

@@ -16,20 +16,21 @@ import edu.gvsu.art.gallery.ui.mediaviewer.LocalMediaViewerState
 @ExperimentalComposeUiApi
 @Composable
 fun ArtworkMediaDialog() {
-    val videoPool = rememberSaveable { VideoPool() }
     val mediaViewer = LocalMediaViewerState.current
-    val media = mediaViewer.artwork?.mediaRepresentations.orEmpty()
+    val media = mediaViewer.links.orEmpty()
 
-    CompositionLocalProvider(LocalVideoPool provides videoPool) {
-        AnimatedVisibility(
-            enter = fadeIn(),
-            exit = fadeOut(),
-            visible = mediaViewer.artwork != null
-        ) {
-            val pagerState = rememberPagerState(initialPage = mediaViewer.currentIndex) {
-                media.size
-            }
+    AnimatedVisibility(
+        enter = fadeIn(),
+        exit = fadeOut(),
+        visible = media.isNotEmpty()
+    ) {
+        val pagerState = rememberPagerState(initialPage = mediaViewer.currentIndex) {
+            media.size
+        }
 
+        val videoPool = rememberSaveable { VideoPool() }
+
+        CompositionLocalProvider(LocalVideoPool provides videoPool) {
             MediaScreen(
                 urls = media,
                 pagerState = pagerState,

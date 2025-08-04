@@ -1,7 +1,9 @@
 package edu.gvsu.art.client
 
 import android.os.Parcelable
+import edu.gvsu.art.client.common.MediaTypes
 import kotlinx.parcelize.Parcelize
+import okhttp3.MediaType
 import java.net.URL
 
 @Parcelize
@@ -30,6 +32,12 @@ data class Artwork(
 ) : Parcelable {
     val hasAR: Boolean
         get() = arDigitalAssetURL != null
+
+    val imageLinks: List<URL>
+        get() = mediaRepresentations.filterNot { MediaTypes.isVideo(it) }
+
+    val videoLinks: List<URL>
+        get() = mediaRepresentations.filter { MediaTypes.isVideo(it) }
 
     val formattedArtistName: String
         get() {
