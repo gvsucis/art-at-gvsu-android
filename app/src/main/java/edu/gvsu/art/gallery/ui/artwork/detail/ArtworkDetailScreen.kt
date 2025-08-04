@@ -53,7 +53,6 @@ import edu.gvsu.art.gallery.extensions.openGoogleMaps
 import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.navigateToLocation
-import edu.gvsu.art.gallery.ui.ArtworkVideoPlaceholder
 import edu.gvsu.art.gallery.ui.CloseIconButton
 import edu.gvsu.art.gallery.ui.CloseIconStyle
 import edu.gvsu.art.gallery.ui.LoadingView
@@ -124,7 +123,6 @@ fun ArtworkView(
             )
 
             ArtworkMediaPager(
-                artwork,
                 mediaURLs = imageLinks,
                 pagerState = thumbnailState,
                 navigateToMedia = {
@@ -158,7 +156,6 @@ fun ArtworkView(
 @ExperimentalComposeUiApi
 @Composable
 fun ArtworkMediaPager(
-    artwork: Artwork,
     mediaURLs: List<URL>,
     pagerState: PagerState,
     navigateToMedia: () -> Unit = {},
@@ -230,8 +227,8 @@ fun ArtworkDetailBody(
     DetailDivider()
 
     if (artwork.videoLinks.isNotEmpty()) {
-        ArtworkVideoRow(artwork) {
-            mediaViewer.present(artwork.videoLinks)
+        ArtworkVideoRow(artwork.videoLinks) { link ->
+            mediaViewer.present(listOf(link))
         }
         DetailDivider()
     }
@@ -282,21 +279,6 @@ fun ArtworkDetailBody(
         )
     }
     Spacer(Modifier.height(16.dp))
-}
-
-@Composable
-fun ArtworkVideoRow(artwork: Artwork, onClick: (links: List<URL>) -> Unit) {
-    Box(
-        Modifier
-            .aspectRatio(4 / 3f)
-            .padding(16.dp)
-            .clip(RoundedCornerShape(3.dp))
-            .clickable {
-                onClick(artwork.videoLinks)
-            }
-    ) {
-        ArtworkVideoPlaceholder(url = artwork.mediaSmall)
-    }
 }
 
 @Composable
