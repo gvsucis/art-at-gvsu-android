@@ -29,10 +29,13 @@ fun artworkMapper(
     createdAt: String,
     arDigitalAssetURL: String?,
     locationID: String?,
+    secondaryMediaRepresentations: String?,
+    secondaryMediaRepresentationThumbnails: String?,
 ) = Artwork(
     id = id,
     isPublic = isPublic == 1L,
     mediaRepresentations = mediaRepresentations.asUrls(),
+    secondaryMedia = parseSecondaryMedia(secondaryMediaRepresentations, secondaryMediaRepresentationThumbnails),
     name = name ?: "",
     artistID = artistID ?: "",
     artistName = artistName ?: "",
@@ -50,5 +53,5 @@ fun artworkMapper(
     mediaMedium = optionalURL(mediaMediumURL),
     mediaLarge = optionalURL(mediaLargeURL),
     thumbnail = optionalURL(thumbnailURL),
-    arDigitalAssetURL = optionalURL(arDigitalAssetURL)
+    arDigitalAssetURL = optionalURL(arDigitalAssetURL),
 )

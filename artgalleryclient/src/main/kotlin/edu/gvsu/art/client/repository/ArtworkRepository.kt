@@ -76,7 +76,9 @@ class DefaultArtworkRepository(
             location_latitude = latLng?.latitude,
             location_longitude = latLng?.longitude,
             related_objects = objectDetail.related_objects,
-            ar_digital_asset_url = objectDetail.ar_digital_asset
+            ar_digital_asset_url = objectDetail.ar_digital_asset,
+            secondary_media_representations = objectDetail.secondary_media_reps,
+            secondary_media_representation_thumbnails = objectDetail.secondary_media_rep_thumbnails,
         )
     }
 

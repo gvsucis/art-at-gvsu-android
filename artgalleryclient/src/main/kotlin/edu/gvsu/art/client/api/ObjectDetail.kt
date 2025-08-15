@@ -13,6 +13,8 @@ data class ObjectDetail(
     val media_small_url: String? = "",
     val media_icon_url: String? = "",
     val media_reps: String? = "",
+    val secondary_media_reps: String? = "",
+    val secondary_media_rep_thumbnails: String? = "",
     val object_name: String? = "",
     val entity_id: String? = "",
     val entity_name: String? = "",
