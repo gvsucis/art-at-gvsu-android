@@ -11,6 +11,7 @@ internal val Artworks.toDomainModel: Artwork
         id = id,
         isPublic = is_public == 1L,
         mediaRepresentations = media_representations.asUrls(),
+        secondaryMedia = parseSecondaryMedia(secondary_media_representations, secondary_media_representation_thumbnails),
         name = name ?: "",
         artistID = artist_id ?: "",
         artistName = artist_name ?: "",

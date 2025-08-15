@@ -1,0 +1,5 @@
+ALTER TABLE Artworks
+ADD COLUMN secondary_media_representations TEXT;
+
+ALTER TABLE Artworks
+ADD COLUMN secondary_media_representation_thumbnails TEXT;

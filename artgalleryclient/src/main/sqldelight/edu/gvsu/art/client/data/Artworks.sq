@@ -2,6 +2,8 @@ CREATE TABLE IF NOT EXISTS Artworks (
   id TEXT NOT NULL PRIMARY KEY,
   is_public INTEGER,
   media_representations TEXT,
+  secondary_media_representations TEXT,
+  secondary_media_representation_thumbnails TEXT,
   name TEXT,
   artist_id TEXT,
   artist_name TEXT,
@@ -49,9 +51,13 @@ INSERT OR REPLACE INTO Artworks(
   media_large_url,
   thumbnail_url,
   related_objects,
-  ar_digital_asset_url
+  ar_digital_asset_url,
+  secondary_media_representations,
+  secondary_media_representation_thumbnails
 )
 VALUES (
+  ?,
+  ?,
   ?,
   ?,
   ?,

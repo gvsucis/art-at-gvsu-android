@@ -105,9 +105,9 @@ fun ArtworkView(
     toggleFavorite: () -> Unit,
 ) {
     val mediaViewer = LocalMediaViewerState.current
-    val imageLinks = artwork.imageLinks
+    val mediaRepresentations = artwork.mediaRepresentations
     val thumbnailState = rememberPagerState(initialPage = 0) {
-        imageLinks.size
+        mediaRepresentations.size
     }
 
     Column(
@@ -123,11 +123,11 @@ fun ArtworkView(
             )
 
             ArtworkMediaPager(
-                mediaURLs = imageLinks,
+                mediaURLs = mediaRepresentations,
                 pagerState = thumbnailState,
                 navigateToMedia = {
                     mediaViewer.present(
-                        imageLinks,
+                        mediaRepresentations,
                         currentIndex = thumbnailState.currentPage
                     )
                 }
@@ -226,8 +226,8 @@ fun ArtworkDetailBody(
     }
     DetailDivider()
 
-    if (artwork.videoLinks.isNotEmpty()) {
-        ArtworkVideoRow(artwork.videoLinks) { link ->
+    if (artwork.secondaryMedia.isNotEmpty()) {
+        ArtworkMultimediaRow(artwork.secondaryMedia) { link ->
             mediaViewer.present(listOf(link))
         }
         DetailDivider()
