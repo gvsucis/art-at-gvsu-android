@@ -1,0 +1,1 @@
+Adds multimedia row to artwork detail page
