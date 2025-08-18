@@ -33,6 +33,7 @@ import com.google.ar.sceneform.ux.TransformableNode
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.ui.CloseIconButton
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.nio.ByteBuffer
 import java.util.concurrent.CompletableFuture
 import java.util.function.Consumer
@@ -50,6 +51,8 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     private lateinit var videoPath: Uri
     private lateinit var imagePath: Uri
 
+    private val viewModel: ArtworkARViewModel by viewModel<ArtworkARViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -57,8 +60,8 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
 
         addCloseButton()
 
-        videoPath = Uri.parse(intent.getStringExtra(EXTRA_AR_VIDEO_PATH))
-        imagePath = Uri.parse(intent.getStringExtra(EXTRA_AR_IMAGE_PATH))
+//        videoPath = Uri.parse(intent.getStringExtra(EXTRA_AR_VIDEO_PATH))
+//        imagePath = Uri.parse(intent.getStringExtra(EXTRA_AR_IMAGE_PATH))
 
         supportFragmentManager.addFragmentOnAttachListener(this)
 
