@@ -3,6 +3,7 @@ package edu.gvsu.art.gallery.ui.artwork.detail
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.graphics.SurfaceTexture
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -47,6 +48,7 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     private var plainVideoModel: Renderable? = null
     private var plainVideoMaterial: Material? = null
     private var mediaPlayer: MediaPlayer? = null
+    private var externalTexture: ExternalTexture? = null
     private lateinit var videoPath: Uri
     private lateinit var imagePath: Uri
 
@@ -108,16 +110,44 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        mediaPlayer?.let { player ->
+            try {
+                if (player.isPlaying) {
+                    player.stop()
+                }
+                player.reset()
+                player.release()
+            } catch (_: Throwable) {
+                // Skip
+            }
+            mediaPlayer = null
+        }
+
+        externalTexture?.let { texture ->
+            try {
+                texture.surface?.release()
+            } catch (_: Throwable) {
+                // Skip
+            }
+            externalTexture = null
+        }
+
+        arFragment?.let { fragment ->
+            try {
+                supportFragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commitAllowingStateLoss()
+            } catch (_: Throwable) {
+                // Skip
+            }
+            arFragment = null
+        }
 
         futures.forEach(Consumer { future: CompletableFuture<Void> ->
             if (!future.isDone) future.cancel(true)
         })
 
-        if (mediaPlayer != null) {
-            mediaPlayer!!.stop()
-            mediaPlayer!!.reset()
-        }
+        super.onDestroy()
     }
 
     private fun loadMatrixModel() {
@@ -203,17 +233,26 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
                 val videoNode = TransformableNode(arFragment!!.transformationSystem)
                 anchorNode.addChild(videoNode)
 
-                val externalTexture = ExternalTexture()
+                externalTexture = ExternalTexture()
                 val renderableInstance = videoNode.setRenderable(plainVideoModel)
                 renderableInstance.material = plainVideoMaterial
 
-                renderableInstance.material.setExternalTexture("videoTexture", externalTexture)
-                mediaPlayer = MediaPlayer.create(this, videoPath).apply {
-                    isLooping = true
-                    setSurface(externalTexture.surface)
-                    start()
-                }
+                renderableInstance.material.setExternalTexture("videoTexture", externalTexture!!)
+                mediaPlayer = createMediaPlayer(externalTexture!!)
             }
+        }
+    }
+
+    /** MediaPlayer may return null if creation fails */
+    private fun createMediaPlayer(externalTexture: ExternalTexture): MediaPlayer? {
+        return try {
+            MediaPlayer.create(this, videoPath).apply {
+                isLooping = true
+                setSurface(externalTexture.surface)
+                start()
+            }
+        } catch (_: Throwable) {
+            null
         }
     }
 
