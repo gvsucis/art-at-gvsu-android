@@ -125,12 +125,7 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         config.planeFindingMode = Config.PlaneFindingMode.DISABLED
 
         database = AugmentedImageDatabase(session)
-        session?.apply {
-            session.resume()
-            session.pause()
-            session.resume()
-        }
-
+        config.setAugmentedImageDatabase(database)
 
         arFragment!!.setOnAugmentedImageUpdateListener { augmentedImage: AugmentedImage ->
             this.onAugmentedImageTrackingUpdate(
@@ -228,8 +223,8 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
             return
         }
 
-        if (augmentedImage.trackingState === TrackingState.TRACKING &&
-            augmentedImage.trackingMethod === AugmentedImage.TrackingMethod.FULL_TRACKING
+        if (augmentedImage.trackingState == TrackingState.TRACKING &&
+            augmentedImage.trackingMethod == AugmentedImage.TrackingMethod.FULL_TRACKING
         ) {
             playARVideo(augmentedImage)
         }
@@ -250,7 +245,7 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
 
     private fun preloadTargetArtwork(artworks: List<Artwork>) {
         lifecycleScope.launch(Dispatchers.IO) {
-            val artwork = artworks.find { it.id === targetArtworkId } ?: return@launch
+            val artwork = artworks.find { it.id == targetArtworkId } ?: return@launch
             val videoURL = artwork.arDigitalAssetURL
 
             if (videoURL != null) {
@@ -332,32 +327,22 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                val cachedVideo = videoCache.getInstant(id)
+                val cachedVideo = videoCache.get(id, videoUrl)
 
                 if (cachedVideo?.mediaPlayer != null) {
                     withContext(Dispatchers.Main) {
-                        mediaPlayer = cachedVideo.mediaPlayer
-                        mediaPlayer?.start()
-                        setupVideoAnchor(augmentedImage)
+                        if (currentArtworkId == id) {
+                            mediaPlayer = cachedVideo.mediaPlayer
+                            mediaPlayer?.start()
+                            setupVideoAnchor(augmentedImage)
+                        }
                     }
                 } else {
-                    val downloadedVideo = videoCache.get(id, videoUrl)
-
-                    if (downloadedVideo?.mediaPlayer != null) {
-                        withContext(Dispatchers.Main) {
-                            if (currentArtworkId == id) {
-                                mediaPlayer = downloadedVideo.mediaPlayer
-                                mediaPlayer?.start()
-                                setupVideoAnchor(augmentedImage)
-                            }
-                        }
-                    } else {
-                        currentArtworkId = null
-                    }
+                    currentArtworkId = null
                 }
 
             } catch (e: Exception) {
-                Log.e(TAG, "Error playing cached video: ${e.message}", e)
+                Log.e(TAG, "Error playing cached video for artwork $id: ${e.message}", e)
                 currentArtworkId = null
             }
         }

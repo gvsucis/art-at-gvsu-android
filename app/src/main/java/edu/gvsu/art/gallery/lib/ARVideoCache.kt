@@ -147,7 +147,6 @@ class ARVideoCache(
             // Add to memory cache (this will evict LRU if needed)
             memoryCache.put(artworkId, cachedVideo)
 
-            Log.d("ARVideoCache", "MediaPlayer prepared for artwork: $artworkId")
             cachedVideo
 
         } catch (e: Exception) {
@@ -171,10 +170,6 @@ class ARVideoCache(
             val totalSize = files.sumOf { it.length() }
 
             if (totalSize > maxDiskCacheSize) {
-                Log.d(
-                    "ARVideoCache",
-                    "Disk cache size ($totalSize bytes) exceeds limit ($maxDiskCacheSize bytes), cleaning up"
-                )
 
                 // Sort files by last modified time (oldest first)
                 val sortedFiles = files.sortedBy { it.lastModified() }
