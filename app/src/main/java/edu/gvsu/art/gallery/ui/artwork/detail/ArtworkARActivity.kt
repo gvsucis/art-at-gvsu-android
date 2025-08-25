@@ -2,17 +2,32 @@ package edu.gvsu.art.gallery.ui.artwork.detail
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
 import android.media.MediaPlayer
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsIgnoringVisibility
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentOnAttachListener
+import androidx.lifecycle.lifecycleScope
+import coil.ImageLoader
+import coil.request.ImageRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import com.google.android.filament.filamat.MaterialBuilder
 import com.google.ar.core.AugmentedImage
 import com.google.ar.core.AugmentedImageDatabase
@@ -30,9 +45,12 @@ import com.google.ar.sceneform.rendering.Renderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.BaseArFragment
 import com.google.ar.sceneform.ux.TransformableNode
+import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.R
+import edu.gvsu.art.gallery.lib.Async
 import edu.gvsu.art.gallery.ui.CloseIconButton
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.nio.ByteBuffer
 import java.util.concurrent.CompletableFuture
@@ -48,8 +66,6 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     private var plainVideoModel: Renderable? = null
     private var plainVideoMaterial: Material? = null
     private var mediaPlayer: MediaPlayer? = null
-    private lateinit var videoPath: Uri
-    private lateinit var imagePath: Uri
 
     private val viewModel: ArtworkARViewModel by viewModel<ArtworkARViewModel>()
 
@@ -59,16 +75,14 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         setContentView(R.layout.activity_artwork_ar)
 
         addCloseButton()
-
-//        videoPath = Uri.parse(intent.getStringExtra(EXTRA_AR_VIDEO_PATH))
-//        imagePath = Uri.parse(intent.getStringExtra(EXTRA_AR_IMAGE_PATH))
+        observeArtworks()
 
         supportFragmentManager.addFragmentOnAttachListener(this)
 
         if (savedInstanceState == null) {
             if (Sceneform.isSupported(this)) {
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.arFragment, ArFragment::class.java, null)
+                    .add(R.id.ar_fragment, ArFragment::class.java, null)
                     .commit()
             }
         }
@@ -80,7 +94,7 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     }
 
     override fun onAttachFragment(fragmentManager: FragmentManager, fragment: Fragment) {
-        if (fragment.id == R.id.arFragment) {
+        if (fragment.id == R.id.ar_fragment) {
             arFragment = fragment as ArFragment
             arFragment!!.setOnSessionConfigurationListener(this)
         }
@@ -96,12 +110,9 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         }
 
         database = AugmentedImageDatabase(session)
-
-        val matrixImage = BitmapFactory.decodeStream(contentResolver.openInputStream(imagePath))
-
-        database!!.addImage(IMAGE_KEY, matrixImage)
-
+        Log.d("gv.ar", "Created AugmentedImageDatabase with ${database?.numImages ?: 0} images")
         config.setAugmentedImageDatabase(database)
+        Log.d("gv.ar", "Set database on AR config")
 
         arFragment!!.setOnAugmentedImageUpdateListener { augmentedImage: AugmentedImage ->
             this.onAugmentedImageTrackingUpdate(
@@ -124,8 +135,9 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     }
 
     private fun loadMatrixModel() {
-        futures.add(ModelRenderable.builder()
-            .setSource(this, Uri.parse("models/Video.glb"))
+        futures.add(
+            ModelRenderable.builder()
+            .setSource(this, "models/Video.glb".toUri())
             .setIsFilamentGltf(true)
             .build()
             .thenAccept { model ->
@@ -169,7 +181,8 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
             .build(filamentEngine)
         if (plainVideoMaterialPackage.isValid) {
             val buffer: ByteBuffer = plainVideoMaterialPackage.buffer
-            futures.add(Material.builder()
+            futures.add(
+                Material.builder()
                 .setSource(buffer)
                 .build()
                 .thenAccept { material ->
@@ -185,14 +198,18 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     }
 
     private fun onAugmentedImageTrackingUpdate(augmentedImage: AugmentedImage) {
+        Log.d("gv.ar", "id=${augmentedImage.name} artworkDetected=$artworkDetected")
         if (artworkDetected) {
             return
         }
 
         if ((augmentedImage.trackingState === TrackingState.TRACKING && augmentedImage.getTrackingMethod() === AugmentedImage.TrackingMethod.FULL_TRACKING)) {
             val anchorNode = AnchorNode(augmentedImage.createAnchor(augmentedImage.getCenterPose()))
+            val id = augmentedImage.name
+            val url = viewModel.artworkVideos[id]
 
-            if (!artworkDetected && augmentedImage.getName().equals(IMAGE_KEY)) {
+            if (!artworkDetected &&  url != null) {
+                Log.d("gv.ar", "id=$augmentedImage; url=$url")
                 artworkDetected = true
                 anchorNode.setWorldScale(
                     Vector3(
@@ -211,12 +228,68 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
                 renderableInstance.material = plainVideoMaterial
 
                 renderableInstance.material.setExternalTexture("videoTexture", externalTexture)
-                mediaPlayer = MediaPlayer.create(this, videoPath).apply {
-                    isLooping = true
-                    setSurface(externalTexture.surface)
-                    start()
+//                mediaPlayer = MediaPlayer.create(this, videoPath).apply {
+//                    isLooping = true
+//                    setSurface(externalTexture.surface)
+//                    start()
+//                }
+            }
+        }
+    }
+
+    private fun observeArtworks() {
+        lifecycleScope.launch {
+            viewModel.artworks.collect { async ->
+                if (async is Async.Success) {
+                    loadArtworksIntoDatabase(async())
                 }
             }
+        }
+    }
+
+    private fun loadArtworksIntoDatabase(artworks: List<Artwork>) {
+        val imageLoader = ImageLoader(this)
+        
+        lifecycleScope.launch {
+            artworks.forEach { artwork ->
+                artwork.mediaLarge?.let { imageUrl ->
+                    try {
+                        Log.d("gv.ar", "Loading image for ${artwork.id}: $imageUrl")
+                        val request = ImageRequest.Builder(this@ArtworkARActivity)
+                            .data(imageUrl.toString())
+                            .allowHardware(false)
+                            .build()
+                        
+                        val result = imageLoader.execute(request)
+                        val drawable = result.drawable
+                        val bitmap = (drawable as? BitmapDrawable)?.bitmap
+                        
+                        if (bitmap != null) {
+                            val index = database?.addImage(artwork.id, bitmap)
+                            Log.d("gv.ar", "Added image ${artwork.id} to database at index: $index")
+                        } else {
+                            Log.w("gv.ar", "Failed to get bitmap for ${artwork.id}")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("gv.ar", "Error loading image for ${artwork.id}: ${e.message}", e)
+                    }
+                }
+            }
+
+            Log.d("gv.ar", "Database now has ${database?.numImages} images")
+            reconfigureARSession()
+        }
+    }
+
+    private fun reconfigureARSession() {
+        arFragment?.arSceneView?.session?.let { session ->
+            Log.d("gv.ar", "Reconfiguring AR session with ${database?.numImages} images")
+            val config = Config(session)
+            config.setFocusMode(Config.FocusMode.AUTO)
+            config.planeFindingMode = Config.PlaneFindingMode.DISABLED
+            config.setAugmentedImageDatabase(database)
+            session.configure(config)
+            Log.d("gv.ar", "AR session reconfigured")
         }
     }
 
@@ -225,7 +298,7 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 ArtGalleryTheme {
-                    CloseIconButton {
+                    CloseButton {
                         finish()
                     }
                 }
@@ -247,5 +320,17 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
                 context.startActivity(this)
             }
         }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun CloseButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .windowInsetsPadding(WindowInsets.statusBarsIgnoringVisibility)
+            .padding(top = 8.dp, start = 8.dp)
+    ) {
+        CloseIconButton(onClick = onClick)
     }
 }

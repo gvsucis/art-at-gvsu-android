@@ -6,10 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,16 +23,17 @@ import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 
 @Composable
 fun CloseIconButton(
+    modifier: Modifier = Modifier,
     style: CloseIconStyle = CloseIconStyle.Close,
     onClick: () -> Unit = {}
 ) {
     val icon = when (style) {
         CloseIconStyle.Close -> Icons.Default.Close
-        CloseIconStyle.Back -> Icons.Default.ArrowBack
+        CloseIconStyle.Back -> Icons.AutoMirrored.Filled.ArrowBack
     }
 
     Box(
-        modifier = Modifier.padding(4.dp),
+        modifier = Modifier.padding(4.dp).then(modifier),
     ) {
         Box(
             contentAlignment = Alignment.Center,
