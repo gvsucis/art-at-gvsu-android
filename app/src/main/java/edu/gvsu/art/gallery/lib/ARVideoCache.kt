@@ -24,7 +24,7 @@ class ARVideoCache(
     private val memoryCache = LruCache<String, CachedVideo>(maxMemoryCacheSize)
     private val downloadJobs = ConcurrentHashMap<String, Job>()
     private val cacheDirectory = File(context.cacheDir, "ar_videos")
-    
+
     init {
         if (!cacheDirectory.exists()) {
             cacheDirectory.mkdirs()
@@ -39,7 +39,7 @@ class ARVideoCache(
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val localFile = downloadVideo(artworkId, videoUrl)
-                    
+
                     if (localFile.exists()) {
                         withContext(Dispatchers.Main) {
                             prepareMediaPlayer(artworkId, localFile.absolutePath)
@@ -69,35 +69,47 @@ class ARVideoCache(
 
     suspend fun get(artworkId: String, videoUrl: URL): CachedVideo? {
         getInstant(artworkId)?.let { return it }
-        
+
         downloadJobs[artworkId]?.join()
-        
+
         getInstant(artworkId)?.let { return it }
-        
+
         val localFile = getLocalFile(videoUrl)
         if (localFile.exists()) {
             return withContext(Dispatchers.Main) {
                 prepareMediaPlayer(artworkId, localFile.absolutePath)
             }
         }
-        
-        return null
+
+        return try {
+            val downloadedFile = downloadVideo(artworkId, videoUrl)
+            if (downloadedFile.exists()) {
+                withContext(Dispatchers.Main) {
+                    prepareMediaPlayer(artworkId, downloadedFile.absolutePath)
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("ARVideoCache", "Error downloading video $artworkId: ${e.message}", e)
+            null
+        }
     }
 
     private suspend fun downloadVideo(artworkId: String, videoUrl: URL): File {
         val localFile = getLocalFile(videoUrl)
-        
+
         if (localFile.exists()) {
             return localFile
         }
-        
+
         ensureDiskCacheSize()
 
         val result = FileDownloader.download(
             url = videoUrl.toString(),
             directory = cacheDirectory
         )
-        
+
         return result.fold(
             onSuccess = { downloadedFile ->
                 val targetFile = getLocalFile(videoUrl)
@@ -119,25 +131,25 @@ class ARVideoCache(
             val mediaPlayer = MediaPlayer().apply {
                 setDataSource(localPath)
                 isLooping = true
-                
+
                 // Prepare synchronously on background thread
                 withContext(Dispatchers.IO) {
                     prepare()
                 }
             }
-            
+
             val cachedVideo = CachedVideo(
                 localPath = localPath,
                 mediaPlayer = mediaPlayer,
                 isReady = true
             )
-            
+
             // Add to memory cache (this will evict LRU if needed)
             memoryCache.put(artworkId, cachedVideo)
-            
+
             Log.d("ARVideoCache", "MediaPlayer prepared for artwork: $artworkId")
             cachedVideo
-            
+
         } catch (e: Exception) {
             Log.e("ARVideoCache", "Error preparing MediaPlayer for $artworkId: ${e.message}", e)
             null
@@ -155,22 +167,25 @@ class ARVideoCache(
     private suspend fun ensureDiskCacheSize() {
         withContext(Dispatchers.IO) {
             val files = cacheDirectory.listFiles() ?: return@withContext
-            
+
             val totalSize = files.sumOf { it.length() }
-            
+
             if (totalSize > maxDiskCacheSize) {
-                Log.d("ARVideoCache", "Disk cache size ($totalSize bytes) exceeds limit ($maxDiskCacheSize bytes), cleaning up")
-                
+                Log.d(
+                    "ARVideoCache",
+                    "Disk cache size ($totalSize bytes) exceeds limit ($maxDiskCacheSize bytes), cleaning up"
+                )
+
                 // Sort files by last modified time (oldest first)
                 val sortedFiles = files.sortedBy { it.lastModified() }
-                
+
                 val currentSize = totalSize
 
                 for (file in sortedFiles) {
                     if (currentSize <= maxDiskCacheSize * 0.8) {
                         break
                     }
-                    
+
                     file.delete()
                 }
             }
@@ -187,7 +202,7 @@ class ARVideoCache(
         snapshot.values.forEach { cachedVideo ->
             cachedVideo.mediaPlayer?.release()
         }
-        
+
         memoryCache.evictAll()
     }
 
