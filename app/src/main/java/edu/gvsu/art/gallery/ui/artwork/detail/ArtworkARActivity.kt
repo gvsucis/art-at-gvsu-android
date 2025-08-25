@@ -48,6 +48,7 @@ import com.google.ar.sceneform.ux.TransformableNode
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.lib.Async
+import edu.gvsu.art.gallery.lib.ARVideoCache
 import edu.gvsu.art.gallery.ui.CloseIconButton
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 import kotlinx.coroutines.launch
@@ -68,6 +69,7 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     private var activeAugmentedImage: AugmentedImage? = null
     private var currentVideoNode: TransformableNode? = null
     private var currentArtworkId: String? = null
+    private lateinit var videoCache: ARVideoCache
 
     private val viewModel: ArtworkARViewModel by viewModel<ArtworkARViewModel>()
 
@@ -76,6 +78,7 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
 
         setContentView(R.layout.activity_artwork_ar)
 
+        videoCache = ARVideoCache(this)
         addCloseButton()
         observeArtworks()
 
@@ -107,7 +110,6 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         config.planeFindingMode = Config.PlaneFindingMode.DISABLED
 
         database = AugmentedImageDatabase(session)
-        Log.d("gv.ar", "Created empty AugmentedImageDatabase")
 
         arFragment!!.setOnAugmentedImageUpdateListener { augmentedImage: AugmentedImage ->
             this.onAugmentedImageTrackingUpdate(
@@ -128,9 +130,11 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
                 player.stop()
                 player.release()
             } catch (e: Exception) {
-                Log.w("gv.ar", "Error stopping media player: ${e.message}")
+                Log.e("gv.ar", "Error stopping media player: ${e.message}")
             }
         }
+        
+        videoCache.cleanup()
     }
 
     private fun loadMatrixModel() {
@@ -216,8 +220,17 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
             viewModel.artworks.collect { async ->
                 if (async is Async.Success) {
                     val artworks = async()
+                    preloadVideos()
                     loadArtworksIntoDatabase(artworks)
                 }
+            }
+        }
+    }
+
+    private fun preloadVideos() {
+        lifecycleScope.launch {
+            viewModel.artworkVideos.forEach { (artworkId, videoUrl) ->
+                videoCache.preload(artworkId, videoUrl)
             }
         }
     }
@@ -248,7 +261,7 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
             }
 
             withContext(Dispatchers.Main) {
-                reconfigureARSession()
+                configureARSession()
             }
         }
     }
@@ -257,22 +270,21 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         mediaPlayer?.let { player ->
             try {
                 if (player.isPlaying) {
-                    player.stop()
+                    player.pause()
                 }
-                player.release()
             } catch (e: Exception) {
                 Log.e("gv.ar", "Error stopping current video: ${e.message}", e)
             }
         }
         mediaPlayer = null
 
+        // Remove video node from scene
         currentVideoNode?.let { node ->
             node.parent?.removeChild(node)
             currentVideoNode = null
         }
 
         currentArtworkId = null
-        Log.d("gv.ar", "Cleaned up current video")
     }
 
     private fun playARVideo(augmentedImage: AugmentedImage) {
@@ -280,37 +292,42 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         val videoUrl = viewModel.artworkVideos[id]
 
         if (videoUrl == null) {
-            Log.w("gv.ar", "No video URL found for artwork: $id")
             return
         }
 
-        Log.d("gv.ar", "Loading video for artwork: $id, url: $videoUrl")
-
         cleanupCurrentVideo()
-
-        mediaPlayer = MediaPlayer().apply {
-            setOnPreparedListener { player ->
-                player.start()
-                Log.d("gv.ar", "Video started for artwork: $id")
-            }
-        }
-
+        
         activeAugmentedImage = augmentedImage
         currentArtworkId = id
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                mediaPlayer?.apply {
-                    setDataSource(videoUrl.toString())
-                    isLooping = true
-                    prepareAsync()
+                val cachedVideo = videoCache.getInstant(id)
+                
+                if (cachedVideo?.mediaPlayer != null) {
+                    withContext(Dispatchers.Main) {
+                        mediaPlayer = cachedVideo.mediaPlayer
+                        mediaPlayer?.start()
+                        setupVideoAnchor(augmentedImage)
+                    }
+                } else {
+                    val downloadedVideo = videoCache.get(id, videoUrl)
+                    
+                    if (downloadedVideo?.mediaPlayer != null) {
+                        withContext(Dispatchers.Main) {
+                            if (currentArtworkId == id) {
+                                mediaPlayer = downloadedVideo.mediaPlayer
+                                mediaPlayer?.start()
+                                setupVideoAnchor(augmentedImage)
+                            }
+                        }
+                    } else {
+                        currentArtworkId = null
+                    }
                 }
-
-                withContext(Dispatchers.Main) {
-                    setupVideoAnchor(augmentedImage)
-                }
+                
             } catch (e: Exception) {
-                Log.e("gv.ar", "Error setting up video: ${e.message}", e)
+                Log.e("gv.ar", "Error playing cached video: ${e.message}", e)
                 currentArtworkId = null
             }
         }
@@ -341,18 +358,14 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         mediaPlayer?.setSurface(externalTexture.surface)
     }
 
-    private fun reconfigureARSession() {
+    private fun configureARSession() {
         arFragment?.arSceneView?.session?.let { session ->
             try {
-                Log.d("gv.ar", "Reconfiguring AR session with ${database?.numImages} images")
-
                 session.pause()
                 val config = session.config
                 config.setAugmentedImageDatabase(database)
                 session.configure(config)
                 session.resume()
-
-                Log.d("gv.ar", "AR session reconfigured successfully")
             } catch (e: Exception) {
                 Log.e("gv.ar", "Error reconfiguring AR session: ${e.message}", e)
             }
@@ -373,15 +386,8 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     }
 
     companion object {
-        const val IMAGE_KEY = "ar_image"
-
-        const val EXTRA_AR_VIDEO_PATH = "EXTRA_AR_VIDEO_PATH"
-        const val EXTRA_AR_IMAGE_PATH = "EXTRA_AR_IMAGE_PATH"
-
-        fun start(context: Context, arAssets: ArtworkARAssets) {
+        fun start(context: Context) {
             Intent(context, ArtworkARActivity::class.java).apply {
-                putExtra(EXTRA_AR_VIDEO_PATH, arAssets.video.toString())
-                putExtra(EXTRA_AR_IMAGE_PATH, arAssets.image.toString())
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 context.startActivity(this)
             }
