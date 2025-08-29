@@ -29,12 +29,12 @@ val secrets = Properties().apply {
 
 android {
     namespace = "edu.gvsu.art.gallery"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "edu.gvsu.artmuseum"
         minSdk = 31
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1027
         versionName = "2025.08.1027"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -80,6 +80,9 @@ android {
     }
 
     packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
