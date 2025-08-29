@@ -24,7 +24,7 @@ import edu.gvsu.art.gallery.ui.foundation.LocalTopLevelRoute
 fun SearchIndexScreen(navController: NavController) {
     val tabScreen = LocalTopLevelRoute.current
     val (query, setQuery) = rememberSaveable { mutableStateOf("") }
-    val (selectedModel, setModel) = rememberSaveable { mutableStateOf(SearchCategory.ARTIST) }
+    val (selectedModel, setModel) = rememberSaveable { mutableStateOf(SearchCategory.ARTWORK) }
     val (isQRDialogOpen, openQRDialog) = remember { mutableStateOf(false) }
     val (isVisionSearchOpen, openVisionSearch) = remember { mutableStateOf(false) }
 

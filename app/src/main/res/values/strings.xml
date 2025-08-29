@@ -23,7 +23,7 @@
     <string name="tour_marker_more_details">Tap for details</string>
 
     <!-- search -->
-    <string name="search_index_bar_placeholder">Search artists and artworks</string>
+    <string name="search_index_bar_placeholder">Search</string>
     <string name="search_index_artist_radio">Artists</string>
     <string name="search_index_artworks_radio">Artworks</string>
     <string name="search_qr_permission_rationale">QR reader requires camera access to scan. Go to settings to enable.</string>
