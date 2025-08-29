@@ -42,7 +42,7 @@ fun SearchIndexSearchBar(
     onSelectVisionSearch: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val options = listOf(SearchCategory.ARTIST, SearchCategory.ARTWORK)
+    val options = listOf(SearchCategory.ARTWORK, SearchCategory.ARTIST)
 
     Column {
         Row {
@@ -129,7 +129,7 @@ fun SearchBarPreview() {
     ArtGalleryTheme {
         SearchIndexSearchBar(
             query = "",
-            selectedCategory = SearchCategory.ARTIST,
+            selectedCategory = SearchCategory.ARTWORK,
             setQuery = {},
             setCategory = {},
             onSelectQRScanner = {},
