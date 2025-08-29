@@ -230,7 +230,6 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         }
     }
 
-
     private fun observeArtworks() {
         lifecycleScope.launch {
             viewModel.artworks.collect { async ->
@@ -317,6 +316,7 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
         val videoUrl = viewModel.artworkVideos[id]
 
         if (videoUrl == null) {
+            Log.w(TAG, "Video not found id=$id $videoUrl")
             return
         }
 
@@ -349,28 +349,32 @@ class ArtworkARActivity : FragmentActivity(), FragmentOnAttachListener,
     }
 
     private fun setupVideoAnchor(augmentedImage: AugmentedImage) {
-        val anchorNode = AnchorNode(augmentedImage.createAnchor(augmentedImage.centerPose))
-        anchorNode.setWorldScale(
-            Vector3(
-                augmentedImage.extentX,
-                1f,
-                augmentedImage.extentZ
-            )
-        )
-        arFragment!!.arSceneView.scene.addChild(anchorNode)
+       try {
+           val anchorNode = AnchorNode(augmentedImage.createAnchor(augmentedImage.centerPose))
+           anchorNode.setWorldScale(
+               Vector3(
+                   augmentedImage.extentX,
+                   1f,
+                   augmentedImage.extentZ
+               )
+           )
+           arFragment!!.arSceneView.scene.addChild(anchorNode)
 
-        val videoNode = TransformableNode(arFragment!!.transformationSystem)
-        anchorNode.addChild(videoNode)
+           val videoNode = TransformableNode(arFragment!!.transformationSystem)
+           anchorNode.addChild(videoNode)
 
-        // Track the current video node for cleanup
-        currentVideoNode = videoNode
+           // Track the current video node for cleanup
+           currentVideoNode = videoNode
 
-        val externalTexture = ExternalTexture()
-        val renderableInstance = videoNode.setRenderable(plainVideoModel)
-        renderableInstance.material = plainVideoMaterial
+           val externalTexture = ExternalTexture()
+           val renderableInstance = videoNode.setRenderable(plainVideoModel)
+           renderableInstance.material = plainVideoMaterial
 
-        renderableInstance.material.setExternalTexture("videoTexture", externalTexture)
-        mediaPlayer?.setSurface(externalTexture.surface)
+           renderableInstance.material.setExternalTexture("videoTexture", externalTexture)
+           mediaPlayer?.setSurface(externalTexture.surface)
+       } catch (e: Throwable) {
+           Log.e(TAG, "Failed to setup video anchor", e)
+       }
     }
 
     private fun configureARSession() {
