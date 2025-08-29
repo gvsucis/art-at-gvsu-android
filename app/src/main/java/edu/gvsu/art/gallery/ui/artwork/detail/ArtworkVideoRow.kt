@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -72,7 +73,9 @@ fun ArtworkMultimediaRow(mediaItems: List<SecondaryMedia>, onClick: (link: URL) 
                     ArtworkVideoPlaceholder(url = media.thumbnailURL)
                 }
             }
-            Spacer(Modifier.height(8.dp).width(8.dp))
+            Spacer(Modifier
+                .height(8.dp)
+                .width(8.dp))
         }
     }
 }
@@ -103,17 +106,20 @@ fun ArtworkVideoPlaceholder(url: URL) {
                 .background(Color.Black.copy(alpha = 0.2f)),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                imageVector = Icons.Default.PlayArrow,
-                tint = Color.White,
-                modifier = Modifier
-                    .size(32.dp)
-                    .background(tertiaryLight, CircleShape)
-                    .padding(8.dp),
-                contentDescription = null
-            )
+            PlayIcon()
         }
     }
+}
+
+@Composable
+fun PlayIcon() {
+    Icon(
+        imageVector = Icons.Default.PlayCircleOutline,
+        tint = Color.White,
+        modifier = Modifier
+            .size(48.dp),
+        contentDescription = null
+    )
 }
 
 @Composable
@@ -128,5 +134,17 @@ fun PreviewArtworkVideoRow() {
 
     ArtGalleryTheme {
         ArtworkMultimediaRow(media) {}
+    }
+}
+
+@Composable
+@Preview
+fun PreviewPlayIcon() {
+    ArtGalleryTheme {
+        Box(Modifier
+            .size(150.dp)
+            .background(Color.Gray)) {
+            PlayIcon()
+        }
     }
 }
