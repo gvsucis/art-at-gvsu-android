@@ -40,6 +40,7 @@ private val ArtworkSearchResult.toDomainArtworks: List<Artwork>
             identifier = objectDetail.idno ?: "",
             mediaMedium = optionalURL(objectDetail.media_medium_url),
             mediaLarge = optionalURL(objectDetail.media_large_url),
-            thumbnail = optionalURL(objectDetail.media_small_url)
+            thumbnail = optionalURL(objectDetail.media_small_url),
+            arDigitalAssetURL = optionalURL(objectDetail.ar_digital_asset)
         )
     }
