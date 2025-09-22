@@ -38,10 +38,8 @@ fun ArtworkDetailTitleRow(
 ) {
     val context = LocalContext.current
 
-    val arState = rememberARAsset(artwork) { assets ->
-        Log.d("ArtworkDetailTitleRow", "URIs: $assets")
-
-        ArtworkARActivity.start(context, assets)
+    fun requestARAsset() {
+        ArtworkARActivity.start(context, artworkId =artwork.id)
     }
 
     FlowRow(
@@ -57,13 +55,9 @@ fun ArtworkDetailTitleRow(
         }
         Row {
             if (artwork.hasAR) {
-                ArtworkARButton(
-                    arAsset = arState.value,
-                    progress = arState.progress,
-                    onRequestARAsset = {
-                        arState.requestARAsset()
-                    },
-                )
+                ArtworkARButton {
+                    requestARAsset()
+                }
             }
             IconButton(
                 onClick = { toggleFavorite() }
