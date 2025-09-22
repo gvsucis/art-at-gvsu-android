@@ -5,5 +5,4 @@ import org.koin.dsl.module
 
 val artworkDetailModule = module {
     viewModel<ArtworkDetailViewModel> { ArtworkDetailViewModel(get(), get(), get()) }
-    viewModel<ArtworkARViewModel> { ArtworkARViewModel(repository = get(), application = get()) }
 }
