@@ -13,7 +13,6 @@ data class FeaturedObjectDetail(
     var entity_id: String? = "",
     var entity_name: String? = "",
     var historical_context: String? = "",
-    var work_description: String? = "",
-    var ar_digital_asset: String? = "",
+    var work_description: String? = ""
 )
 
