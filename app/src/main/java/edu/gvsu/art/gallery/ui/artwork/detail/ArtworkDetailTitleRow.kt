@@ -25,6 +25,7 @@ import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.gallery.R
 import edu.gvsu.art.gallery.extensions.shareArtwork
 import edu.gvsu.art.gallery.ui.TitleText
+import edu.gvsu.art.gallery.ui.artwork.ar.ArtworkARActivity
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
 import edu.gvsu.art.gallery.ui.theme.Red
 import java.net.URL
