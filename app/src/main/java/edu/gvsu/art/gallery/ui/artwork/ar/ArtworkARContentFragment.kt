@@ -9,12 +9,12 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.google.ar.core.Config
-import dev.romainguy.kotlin.math.Float3
 import edu.gvsu.art.gallery.R
 import io.github.sceneview.ar.ARSceneView
 import io.github.sceneview.ar.arcore.addAugmentedImage
 import io.github.sceneview.ar.arcore.getUpdatedAugmentedImages
 import io.github.sceneview.ar.node.AugmentedImageNode
+import io.github.sceneview.math.Size
 
 class ArtworkARContentFragment : Fragment(R.layout.fragment_artwork_ar_content) {
 
@@ -39,13 +39,14 @@ class ArtworkARContentFragment : Fragment(R.layout.fragment_artwork_ar_content) 
             onSessionUpdated = { session, frame ->
                 frame.getUpdatedAugmentedImages().forEach { augmentedImage ->
                     if (augmentedImageNodes.none { it.imageName == augmentedImage.name }) {
-                        val augmentedImageNode = AugmentedImageNode(engine, augmentedImage).apply {
+                        val augmentedImageNode = AugmentedImageNode(
+                            engine = engine,
+                            augmentedImage = augmentedImage,
+                            applyImageScale = true
+                        ).apply {
                             when (augmentedImage.name) {
                                 "qrcode" -> {
-
-                                    Log.d("fragment", "updated")
-                                    worldScale =
-                                        Float3(augmentedImage.extentX, 1f, augmentedImage.extentZ)
+                                    Log.d("fragment", "x=${augmentedImage.extentX} z=${augmentedImage.extentZ}")
                                     addChildNode(
                                         ExoPlayerNode(
                                             engine = engine,
