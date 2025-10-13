@@ -40,8 +40,6 @@ fun ArtworkDetailTitleRow(
     val context = LocalContext.current
 
     val arState = rememberARAsset(artwork) { assets ->
-        Log.d("ArtworkDetailTitleRow", "URIs: $assets")
-
         ArtworkARActivity.start(context, assets)
     }
 

@@ -54,7 +54,7 @@ fun rememberARAsset(artwork: Artwork, onComplete: (uris: ArtworkARAssets) -> Uni
             )
 
             val imageResult = FileDownloader.download(
-                url = artwork.mediaMedium!!.toString(),
+                url = artwork.mediaLarge!!.toString(),
                 directory = context.arAssetsDirectory()
             ).fold(
                 onSuccess = { Async.Success(it) },

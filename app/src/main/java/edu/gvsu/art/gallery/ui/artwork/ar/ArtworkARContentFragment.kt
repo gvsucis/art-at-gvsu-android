@@ -1,9 +1,11 @@
 package edu.gvsu.art.gallery.ui.artwork.ar
 
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -25,8 +27,14 @@ class ArtworkARContentFragment : Fragment(R.layout.fragment_artwork_ar_content) 
 
     private var exoPlayer: ExoPlayer? = null
 
+    private lateinit var videoPath: Uri
+    private lateinit var imagePath: Uri
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        videoPath = arguments?.getParcelable(ARG_VIDEO_PATH) ?: error("Missing video path")
+        imagePath = arguments?.getParcelable(ARG_IMAGE_PATH) ?: error("Missing image path")
 
         sceneView = view.findViewById<ARSceneView>(R.id.sceneView).apply {
             configureSession { session, config ->
@@ -34,9 +42,11 @@ class ArtworkARContentFragment : Fragment(R.layout.fragment_artwork_ar_content) 
                 config.planeFindingMode = Config.PlaneFindingMode.DISABLED
 
                 config.addAugmentedImage(
-                    session, "qrcode",
-                    requireContext().assets.open("augmentedimages/qrcode.jpg")
-                        .use(BitmapFactory::decodeStream)
+                    session,
+                    IMAGE_KEY,
+                    requireContext().contentResolver.openInputStream(imagePath)
+                        ?.use(BitmapFactory::decodeStream)
+                        ?: error("Failed to load image from $imagePath")
                 )
             }
             onSessionUpdated = { session, frame ->
@@ -46,23 +56,29 @@ class ArtworkARContentFragment : Fragment(R.layout.fragment_artwork_ar_content) 
                             engine = engine,
                             augmentedImage = augmentedImage,
                         ).apply {
-                            when (name) {
-                                "qrcode" -> {
+                            when (augmentedImage.name) {
+                                IMAGE_KEY -> {
                                     var hasResized = false
 
                                     onUpdated = { image ->
                                         if (!hasResized && image.extentX > 0 && image.extentZ > 0) {
-                                            val player = exoPlayer ?: ExoPlayer.Builder(requireContext()).build().also {
-                                                it.setMediaItem(MediaItem.fromUri("https://artgallery.gvsu.edu/admin/media/collectiveaccess/quicktime/1/1/3/5/6/10629_ca_attribute_values_value_blob_1135655_original.mp4"))
-                                                it.prepare()
-                                                it.playWhenReady = true
-                                                it.repeatMode = Player.REPEAT_MODE_ALL
-                                                exoPlayer = it
-                                            }
+                                            val player =
+                                                exoPlayer ?: ExoPlayer.Builder(requireContext())
+                                                    .build().also {
+                                                        it.setMediaItem(MediaItem.fromUri(videoPath))
+                                                        it.prepare()
+                                                        it.playWhenReady = true
+                                                        it.repeatMode = Player.REPEAT_MODE_ALL
+                                                        exoPlayer = it
+                                                    }
 
                                             val videoNode = ExoPlayerNode(
                                                 engine = engine,
-                                                size = Size(x = image.extentX, y = 0.0f, z = image.extentZ),
+                                                size = Size(
+                                                    x = image.extentX,
+                                                    y = 0.0f,
+                                                    z = image.extentZ
+                                                ),
                                                 materialLoader = materialLoader,
                                                 exoPlayer = player,
                                             )
@@ -85,11 +101,13 @@ class ArtworkARContentFragment : Fragment(R.layout.fragment_artwork_ar_content) 
 
     override fun onDestroyView() {
         super.onDestroyView()
-        augmentedImageNodes.forEach { node ->
-            node.destroy()
-        }
-        augmentedImageNodes.clear()
         exoPlayer?.release()
         exoPlayer = null
+    }
+
+    companion object {
+        const val ARG_VIDEO_PATH = "ARG_VIDEO_PATH"
+        const val ARG_IMAGE_PATH = "ARG_IMAGE_PATH"
+        const val IMAGE_KEY = "ar_image"
     }
 }
