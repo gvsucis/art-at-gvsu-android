@@ -49,7 +49,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.artwork.detail.ArtworkARActivity"
+            android:name=".ui.artwork.ar.ArtworkARActivity"
             android:exported="true"
             android:theme="@style/Theme.ArtGallery">
         </activity>

@@ -1,17 +1,18 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/arFragment"
+        android:id="@+id/containerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/close_button"
+        android:id="@+id/closeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:layout_marginStart="16dp"
         android:layout_gravity="top|start" />
 </FrameLayout>
