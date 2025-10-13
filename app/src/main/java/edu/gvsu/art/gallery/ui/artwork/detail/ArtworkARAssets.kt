@@ -16,8 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 data class ArtworkARAssets(
-    val image: Uri,
-    val video: Uri,
+    val imageURL: Uri,
+    val videoURL: Uri,
 )
 
 data class ARAssetState(
@@ -63,8 +63,8 @@ fun rememberARAsset(artwork: Artwork, onComplete: (uris: ArtworkARAssets) -> Uni
 
             if (videoResult is Async.Success && imageResult is Async.Success) {
                 val result = ArtworkARAssets(
-                    video = context.fileURI(videoResult.invoke()),
-                    image = context.fileURI(imageResult.invoke())
+                    videoURL = context.fileURI(videoResult.invoke()),
+                    imageURL = context.fileURI(imageResult.invoke())
                 )
 
                 setARAsset(Async.Success(result))

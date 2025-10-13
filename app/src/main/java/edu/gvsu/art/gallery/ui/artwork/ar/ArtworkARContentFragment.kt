@@ -46,7 +46,7 @@ class ArtworkARContentFragment : Fragment(R.layout.fragment_artwork_ar_content) 
                             engine = engine,
                             augmentedImage = augmentedImage,
                         ).apply {
-                            when (augmentedImage.name) {
+                            when (name) {
                                 "qrcode" -> {
                                     var hasResized = false
 
@@ -85,6 +85,10 @@ class ArtworkARContentFragment : Fragment(R.layout.fragment_artwork_ar_content) 
 
     override fun onDestroyView() {
         super.onDestroyView()
+        augmentedImageNodes.forEach { node ->
+            node.destroy()
+        }
+        augmentedImageNodes.clear()
         exoPlayer?.release()
         exoPlayer = null
     }
