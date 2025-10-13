@@ -15,12 +15,15 @@ import io.github.sceneview.ar.arcore.addAugmentedImage
 import io.github.sceneview.ar.arcore.getUpdatedAugmentedImages
 import io.github.sceneview.ar.node.AugmentedImageNode
 import io.github.sceneview.math.Size
+import io.github.sceneview.math.Position
 
 class ArtworkARContentFragment : Fragment(R.layout.fragment_artwork_ar_content) {
 
     lateinit var sceneView: ARSceneView
 
     val augmentedImageNodes = mutableListOf<AugmentedImageNode>()
+
+    private var exoPlayer: ExoPlayer? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,25 +45,32 @@ class ArtworkARContentFragment : Fragment(R.layout.fragment_artwork_ar_content) 
                         val augmentedImageNode = AugmentedImageNode(
                             engine = engine,
                             augmentedImage = augmentedImage,
-                            applyImageScale = true
                         ).apply {
                             when (augmentedImage.name) {
                                 "qrcode" -> {
-                                    Log.d("fragment", "x=${augmentedImage.extentX} z=${augmentedImage.extentZ}")
-                                    addChildNode(
-                                        ExoPlayerNode(
-                                            engine = engine,
-                                            rotateToNode = true,
-                                            materialLoader = materialLoader,
-                                            exoPlayer = ExoPlayer.Builder(requireContext()).build()
-                                                .apply {
-                                                    setMediaItem(MediaItem.fromUri("https://artgallery.gvsu.edu/admin/media/collectiveaccess/quicktime/1/1/3/5/6/10629_ca_attribute_values_value_blob_1135655_original.mp4"))
-                                                    prepare()
-                                                    playWhenReady = true
-                                                    repeatMode = Player.REPEAT_MODE_ALL
-                                                },
-                                        )
-                                    )
+                                    var hasResized = false
+
+                                    onUpdated = { image ->
+                                        if (!hasResized && image.extentX > 0 && image.extentZ > 0) {
+                                            val player = exoPlayer ?: ExoPlayer.Builder(requireContext()).build().also {
+                                                it.setMediaItem(MediaItem.fromUri("https://artgallery.gvsu.edu/admin/media/collectiveaccess/quicktime/1/1/3/5/6/10629_ca_attribute_values_value_blob_1135655_original.mp4"))
+                                                it.prepare()
+                                                it.playWhenReady = true
+                                                it.repeatMode = Player.REPEAT_MODE_ALL
+                                                exoPlayer = it
+                                            }
+
+                                            val videoNode = ExoPlayerNode(
+                                                engine = engine,
+                                                size = Size(x = image.extentX, y = 0.0f, z = image.extentZ),
+                                                materialLoader = materialLoader,
+                                                exoPlayer = player,
+                                            )
+
+                                            hasResized = true
+                                            addChildNode(videoNode)
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -71,5 +81,11 @@ class ArtworkARContentFragment : Fragment(R.layout.fragment_artwork_ar_content) 
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        exoPlayer?.release()
+        exoPlayer = null
     }
 }
