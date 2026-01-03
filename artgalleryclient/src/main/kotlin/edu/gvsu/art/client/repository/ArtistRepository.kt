@@ -9,7 +9,7 @@ import edu.gvsu.art.client.common.request
 import edu.gvsu.art.db.ArtGalleryDatabase
 
 interface ArtistRepository {
-    suspend fun search(query: String): Result<List<Artist>>
+    suspend fun search(query: String, limit: Int? = null): Result<List<Artist>>
     suspend fun find(id: String): Result<Artist>
 }
 
@@ -17,8 +17,8 @@ class DefaultArtistRepository(
     private val database: ArtGalleryDatabase,
     private val client: ArtGalleryClient,
 ) : ArtistRepository {
-    override suspend fun search(query: String): Result<List<Artist>> {
-        return request { client.fetchArtistSearch(query = query) }.fold(
+    override suspend fun search(query: String, limit: Int?): Result<List<Artist>> {
+        return request { client.fetchArtistSearch(query = query, limit = limit) }.fold(
             onSuccess = {
                 try {
                     Result.success(it.toDomainModel)

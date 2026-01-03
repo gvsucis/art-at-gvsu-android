@@ -48,6 +48,8 @@ import edu.gvsu.art.gallery.ui.favorites.FavoriteIndexScreen
 import edu.gvsu.art.gallery.ui.foundation.LocalTopLevelRoute
 import edu.gvsu.art.gallery.ui.mediaviewer.LocalMediaViewerState
 import edu.gvsu.art.gallery.ui.mediaviewer.rememberMediaViewerState
+import edu.gvsu.art.gallery.ui.search.SearchArtistResultsScreen
+import edu.gvsu.art.gallery.ui.search.SearchArtworkResultsScreen
 import edu.gvsu.art.gallery.ui.search.SearchIndexScreen
 import edu.gvsu.art.gallery.ui.search.VisionSearchResultsScreen
 import edu.gvsu.art.gallery.ui.theme.ArtGalleryTheme
@@ -223,6 +225,32 @@ fun NavGraphBuilder.searchGraph(navController: NavController) {
                     navController.navigateToArtworkDetail(
                         TopLevelRoute.Search,
                         artworkID
+                    )
+                }
+            )
+        }
+        composable<Route.SearchArtworkResults> { backStackEntry ->
+            val route = backStackEntry.toRoute<Route.SearchArtworkResults>()
+            SearchArtworkResultsScreen(
+                query = route.query,
+                onNavigateBack = { navController.navigateUp() },
+                onNavigateToArtwork = { artworkID ->
+                    navController.navigateToArtworkDetail(
+                        TopLevelRoute.Search,
+                        artworkID
+                    )
+                }
+            )
+        }
+        composable<Route.SearchArtistResults> { backStackEntry ->
+            val route = backStackEntry.toRoute<Route.SearchArtistResults>()
+            SearchArtistResultsScreen(
+                query = route.query,
+                onNavigateBack = { navController.navigateUp() },
+                onNavigateToArtist = { artistID ->
+                    navController.navigateToArtistDetail(
+                        TopLevelRoute.Search,
+                        artistID
                     )
                 }
             )

@@ -67,3 +67,5 @@ app/src/release/res/values/google_analytics_api.xml
 .env.default
 
 .idea/runConfigurations.xml
+
+TODO.md

@@ -12,4 +12,10 @@ val searchModule = module {
             application = get(),
         )
     }
+    viewModel<SearchViewModel> {
+        SearchViewModel(
+            artworkRepository = get(),
+            artistRepository = get(),
+        )
+    }
 }

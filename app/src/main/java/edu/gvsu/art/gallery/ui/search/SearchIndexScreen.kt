@@ -8,7 +8,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -17,14 +16,14 @@ import edu.gvsu.art.gallery.Route
 import edu.gvsu.art.gallery.navigateToArtistDetail
 import edu.gvsu.art.gallery.navigateToArtworkDetail
 import edu.gvsu.art.gallery.ui.foundation.LocalTopLevelRoute
+import org.koin.androidx.compose.koinViewModel
 
 @ExperimentalPermissionsApi
 @ExperimentalComposeUiApi
 @Composable
 fun SearchIndexScreen(navController: NavController) {
     val tabScreen = LocalTopLevelRoute.current
-    val (query, setQuery) = rememberSaveable { mutableStateOf("") }
-    val (selectedModel, setModel) = rememberSaveable { mutableStateOf(SearchCategory.ARTWORK) }
+    val viewModel: SearchViewModel = koinViewModel()
     val (isQRDialogOpen, openQRDialog) = remember { mutableStateOf(false) }
     val (isVisionSearchOpen, openVisionSearch) = remember { mutableStateOf(false) }
 
@@ -34,10 +33,8 @@ fun SearchIndexScreen(navController: NavController) {
                 modifier = Modifier.statusBarsPadding()
             ) {
                 SearchIndexSearchBar(
-                    query = query,
-                    selectedCategory = selectedModel,
-                    setQuery = setQuery,
-                    setCategory = setModel,
+                    query = viewModel.query,
+                    setQuery = viewModel::updateQuery,
                     onSelectQRScanner = {
                         openQRDialog(true)
                     },
@@ -53,14 +50,19 @@ fun SearchIndexScreen(navController: NavController) {
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            SearchIndexList(
-                selected = selectedModel,
-                query = query,
+            SearchResultsView(
+                searchState = viewModel.searchState,
+                onArtworkSelect = { artwork ->
+                    navController.navigateToArtworkDetail(tabScreen, artwork.id)
+                },
                 onArtistSelect = { artist ->
                     navController.navigateToArtistDetail(tabScreen, artist.id)
                 },
-                onArtworkSelect = { artwork ->
-                    navController.navigateToArtworkDetail(tabScreen, artwork.id)
+                onSeeMoreArtworks = {
+                    navController.navigate(Route.SearchArtworkResults(query = viewModel.query))
+                },
+                onSeeMoreArtists = {
+                    navController.navigate(Route.SearchArtistResults(query = viewModel.query))
                 }
             )
         }
