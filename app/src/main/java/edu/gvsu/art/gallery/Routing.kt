@@ -45,6 +45,12 @@ sealed class Route {
 
     @Serializable
     data class VisionSearchResults(val imageUri: String) : Route()
+
+    @Serializable
+    data class SearchArtworkResults(val query: String) : Route()
+
+    @Serializable
+    data class SearchArtistResults(val query: String) : Route()
 }
 
 @Deprecated("Use safe-typed Route instead")

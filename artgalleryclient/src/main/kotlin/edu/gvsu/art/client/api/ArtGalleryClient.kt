@@ -15,10 +15,16 @@ interface ArtGalleryClient {
     suspend fun fetchEntityDetail(@Query("id") id: String): EntityDetail
 
     @GET("entitySearch")
-    suspend fun fetchArtistSearch(@Query("q") query: String): ArtistSearchResult
+    suspend fun fetchArtistSearch(
+        @Query("q") query: String,
+        @Query("limit") limit: Int? = null,
+    ): ArtistSearchResult
 
     @GET("objectSearch")
-    suspend fun fetchArtworkSearch(@Query("q") query: String): ArtworkSearchResult
+    suspend fun fetchArtworkSearch(
+        @Query("q") query: String,
+        @Query("limit") limit: Int? = null,
+    ): ArtworkSearchResult
 
     @GET("locationcampusSearch?q=*")
     suspend fun fetchCampuses(): CampusSearchResult

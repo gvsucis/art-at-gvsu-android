@@ -8,15 +8,15 @@ import edu.gvsu.art.client.common.optionalURL
 import edu.gvsu.art.client.common.request
 
 interface ArtworkSearchRepository {
-    suspend fun search(query: String): Result<List<Artwork>>
+    suspend fun search(query: String, limit: Int? = null): Result<List<Artwork>>
     suspend fun searchCollection(collection: ArtworkCollection): Result<List<Artwork>>
 }
 
 class DefaultArtworkSearchRepository(
     private val client: ArtGalleryClient,
 ) : ArtworkSearchRepository {
-    override suspend fun search(query: String): Result<List<Artwork>> {
-        return request { client.fetchArtworkSearch(query = query) }.fold(
+    override suspend fun search(query: String, limit: Int?): Result<List<Artwork>> {
+        return request { client.fetchArtworkSearch(query = query, limit = limit) }.fold(
             onSuccess = { Result.success(it.toDomainArtworks) },
             onFailure = { Result.failure(it) }
         )
