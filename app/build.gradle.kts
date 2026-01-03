@@ -35,8 +35,8 @@ android {
         applicationId = "edu.gvsu.artmuseum"
         minSdk = 31
         targetSdk = 36
-        versionCode = 1030
-        versionName = "2025.10.1030"
+        versionCode = 1031
+        versionName = "2026.01.1031-beta"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField(
