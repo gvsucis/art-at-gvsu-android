@@ -1,6 +1,7 @@
 package edu.gvsu.art.client.api
 
 import edu.gvsu.art.client.api.GalleryConverter.moshi
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
@@ -42,10 +43,11 @@ interface ArtGalleryClient {
     suspend fun fetchTourStop(@Query("id") id: String): TourStopDetail
 
     companion object {
-        fun create(baseURL: String): ArtGalleryClient {
+        fun create(baseURL: String, client: OkHttpClient): ArtGalleryClient {
             return Retrofit.Builder()
                 .baseUrl(baseURL)
                 .addConverterFactory(MoshiConverterFactory.create(moshi))
+                .client(client)
                 .build()
                 .create()
         }

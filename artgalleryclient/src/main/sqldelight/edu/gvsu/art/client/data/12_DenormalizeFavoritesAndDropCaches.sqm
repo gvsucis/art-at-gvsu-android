@@ -1,0 +1,12 @@
+ALTER TABLE FavoriteArtworks ADD COLUMN title TEXT;
+ALTER TABLE FavoriteArtworks ADD COLUMN artist_name TEXT;
+ALTER TABLE FavoriteArtworks ADD COLUMN media_large_url TEXT;
+
+UPDATE FavoriteArtworks
+SET title = (SELECT name FROM Artworks WHERE Artworks.id = FavoriteArtworks.artwork_id),
+    artist_name = (SELECT artist_name FROM Artworks WHERE Artworks.id = FavoriteArtworks.artwork_id),
+    media_large_url = (SELECT media_large_url FROM Artworks WHERE Artworks.id = FavoriteArtworks.artwork_id);
+
+DROP TABLE IF EXISTS Artworks;
+DROP TABLE IF EXISTS Artists;
+DROP TABLE IF EXISTS Campuses;

@@ -1,12 +1,15 @@
-CREATE TABLE  IF NOT EXISTS FavoriteArtworks (
+CREATE TABLE IF NOT EXISTS FavoriteArtworks (
     id INTEGER PRIMARY KEY,
     artwork_id TEXT NOT NULL UNIQUE,
+    title TEXT,
+    artist_name TEXT,
+    media_large_url TEXT,
     created_at TEXT DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 insert:
-INSERT INTO FavoriteArtworks(artwork_id)
-VALUES (  ?)
+INSERT INTO FavoriteArtworks(artwork_id, title, artist_name, media_large_url)
+VALUES (?, ?, ?, ?)
 ON CONFLICT DO NOTHING;
 
 delete:
@@ -22,8 +25,6 @@ SELECT EXISTS (
 );
 
 findAll:
-SELECT
-  Artworks.*
+SELECT *
 FROM FavoriteArtworks
-JOIN Artworks ON FavoriteArtworks.artwork_id = Artworks.id
-ORDER BY FavoriteArtworks.created_at DESC;
+ORDER BY created_at DESC;

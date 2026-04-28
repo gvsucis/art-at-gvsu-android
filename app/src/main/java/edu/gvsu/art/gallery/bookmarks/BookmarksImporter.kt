@@ -25,7 +25,7 @@ class BookmarksImporter(
 
             if (id != null) {
                 artworks.find(id).onSuccess { artwork ->
-                    favorites.add(artwork.id)
+                    favorites.add(artwork)
                 }
             }
 
