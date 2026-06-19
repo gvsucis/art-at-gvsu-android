@@ -3,8 +3,6 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
-    id("kotlin-android")
-    id("kotlin-kapt")
     id("com.google.firebase.crashlytics")
     id("org.jetbrains.kotlin.plugin.parcelize")
     kotlin("plugin.serialization") version libs.versions.kotlin
@@ -29,12 +27,12 @@ val secrets = Properties().apply {
 
 android {
     namespace = "edu.gvsu.art.gallery"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "edu.gvsu.artmuseum"
         minSdk = 31
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1032
         versionName = "2026.01.1032"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -54,6 +52,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     signingConfigs {
@@ -71,7 +70,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "art-gvsu-proguard.txt")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "art-gvsu-proguard.txt")
             signingConfig = signingConfigs.getByName("release")
         }
         debug {
@@ -97,9 +96,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "21"
-    }
 }
 
 dependencies {
@@ -107,7 +103,7 @@ dependencies {
     val datastore_version = "1.1.1"
     val accompanist_version = "0.22.0-rc"
 
-    implementation(libs.androidx.compose.bom)
+    implementation(platform(libs.androidx.compose.bom))
     implementation("androidx.camera:camera-core:${camerax_version}")
     implementation("androidx.camera:camera-camera2:${camerax_version}")
     implementation("androidx.camera:camera-lifecycle:${camerax_version}")
@@ -148,7 +144,11 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
-    implementation("io.github.sceneview:arsceneview:2.3.0")
+    implementation("io.github.sceneview:arsceneview:2.3.0") {
+        // Drags in the legacy kotlin-android-extensions-runtime, whose
+        // kotlinx.android.parcel.* classes collide with kotlin-parcelize-runtime.
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
+    }
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.maps.android:android-maps-utils:2.2.3")
@@ -161,7 +161,7 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.sqldelight.sqlite.driver)
-    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit", libs.versions.kotlin.get()))
     testImplementation(libs.junit.junit)
     androidTestImplementation(libs.junit.junit)
 }

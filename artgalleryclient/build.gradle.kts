@@ -1,13 +1,12 @@
 plugins {
     id("com.android.library")
-    id("kotlin-android")
     id("app.cash.sqldelight") version libs.versions.sqldelight
     id("org.jetbrains.kotlin.plugin.parcelize")
 }
 
 android {
     namespace = "edu.gvsu.art.client"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 26
@@ -38,7 +37,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
     implementation(libs.sqldelight.coroutines.extensions)
-    testImplementation(kotlin("test"))
+    testImplementation(kotlin("test-junit", libs.versions.kotlin.get()))
     testImplementation(libs.junit.junit)
     testImplementation(libs.sqldelight.sqlite.driver)
     testImplementation(libs.mockk)
