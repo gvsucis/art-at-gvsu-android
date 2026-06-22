@@ -10,6 +10,7 @@ import org.koin.core.KoinApplication
 fun KoinApplication.setupModules() {
     modules(
         platformModule,
+        httpModule,
         databaseModule,
         repositoryModule,
         artworkDetailModule,

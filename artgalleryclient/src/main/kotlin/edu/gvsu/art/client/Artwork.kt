@@ -12,7 +12,7 @@ data class Artwork(
     val secondaryMedia: List<SecondaryMedia> = emptyList(),
     val name: String = "",
     val artistID: String = "",
-    private val artistName: String = "",
+    val artistName: String = "",
     val historicalContext: String = "",
     val workDescription: String = "",
     val workDate: String = "",

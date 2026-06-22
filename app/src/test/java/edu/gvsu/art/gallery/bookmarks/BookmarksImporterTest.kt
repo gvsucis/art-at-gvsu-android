@@ -1,5 +1,6 @@
 package edu.gvsu.art.gallery.bookmarks
 
+import edu.gvsu.art.client.api.ArtGalleryClient
 import edu.gvsu.art.client.api.ObjectDetail
 import edu.gvsu.art.client.repository.ArtworkRepository
 import edu.gvsu.art.client.repository.DefaultArtworkRepository
@@ -7,11 +8,11 @@ import edu.gvsu.art.client.repository.DefaultFavoritesRepository
 import edu.gvsu.art.client.repository.FavoritesRepository
 import edu.gvsu.art.db.ArtGalleryDatabase
 import edu.gvsu.art.gallery.InMemoryDatabase
+import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import java.io.File
-import kotlin.math.exp
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,6 +22,7 @@ class BookmarksImporterTest {
     private lateinit var favoritesRecords: FavoritesRepository
     private lateinit var artworks: ArtworkRepository
     private lateinit var importer: BookmarksImporter
+    private lateinit var client: ArtGalleryClient
 
     private val objectDetails = listOf(
         ObjectDetail(object_id = 3881, object_name = "GVSU Marching Band"),
@@ -32,12 +34,11 @@ class BookmarksImporterTest {
     fun setup() {
         database = InMemoryDatabase()
         favoritesRecords = DefaultFavoritesRepository(database)
-        artworks = DefaultArtworkRepository(database, client = mockk())
-
-        objectDetails.forEach {
-            artworks.insert(it)
+        client = mockk()
+        objectDetails.forEach { detail ->
+            coEvery { client.fetchObjectDetail(detail.object_id!!.toString()) } returns detail
         }
-
+        artworks = DefaultArtworkRepository(client)
         importer = BookmarksImporter(favoritesRecords, artworks)
     }
 

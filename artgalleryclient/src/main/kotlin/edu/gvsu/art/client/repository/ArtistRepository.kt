@@ -4,9 +4,7 @@ import edu.gvsu.art.client.Artist
 import edu.gvsu.art.client.api.ArtGalleryClient
 import edu.gvsu.art.client.api.ArtistSearchResult
 import edu.gvsu.art.client.api.EntityDetail
-import edu.gvsu.art.client.data.ArtistsQueries
 import edu.gvsu.art.client.common.request
-import edu.gvsu.art.db.ArtGalleryDatabase
 
 interface ArtistRepository {
     suspend fun search(query: String, limit: Int? = null): Result<List<Artist>>
@@ -14,7 +12,6 @@ interface ArtistRepository {
 }
 
 class DefaultArtistRepository(
-    private val database: ArtGalleryDatabase,
     private val client: ArtGalleryClient,
 ) : ArtistRepository {
     override suspend fun search(query: String, limit: Int?): Result<List<Artist>> {
@@ -31,47 +28,24 @@ class DefaultArtistRepository(
     }
 
     override suspend fun find(id: String): Result<Artist> {
-        val artist = table.findByID(id).executeAsOneOrNull()
-        if (artist != null && isFreshCache(artist.created_at)) {
-            return Result.success(artist.toDomainModel)
-        }
-
         return request { client.fetchEntityDetail(id) }.fold(
-            onSuccess = { cacheAndFind(it) },
+            onSuccess = { Result.success(it.toDomainModel) },
             onFailure = { Result.failure(Throwable("entity detail was missing. id=${id}")) }
         )
     }
-
-    private fun cacheAndFind(entityDetail: EntityDetail): Result<Artist> {
-        insert(entityDetail)
-
-        return try {
-            val record = table
-                .findByID(entityDetail.entity_id!!.toString())
-                .executeAsOne()
-            Result.success(record.toDomainModel)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    private fun insert(entityDetail: EntityDetail) {
-        table.insert(
-            id = entityDetail.entity_id!!.toString(),
-            is_public = if (entityDetail.access == "1") 1 else 0,
-            identifier = entityDetail.idno,
-            name = entityDetail.display_label,
-            nationality = entityDetail.nationality,
-            life_dates = entityDetail.life_dates,
-            biography = entityDetail.biography,
-            related_works = entityDetail.related_objects
-        )
-    }
-
-    val table: ArtistsQueries
-        get() = database.artistsQueries
 }
 
+internal val EntityDetail.toDomainModel: Artist
+    get() = Artist(
+        id = entity_id!!.toString(),
+        isPublic = access == "1",
+        identifier = idno ?: "",
+        name = display_label ?: "",
+        nationality = nationality ?: "",
+        lifeDates = life_dates ?: "",
+        biography = biography ?: "",
+        relatedWorks = parseRelatedObjects(related_objects)
+    )
 
 val ArtistSearchResult.toDomainModel: List<Artist>
     get() = entityDetails.map {

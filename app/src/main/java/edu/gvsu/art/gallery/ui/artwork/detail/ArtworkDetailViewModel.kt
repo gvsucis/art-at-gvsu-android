@@ -34,7 +34,8 @@ class ArtworkDetailViewModel(
         }
 
     fun toggleFavorite() {
-        _favorite.value = favorites.toggle(args.artworkID)
+        val current = artwork ?: return
+        _favorite.value = favorites.toggle(current)
     }
 
     val isFavorite: Boolean

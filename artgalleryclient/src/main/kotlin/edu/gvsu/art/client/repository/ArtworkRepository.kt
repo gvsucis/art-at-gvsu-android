@@ -1,87 +1,49 @@
 package edu.gvsu.art.client.repository
 
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToOne
 import edu.gvsu.art.client.Artwork
 import edu.gvsu.art.client.api.ArtGalleryClient
 import edu.gvsu.art.client.api.ObjectDetail
-import edu.gvsu.art.client.data.ArtworksQueries
+import edu.gvsu.art.client.common.asUrls
+import edu.gvsu.art.client.common.optionalURL
 import edu.gvsu.art.client.common.request
-import edu.gvsu.art.db.ArtGalleryDatabase
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.firstOrNull
 
 interface ArtworkRepository {
     suspend fun find(id: String): Result<Artwork>
-
-    fun insert(objectDetail: ObjectDetail)
 }
 
 class DefaultArtworkRepository(
-    val database: ArtGalleryDatabase,
     val client: ArtGalleryClient,
 ) : ArtworkRepository {
     override suspend fun find(id: String): Result<Artwork> {
-        val artwork = table.findByID(id = id).executeAsOneOrNull()
-
-        if (artwork != null && isFreshCache(artwork.created_at)) {
-            return Result.success(artwork.toDomainModel)
-        }
-
         return request { client.fetchObjectDetail(id) }.fold(
-            onSuccess = { cacheAndFind(it) },
+            onSuccess = { Result.success(it.toDomainModel) },
             onFailure = { Result.failure(Throwable("object detail was missing. id=${id}")) }
         )
     }
-
-    private suspend fun cacheAndFind(objectDetail: ObjectDetail): Result<Artwork> {
-        insert(objectDetail)
-
-        return try {
-            val record = table
-                .findByID(objectDetail.object_id!!.toString())
-                .asFlow()
-                .mapToOne(Dispatchers.IO)
-                .firstOrNull() ?: return Result.failure(Error("Artwork not found"))
-
-            Result.success(record.toDomainModel)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-
-    override fun insert(objectDetail: ObjectDetail) {
-        val latLng = objectDetail.parseLocationGeoreference()
-        table.insert(
-            id = objectDetail.object_id!!.toString(),
-            is_public = if (objectDetail.access == "1") 1 else 0,
-            media_representations = objectDetail
-                .parseMediaRepresentations()
-                .joinToString(",") { it.toString() },
-            name = objectDetail.object_name,
-            artist_id = objectDetail.entity_id,
-            artist_name = objectDetail.entity_name,
-            historical_context = objectDetail.historical_context,
-            work_description = objectDetail.work_description,
-            work_date = objectDetail.work_date,
-            work_medium = objectDetail.work_medium,
-            location_id = objectDetail.location_id,
-            location = objectDetail.location,
-            identifier = objectDetail.idno,
-            credit_line = objectDetail.credit_line,
-            media_small_url = objectDetail.media_small_url,
-            media_medium_url = objectDetail.media_medium_url,
-            media_large_url = objectDetail.media_large_url,
-            thumbnail_url = objectDetail.media_icon_url,
-            location_latitude = latLng?.latitude,
-            location_longitude = latLng?.longitude,
-            related_objects = objectDetail.related_objects,
-            ar_digital_asset_url = objectDetail.ar_digital_asset,
-            secondary_media_representations = objectDetail.secondary_media_reps,
-            secondary_media_representation_thumbnails = objectDetail.secondary_media_rep_thumbnails,
-        )
-    }
-
-    private val table: ArtworksQueries
-        get() = database.artworksQueries
 }
+
+internal val ObjectDetail.toDomainModel: Artwork
+    get() = Artwork(
+        id = object_id!!.toString(),
+        isPublic = access == "1",
+        mediaRepresentations = parseMediaRepresentations(),
+        secondaryMedia = parseSecondaryMedia(secondary_media_reps, secondary_media_rep_thumbnails),
+        name = object_name ?: "",
+        artistID = entity_id ?: "",
+        artistName = entity_name ?: "",
+        historicalContext = historical_context ?: "",
+        workDescription = work_description ?: "",
+        workDate = work_date ?: "",
+        workMedium = work_medium ?: "",
+        locationID = location_id.orEmpty(),
+        location = location ?: "",
+        identifier = idno ?: "",
+        creditLine = credit_line ?: "",
+        locationGeoreference = parseLocationGeoreference(),
+        relatedWorks = parseRelatedObjects(related_objects),
+        mediaSmall = optionalURL(media_small_url),
+        mediaMedium = optionalURL(media_medium_url),
+        mediaLarge = optionalURL(media_large_url),
+        thumbnail = optionalURL(media_icon_url),
+        arDigitalAssetURL = optionalURL(ar_digital_asset),
+    )
