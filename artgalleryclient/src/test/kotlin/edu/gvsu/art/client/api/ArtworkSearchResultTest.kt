@@ -46,6 +46,30 @@ internal class ArtworkSearchResultTest {
     }
 
     @Test
+    fun test_fromJson_parsesARFields() {
+        // Shaped after the live objectSearch?q=featured_ar response: AR video +
+        // GLB model URLs ride along on the search payload (no detail fetch).
+        val json = """
+            {
+                "ok": true,
+                "2329": {
+                    "access": "1",
+                    "object_id": 2329,
+                    "object_name": "Calavera de Don Quijote",
+                    "media_medium_url": "https://artgallery.gvsu.edu/admin/media/medium.jpg",
+                    "ar_digital_asset": "https://artgallery.gvsu.edu/admin/media/video.mp4",
+                    "ar_3d_file": "https://artgallery.gvsu.edu/admin/media/model.glb"
+                }
+            }
+        """.trimIndent()
+
+        val detail = jsonAdapter.fromJson(json)!!.objectDetails.single()
+
+        assertEquals("https://artgallery.gvsu.edu/admin/media/video.mp4", detail.ar_digital_asset)
+        assertEquals("https://artgallery.gvsu.edu/admin/media/model.glb", detail.ar_3d_file)
+    }
+
+    @Test
     fun test_toJson() {
         val featuredArtResult = ArtworkSearchResult(
             ok = true,

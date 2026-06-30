@@ -97,13 +97,23 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "21"
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
     }
 }
 
+// A transitive dependency drags in the deprecated kotlin-android-extensions-runtime,
+// whose kotlinx.android.parcel.* classes collide with Kotlin 2.4's kotlin-parcelize-runtime.
+// The parcelize runtime supersedes it, so drop the old artifact.
+configurations.all {
+    exclude(group = "org.jetbrains.kotlin", module = "kotlin-android-extensions-runtime")
+}
+
 dependencies {
-    val camerax_version = "1.3.4"
+    val camerax_version = "1.4.2"
     val datastore_version = "1.1.1"
     val accompanist_version = "0.22.0-rc"
 
@@ -148,14 +158,14 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:19.0.0")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
-    implementation("io.github.sceneview:arsceneview:2.3.0")
+    implementation("io.github.sceneview:arsceneview:4.18.0")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.maps.android:android-maps-utils:2.2.3")
     implementation("com.google.maps.android:maps-ktx:3.2.1")
     implementation("com.google.maps.android:maps-utils-ktx:3.2.1")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.google.android.filament:filamat-android:1.65.0")
+    implementation("com.google.android.filament:filamat-android:1.71.5")
     implementation(project(":artgalleryclient"))
 
     testImplementation(libs.mockk)

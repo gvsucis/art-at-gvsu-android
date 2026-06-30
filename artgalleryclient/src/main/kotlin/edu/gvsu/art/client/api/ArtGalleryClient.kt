@@ -25,6 +25,9 @@ interface ArtGalleryClient {
     suspend fun fetchArtworkSearch(
         @Query("q") query: String,
         @Query("limit") limit: Int? = null,
+        // Set to 1 to bypass CollectiveAccess's Simple API response cache (~1h TTL) so
+        // re-uploaded AR assets surface immediately. Used for the featured AR set.
+        @Query("noCache") noCache: Int? = null,
     ): ArtworkSearchResult
 
     @GET("locationcampusSearch?q=*")

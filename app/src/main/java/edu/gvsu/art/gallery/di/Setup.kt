@@ -1,6 +1,7 @@
 package edu.gvsu.art.gallery.di
 
 import edu.gvsu.art.gallery.bookmarks.bookmarksModule
+import edu.gvsu.art.gallery.ui.artwork.ar.arModule
 import edu.gvsu.art.gallery.ui.artwork.detail.artworkDetailModule
 import edu.gvsu.art.gallery.ui.browse.browseModule
 import edu.gvsu.art.gallery.ui.favorites.favoritesModule
@@ -14,6 +15,7 @@ fun KoinApplication.setupModules() {
         databaseModule,
         repositoryModule,
         artworkDetailModule,
+        arModule,
         browseModule,
         searchModule,
         favoritesModule,

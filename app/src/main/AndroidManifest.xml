@@ -50,6 +50,7 @@
         </activity>
         <activity
             android:name=".ui.artwork.ar.ArtworkARActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:exported="true"
             android:theme="@style/Theme.ArtGallery">
         </activity>

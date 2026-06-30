@@ -41,5 +41,6 @@ data class ObjectDetail(
     val rg_medium: String? = "",
     val rg_large: String? = "",
     @Json(name = "rg_x-large") val rg_xlarge: String? = "",
-    val ar_digital_asset: String? = null
+    val ar_digital_asset: String? = null,
+    val ar_3d_file: String? = null
 )
