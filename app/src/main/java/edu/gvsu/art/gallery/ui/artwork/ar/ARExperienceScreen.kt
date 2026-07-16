@@ -129,12 +129,16 @@ private fun ARExperienceContent(
                 // constant default IBL so models stay evenly lit regardless of the room.
                 config.lightEstimationMode = Config.LightEstimationMode.DISABLED
                 state.referenceImages.forEach { reference ->
-                    config.addAugmentedImage(
-                        session,
-                        reference.artwork.id,
-                        reference.bitmap,
-                        reference.widthMeters,
-                    )
+                    runCatching {
+                        config.addAugmentedImage(
+                            session,
+                            reference.artwork.id,
+                            reference.bitmap,
+                            reference.widthMeters,
+                        )
+                    }.onFailure {
+                        Log.w("ARExperience", "skipped reference image ${reference.artwork.id}", it)
+                    }
                 }
             },
             onSessionUpdated = { _, frame ->
@@ -263,18 +267,22 @@ private fun NodeScope.VideoPlane(
 ) {
     var prepared by remember { mutableStateOf(false) }
     val player = remember(file) {
-        MediaPlayer().apply {
-            setDataSource(file.path)
-            isLooping = true
-            setOnPreparedListener { prepared = true }
-            prepareAsync()
+        val mediaPlayer = MediaPlayer()
+        runCatching {
+            mediaPlayer.setDataSource(file.path)
+            mediaPlayer.isLooping = true
+            mediaPlayer.setOnPreparedListener { prepared = true }
+            mediaPlayer.setOnErrorListener { _, _, _ -> true }
+            mediaPlayer.prepareAsync()
+            mediaPlayer
+        }.getOrElse {
+            mediaPlayer.release()
+            null
         }
-    }
+    } ?: return
     DisposableEffect(player) {
         onDispose { player.release() }
     }
-    // Play only while the image is fully tracked, so audio doesn't keep running
-    // when the visitor looks away.
     LaunchedEffect(prepared, isPlaying) {
         if (!prepared) return@LaunchedEffect
         if (isPlaying) {

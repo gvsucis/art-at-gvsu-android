@@ -4,9 +4,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import java.io.File
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Downloads AR media on demand and caches it on disk, bounding the cache with
@@ -26,25 +25,15 @@ class ARMediaCache(
     private val scope: CoroutineScope,
     private val maxCachedFiles: Int = 8,
 ) {
-    private val mutex = Mutex()
-    private val inFlight = mutableMapOf<String, Deferred<File?>>()
+    private val inFlight = ConcurrentHashMap<String, Deferred<File?>>()
 
     suspend fun localFile(url: String): File? {
-        // Register (or join) the in-flight download synchronously under the lock, so a
-        // second caller arriving mid-download joins the same job instead of starting its own.
-        val deferred = mutex.withLock {
-            inFlight[url] ?: scope.async(Dispatchers.IO) { fetch(url) }.also { inFlight[url] = it }
-        }
-
-        try {
-            return deferred.await()
-        } finally {
-            mutex.withLock {
-                if (inFlight[url] === deferred) {
-                    inFlight.remove(url)
-                }
+        val deferred = inFlight.computeIfAbsent(url) {
+            scope.async(Dispatchers.IO) { fetch(url) }.also { download ->
+                download.invokeOnCompletion { inFlight.remove(url, download) }
             }
         }
+        return deferred.await()
     }
 
     private suspend fun fetch(url: String): File? {
