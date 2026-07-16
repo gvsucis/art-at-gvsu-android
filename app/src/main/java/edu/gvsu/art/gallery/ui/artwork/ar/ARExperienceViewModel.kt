@@ -75,16 +75,15 @@ class ARExperienceViewModel(
 
     private suspend fun buildReferenceImage(artwork: Artwork): ReferenceImage? {
         val imageURL = artwork.mediaMedium ?: artwork.mediaLarge ?: return null
-        // Fetched outside the LRU media cache: a reference image is only decoded once to
-        // seed ARCore's image database, so it shouldn't compete with replayable videos /
-        // models for cache slots (matches iOS, which never persists reference images).
         val file = FileDownloader.download(imageURL.toString(), referencesDirectory).getOrNull() ?: return null
         val decoded = BitmapFactory.decodeFile(file.path) ?: return null
         // ARCore's augmented image database requires ARGB_8888 input.
         val bitmap = if (decoded.config == Bitmap.Config.ARGB_8888) {
             decoded
         } else {
-            decoded.copy(Bitmap.Config.ARGB_8888, false)
+            val converted = decoded.copy(Bitmap.Config.ARGB_8888, false)
+            decoded.recycle()
+            converted ?: return null
         }
         return ReferenceImage(
             artwork = artwork,

@@ -14,7 +14,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -109,11 +108,7 @@ private fun ARExperienceContent(
     val engine = rememberEngine()
     val modelLoader = rememberModelLoader(engine)
 
-    // Images currently being overlaid, keyed by artwork id. Mutated only on add /
-    // evict / removal so the per-frame session callback doesn't thrash recomposition.
-    val tracked = remember { mutableStateMapOf<String, AugmentedImage>() }
-    // Plain (non-snapshot) recency list driving least-recently-seen eviction.
-    val recency = remember { mutableListOf<String>() }
+    val overlayTracker = remember { AROverlayTracker<AugmentedImage>(MAX_ACTIVE_OVERLAYS) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         ARSceneView(
@@ -145,32 +140,19 @@ private fun ARExperienceContent(
                 frame.getUpdatedAugmentedImages().forEach { image ->
                     val name = image.name ?: return@forEach
                     if (!state.artworksById.containsKey(name)) return@forEach
-                    // ARCore keeps an image's trackingState == TRACKING with trackingMethod
-                    // == LAST_KNOWN_POSE after the visitor looks away (it remembers the world
-                    // pose). Mirror iOS's `isTracked`: only FULL_TRACKING counts as present;
-                    // anything else tears the overlay down so the video + model are released.
+                    // ARCore keeps a looked-away image TRACKING via LAST_KNOWN_POSE, so mirror
+                    // iOS and treat only FULL_TRACKING as present; anything else releases it.
                     val present = image.trackingState == TrackingState.TRACKING &&
                         image.trackingMethod == TrackingMethod.FULL_TRACKING
                     if (present) {
-                        recency.remove(name)
-                        recency.add(name)
-                        if (name !in tracked) {
-                            tracked[name] = image
-                            Log.d("ARExperience", "mount $name (${image.trackingMethod})")
-                            while (recency.size > MAX_ACTIVE_OVERLAYS) {
-                                tracked.remove(recency.removeAt(0))
-                            }
-                        }
+                        overlayTracker.markPresent(name, image)
                     } else {
-                        if (tracked.remove(name) != null) {
-                            Log.d("ARExperience", "unmount $name (${image.trackingState}/${image.trackingMethod})")
-                        }
-                        recency.remove(name)
+                        overlayTracker.markAbsent(name)
                     }
                 }
             },
         ) {
-            tracked.forEach { (id, image) ->
+            overlayTracker.overlays.forEach { (id, image) ->
                 val artwork = state.artworksById[id] ?: return@forEach
                 key(id) {
                     ArtworkAROverlay(
@@ -196,8 +178,7 @@ private fun ARExperienceContent(
 
 /**
  * One detected artwork's overlay: a looping video plane plus an optional GLB model,
- * both anchored to the recognized image. The video pauses when tracking is lost and
- * resumes when the image is fully tracked again (mirrors iOS `ARArtworkEntity`).
+ * both anchored to the recognized image.
  */
 @Composable
 private fun ARSceneScope.ArtworkAROverlay(
@@ -208,7 +189,6 @@ private fun ARSceneScope.ArtworkAROverlay(
 ) {
     var videoFile by remember { mutableStateOf<File?>(null) }
     var modelInstance by remember { mutableStateOf<ModelInstance?>(null) }
-    var fullyTracking by remember { mutableStateOf(true) }
 
     LaunchedEffect(artwork.id) {
         artwork.arDigitalAssetURL?.let { videoFile = mediaCache.localFile(it.toString()) }
@@ -231,14 +211,9 @@ private fun ARSceneScope.ArtworkAROverlay(
         }
     }
 
-    AugmentedImageNode(
-        augmentedImage = augmentedImage,
-        onTrackingMethodChanged = { method ->
-            fullyTracking = method == TrackingMethod.FULL_TRACKING
-        },
-    ) {
+    AugmentedImageNode(augmentedImage = augmentedImage) {
         videoFile?.let { file ->
-            VideoPlane(file = file, image = augmentedImage, isPlaying = fullyTracking)
+            VideoPlane(file = file, image = augmentedImage)
         }
         modelInstance?.let { instance ->
             // SceneView frees the node entity on eviction but not the model asset; drop it
@@ -263,9 +238,8 @@ private fun ARSceneScope.ArtworkAROverlay(
 private fun NodeScope.VideoPlane(
     file: File,
     image: AugmentedImage,
-    isPlaying: Boolean,
 ) {
-    var prepared by remember { mutableStateOf(false) }
+    var prepared by remember(file) { mutableStateOf(false) }
     val player = remember(file) {
         val mediaPlayer = MediaPlayer()
         runCatching {
@@ -283,18 +257,10 @@ private fun NodeScope.VideoPlane(
     DisposableEffect(player) {
         onDispose { player.release() }
     }
-    LaunchedEffect(prepared, isPlaying) {
-        if (!prepared) return@LaunchedEffect
-        if (isPlaying) {
-            if (!player.isPlaying) player.start()
-        } else if (player.isPlaying) {
-            player.pause()
-        }
+    LaunchedEffect(prepared) {
+        if (prepared && !player.isPlaying) player.start()
     }
 
-    // The image lies in the node's X-Z plane; rotate the (X-Y) video plane -90° about
-    // X to lay it flat, sized to the printed image. NOTE: if the video appears rotated
-    // or mirrored on device, adjust this rotation — it can't be verified off-device.
     val size = if (image.extentX > 0f && image.extentZ > 0f) {
         Size(x = image.extentX, y = image.extentZ, z = 0f)
     } else {
