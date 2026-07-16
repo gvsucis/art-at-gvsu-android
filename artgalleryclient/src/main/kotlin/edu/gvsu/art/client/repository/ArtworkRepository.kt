@@ -46,4 +46,5 @@ internal val ObjectDetail.toDomainModel: Artwork
         mediaLarge = optionalURL(media_large_url),
         thumbnail = optionalURL(media_icon_url),
         arDigitalAssetURL = optionalURL(ar_digital_asset),
+        arModelURL = optionalURL(ar_3d_file),
     )

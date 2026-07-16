@@ -8,22 +8,24 @@ import edu.gvsu.art.client.common.optionalURL
 import edu.gvsu.art.client.common.request
 
 interface ArtworkSearchRepository {
-    suspend fun search(query: String, limit: Int? = null): Result<List<Artwork>>
-    suspend fun searchCollection(collection: ArtworkCollection): Result<List<Artwork>>
+    suspend fun search(query: String, limit: Int? = null, noCache: Boolean = false): Result<List<Artwork>>
+    suspend fun searchCollection(collection: ArtworkCollection, noCache: Boolean = false): Result<List<Artwork>>
 }
 
 class DefaultArtworkSearchRepository(
     private val client: ArtGalleryClient,
 ) : ArtworkSearchRepository {
-    override suspend fun search(query: String, limit: Int?): Result<List<Artwork>> {
-        return request { client.fetchArtworkSearch(query = query, limit = limit) }.fold(
+    override suspend fun search(query: String, limit: Int?, noCache: Boolean): Result<List<Artwork>> {
+        return request {
+            client.fetchArtworkSearch(query = query, limit = limit, noCache = if (noCache) 1 else null)
+        }.fold(
             onSuccess = { Result.success(it.toDomainArtworks) },
             onFailure = { Result.failure(it) }
         )
     }
 
-    override suspend fun searchCollection(collection: ArtworkCollection): Result<List<Artwork>> {
-        return search(query = collection.slug)
+    override suspend fun searchCollection(collection: ArtworkCollection, noCache: Boolean): Result<List<Artwork>> {
+        return search(query = collection.slug, noCache = noCache)
     }
 }
 
@@ -40,6 +42,8 @@ private val ArtworkSearchResult.toDomainArtworks: List<Artwork>
             identifier = objectDetail.idno ?: "",
             mediaMedium = optionalURL(objectDetail.media_medium_url),
             mediaLarge = optionalURL(objectDetail.media_large_url),
-            thumbnail = optionalURL(objectDetail.media_small_url)
+            thumbnail = optionalURL(objectDetail.media_small_url),
+            arDigitalAssetURL = optionalURL(objectDetail.ar_digital_asset),
+            arModelURL = optionalURL(objectDetail.ar_3d_file)
         )
     }

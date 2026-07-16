@@ -1,0 +1,286 @@
+package edu.gvsu.art.gallery.ui.artwork.ar
+
+import android.media.MediaPlayer
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.ar.core.AugmentedImage
+import com.google.ar.core.AugmentedImage.TrackingMethod
+import com.google.ar.core.Config
+import com.google.ar.core.TrackingState
+import edu.gvsu.art.client.Artwork
+import edu.gvsu.art.gallery.lib.ARMediaCache
+import edu.gvsu.art.gallery.ui.CloseIconButton
+import io.github.sceneview.ar.ARSceneScope
+import io.github.sceneview.ar.ARSceneView
+import io.github.sceneview.ar.arcore.addAugmentedImage
+import io.github.sceneview.ar.arcore.getUpdatedAugmentedImages
+import io.github.sceneview.loaders.ModelLoader
+import io.github.sceneview.math.Rotation
+import io.github.sceneview.math.Size
+import io.github.sceneview.model.ModelInstance
+import io.github.sceneview.NodeScope
+import io.github.sceneview.rememberEngine
+import io.github.sceneview.rememberModelLoader
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.koin.androidx.compose.koinViewModel
+import java.io.File
+import java.nio.ByteBuffer
+
+/** Caps how many artwork overlays (video + model) stay live at once. */
+private const val MAX_ACTIVE_OVERLAYS = 4
+
+/**
+ * Full-screen roaming AR experience: point the camera at any featured AR artwork
+ * in the gallery and its video (and 3D model) plays in place.
+ */
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun ARExperienceScreen(
+    onClose: () -> Unit,
+    viewModel: ARExperienceViewModel = koinViewModel(),
+) {
+    val cameraPermission = rememberPermissionState(android.Manifest.permission.CAMERA)
+
+    // Surface the system camera permission dialog as soon as the experience opens,
+    // instead of gating it behind an in-app button.
+    LaunchedEffect(Unit) {
+        if (!cameraPermission.hasPermission) {
+            cameraPermission.launchPermissionRequest()
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+    ) {
+        if (cameraPermission.hasPermission) {
+            when (val state = viewModel.state) {
+                ARExperienceViewModel.State.Loading ->
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier.align(Alignment.Center),
+                    )
+                is ARExperienceViewModel.State.Ready ->
+                    ARExperienceContent(state = state, mediaCache = viewModel.mediaCache)
+                ARExperienceViewModel.State.Empty ->
+                    Message("There's no AR artwork available right now.")
+                ARExperienceViewModel.State.Failed ->
+                    Message("Something went wrong loading AR artwork. Please try again.")
+            }
+        } else {
+            Message("Camera access is needed to view artwork in augmented reality.")
+        }
+
+        Box(modifier = Modifier.statusBarsPadding()) {
+            CloseIconButton(onClick = onClose)
+        }
+    }
+}
+
+@Composable
+private fun ARExperienceContent(
+    state: ARExperienceViewModel.State.Ready,
+    mediaCache: ARMediaCache,
+) {
+    val engine = rememberEngine()
+    val modelLoader = rememberModelLoader(engine)
+
+    val overlayTracker = remember { AROverlayTracker<AugmentedImage>(MAX_ACTIVE_OVERLAYS) }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        ARSceneView(
+            modifier = Modifier.fillMaxSize(),
+            engine = engine,
+            modelLoader = modelLoader,
+            planeRenderer = false,
+            planeFindingMode = Config.PlaneFindingMode.DISABLED,
+            focusMode = Config.FocusMode.AUTO,
+            sessionConfiguration = { session, config ->
+                // ARCore's environmental-HDR light estimation (SceneView's default) renders
+                // models dark in dim galleries; disabling it falls back to SceneView's
+                // constant default IBL so models stay evenly lit regardless of the room.
+                config.lightEstimationMode = Config.LightEstimationMode.DISABLED
+                state.referenceImages.forEach { reference ->
+                    runCatching {
+                        config.addAugmentedImage(
+                            session,
+                            reference.artwork.id,
+                            reference.bitmap,
+                            reference.widthMeters,
+                        )
+                    }.onFailure {
+                        Log.w("ARExperience", "skipped reference image ${reference.artwork.id}", it)
+                    }
+                }
+            },
+            onSessionUpdated = { _, frame ->
+                frame.getUpdatedAugmentedImages().forEach { image ->
+                    val name = image.name ?: return@forEach
+                    if (!state.artworksById.containsKey(name)) return@forEach
+                    // ARCore keeps a looked-away image TRACKING via LAST_KNOWN_POSE, so mirror
+                    // iOS and treat only FULL_TRACKING as present; anything else releases it.
+                    val present = image.trackingState == TrackingState.TRACKING &&
+                        image.trackingMethod == TrackingMethod.FULL_TRACKING
+                    if (present) {
+                        overlayTracker.markPresent(name, image)
+                    } else {
+                        overlayTracker.markAbsent(name)
+                    }
+                }
+            },
+        ) {
+            overlayTracker.overlays.forEach { (id, image) ->
+                val artwork = state.artworksById[id] ?: return@forEach
+                key(id) {
+                    ArtworkAROverlay(
+                        artwork = artwork,
+                        augmentedImage = image,
+                        mediaCache = mediaCache,
+                        modelLoader = modelLoader,
+                    )
+                }
+            }
+        }
+
+        Text(
+            text = "Point your camera at the artwork and watch it come alive!",
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = 24.dp, vertical = 48.dp),
+        )
+    }
+}
+
+/**
+ * One detected artwork's overlay: a looping video plane plus an optional GLB model,
+ * both anchored to the recognized image.
+ */
+@Composable
+private fun ARSceneScope.ArtworkAROverlay(
+    artwork: Artwork,
+    augmentedImage: AugmentedImage,
+    mediaCache: ARMediaCache,
+    modelLoader: ModelLoader,
+) {
+    var videoFile by remember { mutableStateOf<File?>(null) }
+    var modelInstance by remember { mutableStateOf<ModelInstance?>(null) }
+
+    LaunchedEffect(artwork.id) {
+        artwork.arDigitalAssetURL?.let { videoFile = mediaCache.localFile(it.toString()) }
+
+        artwork.arModelURL?.let { url ->
+            mediaCache.localFile(url.toString())?.let { file ->
+                // ModelLoader's String overload resolves through the AssetManager (the
+                // APK's assets/), so a downloaded file path 404s. Read the bytes off the
+                // main thread and hand the engine a buffer directly. A bad/partial model
+                // shouldn't take down the whole session, so failures are swallowed.
+                modelInstance = runCatching {
+                    val bytes = withContext(Dispatchers.IO) { file.readBytes() }
+                    val buffer = ByteBuffer.allocateDirect(bytes.size).apply {
+                        put(bytes)
+                        rewind()
+                    }
+                    modelLoader.createModelInstance(buffer)
+                }.getOrNull()
+            }
+        }
+    }
+
+    AugmentedImageNode(augmentedImage = augmentedImage) {
+        videoFile?.let { file ->
+            VideoPlane(file = file, image = augmentedImage)
+        }
+        modelInstance?.let { instance ->
+            // SceneView frees the node entity on eviction but not the model asset; drop it
+            // ourselves so revisiting artworks doesn't leak GPU memory across the session.
+            DisposableEffect(instance) {
+                onDispose { modelLoader.destroyModel(instance.asset) }
+            }
+            ModelNode(
+                modelInstance = instance,
+                autoAnimate = true,
+                animationLoop = true,
+            )
+        }
+    }
+}
+
+/**
+ * A looping video laid flat on the recognized image. Owns the [MediaPlayer] and
+ * releases it when the overlay leaves the composition (e.g. LRU eviction).
+ */
+@Composable
+private fun NodeScope.VideoPlane(
+    file: File,
+    image: AugmentedImage,
+) {
+    var prepared by remember(file) { mutableStateOf(false) }
+    val player = remember(file) {
+        val mediaPlayer = MediaPlayer()
+        runCatching {
+            mediaPlayer.setDataSource(file.path)
+            mediaPlayer.isLooping = true
+            mediaPlayer.setOnPreparedListener { prepared = true }
+            mediaPlayer.setOnErrorListener { _, _, _ -> true }
+            mediaPlayer.prepareAsync()
+            mediaPlayer
+        }.getOrElse {
+            mediaPlayer.release()
+            null
+        }
+    } ?: return
+    DisposableEffect(player) {
+        onDispose { player.release() }
+    }
+    LaunchedEffect(prepared) {
+        if (prepared && !player.isPlaying) player.start()
+    }
+
+    val size = if (image.extentX > 0f && image.extentZ > 0f) {
+        Size(x = image.extentX, y = image.extentZ, z = 0f)
+    } else {
+        null
+    }
+    VideoNode(
+        player = player,
+        size = size,
+        rotation = Rotation(x = -90f),
+    )
+}
+
+@Composable
+private fun Message(text: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(text = text, color = Color.White)
+    }
+}

@@ -28,9 +28,13 @@ data class Artwork(
     val mediaLarge: URL? = null,
     val thumbnail: URL? = null,
     val arDigitalAssetURL: URL? = null,
+    val arModelURL: URL? = null,
 ) : Parcelable {
     val hasAR: Boolean
         get() = arDigitalAssetURL != null
+
+    val has3DModel: Boolean
+        get() = arModelURL != null
 
     val formattedArtistName: String
         get() {

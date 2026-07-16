@@ -10,6 +10,10 @@ fun Context.fileURI(file: File): Uri =
 
 fun Context.arAssetsDirectory(): File = File(cacheDir, "ar_assets")
 
+// Reference images are kept apart from
+// AR media cache so they aren't evicted by videos/models.
+fun Context.arReferencesDirectory(): File = File(cacheDir, "ar_references")
+
 fun Context.searchImagesDirectory(): File = File(cacheDir, "vision_search")
 
 fun Context.createTempImage(): Uri {
