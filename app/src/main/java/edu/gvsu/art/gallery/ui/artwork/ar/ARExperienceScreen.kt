@@ -52,15 +52,6 @@ import java.nio.ByteBuffer
 /** Caps how many artwork overlays (video + model) stay live at once. */
 private const val MAX_ACTIVE_OVERLAYS = 4
 
-// TEMP gut check: serve the Dutch Woodcutter's model from a bundled asset rather than
-// the remote GLB. Remove (and delete app/src/main/assets/ar/dutch_woodcutter.glb) after.
-// TEMP local-asset gut check: artwork id -> bundled refit GLB in assets/ar/. These already
-// have placement baked in, so they're loaded with their authored transform. Remove before
-// shipping (and the assets) once the refit GLBs are uploaded to the server.
-private val BUNDLED_MODELS = mapOf(
-    "3827" to "ar/3827_oxen.glb",
-)
-
 /**
  * Full-screen roaming AR experience: point the camera at any featured AR artwork
  * in the gallery and its video (and 3D model) plays in place. Mirrors the iOS
@@ -134,6 +125,10 @@ private fun ARExperienceContent(
             planeFindingMode = Config.PlaneFindingMode.DISABLED,
             focusMode = Config.FocusMode.AUTO,
             sessionConfiguration = { session, config ->
+                // ARCore's environmental-HDR light estimation (SceneView's default) renders
+                // models dark in dim galleries; disabling it falls back to SceneView's
+                // constant default IBL so models stay evenly lit regardless of the room.
+                config.lightEstimationMode = Config.LightEstimationMode.DISABLED
                 state.referenceImages.forEach { reference ->
                     config.addAugmentedImage(
                         session,
@@ -215,21 +210,6 @@ private fun ARSceneScope.ArtworkAROverlay(
     LaunchedEffect(artwork.id) {
         artwork.arDigitalAssetURL?.let { videoFile = mediaCache.localFile(it.toString()) }
 
-        // TEMP gut check: load a bundled refit GLB from assets/ (AssetManager-resolved String
-        // overload) instead of the remote model, to eyeball it on-device before upload.
-        val bundledAsset = BUNDLED_MODELS[artwork.id]
-        if (bundledAsset != null) {
-            modelInstance = try {
-                modelLoader.loadModelInstance(bundledAsset).also {
-                    Log.i("ARExperience", "bundled model loaded ($bundledAsset): instance=${it != null}")
-                }
-            } catch (e: Exception) {
-                Log.e("ARExperience", "bundled model load failed ($bundledAsset)", e)
-                null
-            }
-            return@LaunchedEffect
-        }
-
         artwork.arModelURL?.let { url ->
             mediaCache.localFile(url.toString())?.let { file ->
                 // ModelLoader's String overload resolves through the AssetManager (the
@@ -258,9 +238,10 @@ private fun ARSceneScope.ArtworkAROverlay(
             VideoPlane(file = file, image = augmentedImage, isPlaying = fullyTracking)
         }
         modelInstance?.let { instance ->
-            // Every model (bundled or remote) is a refit GLB with placement — scale,
-            // position, and the upright correction — baked in, so render with the
-            // authored transform and apply nothing in-app.
+            // Every model is a refit GLB with its placement (scale, position, and the upright
+            // -90X correction) baked into the file, so render with the authored transform and
+            // apply nothing in-app. To tune a new model's placement, see the debug tuner in
+            // ARDebugPlacement.kt / docs/ar-debug-placement.md.
             ModelNode(
                 modelInstance = instance,
                 autoAnimate = true,
