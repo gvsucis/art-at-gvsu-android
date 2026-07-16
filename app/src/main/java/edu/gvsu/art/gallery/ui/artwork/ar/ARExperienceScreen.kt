@@ -237,10 +237,11 @@ private fun ARSceneScope.ArtworkAROverlay(
             VideoPlane(file = file, image = augmentedImage, isPlaying = fullyTracking)
         }
         modelInstance?.let { instance ->
-            // Every model is a refit GLB with its placement (scale, position, and the upright
-            // -90X correction) baked into the file, so render with the authored transform and
-            // apply nothing in-app. To tune a new model's placement, see the debug tuner in
-            // ARDebugPlacement.kt / docs/ar-debug-placement.md.
+            // SceneView frees the node entity on eviction but not the model asset; drop it
+            // ourselves so revisiting artworks doesn't leak GPU memory across the session.
+            DisposableEffect(instance) {
+                onDispose { modelLoader.destroyModel(instance.asset) }
+            }
             ModelNode(
                 modelInstance = instance,
                 autoAnimate = true,
