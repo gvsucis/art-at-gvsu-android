@@ -54,8 +54,7 @@ private const val MAX_ACTIVE_OVERLAYS = 4
 
 /**
  * Full-screen roaming AR experience: point the camera at any featured AR artwork
- * in the gallery and its video (and 3D model) plays in place. Mirrors the iOS
- * `ARExperienceView`.
+ * in the gallery and its video (and 3D model) plays in place.
  */
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable

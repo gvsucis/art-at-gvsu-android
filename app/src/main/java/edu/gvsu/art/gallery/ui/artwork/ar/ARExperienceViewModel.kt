@@ -19,24 +19,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-/**
- * Loads the gallery's featured AR set and builds the reference images the AR
- * session tracks against. Mirrors the iOS `ARExperienceModel`: fetch the
- * `featured_ar` collection, keep only artworks with a playable AR video, and
- * turn each artwork's printed image into an ARCore augmented image.
- */
 class ARExperienceViewModel(
     application: Application,
     private val searchRepository: ArtworkSearchRepository,
 ) : AndroidViewModel(application) {
-
-    /** A printed artwork the session can recognize, plus its estimated real-world width. */
-    data class ReferenceImage(
-        val artwork: Artwork,
-        val bitmap: Bitmap,
-        val widthMeters: Float,
-    )
-
     sealed interface State {
         data object Loading : State
         data class Ready(
@@ -63,7 +49,7 @@ class ARExperienceViewModel(
 
     private fun load() {
         viewModelScope.launch(Dispatchers.IO) {
-            val artworks = searchRepository.searchCollection(ArtworkCollection.FeaturedAR, noCache = true)
+            val artworks = searchRepository.searchCollection(ArtworkCollection.FeaturedAR)
                 .getOrNull()
                 ?.filter { it.hasAR }
 
@@ -114,4 +100,10 @@ class ARExperienceViewModel(
          */
         private const val PIXELS_TO_METERS = 0.0002645833f
     }
+
+    data class ReferenceImage(
+        val artwork: Artwork,
+        val bitmap: Bitmap,
+        val widthMeters: Float,
+    )
 }
